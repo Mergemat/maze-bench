@@ -1,0 +1,684 @@
+{
+  "metadata": {
+    "model": "deepseek-v3.1",
+    "date": "2025-12-14T12:21:03.912Z",
+    "seeds": [
+      12345,
+      12346,
+      12347,
+      12348,
+      12349,
+      12350
+    ]
+  },
+  "stats": {
+    "overall": {
+      "successRate": 0.5,
+      "avgSteps": 5.833333333333333,
+      "avgTimeMs": 35303.318909999995
+    },
+    "byConfig": {
+      "simple_global": {
+        "successRate": 0.6666666666666666,
+        "avgSteps": 5,
+        "avgTimeMs": 31084.743111333333,
+        "n": 3
+      },
+      "complex_global": {
+        "successRate": 0.3333333333333333,
+        "avgSteps": 6.666666666666667,
+        "avgTimeMs": 39521.89470866666,
+        "n": 3
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "deepseek-v3.1_maze_1_5x5_simple_global_seed12346",
+      "timestamp": "2025-12-14T12:13:03.953Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "deepseek-v3.1",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12346,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 22005.810791999997,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v3.1_maze_0_5x5_simple_global_seed12345",
+      "timestamp": "2025-12-14T12:13:08.924Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "deepseek-v3.1",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12345,
+      "success": false,
+      "totalSteps": 4,
+      "totalDurationMs": 26979.382625000002,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "left",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v3.1_maze_2_5x5_simple_global_seed12347",
+      "timestamp": "2025-12-14T12:13:48.224Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "deepseek-v3.1",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12347,
+      "success": true,
+      "totalSteps": 7,
+      "totalDurationMs": 44269.035917,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "left",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 7,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v3.1_maze_3_5x5_complex_global_seed12348",
+      "timestamp": "2025-12-14T12:14:02.104Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "deepseek-v3.1",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12348,
+      "success": true,
+      "totalSteps": 8,
+      "totalDurationMs": 53179.068959,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "left",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 5,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 8,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v3.1_maze_4_5x5_complex_global_seed12349",
+      "timestamp": "2025-12-14T12:14:24.502Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "deepseek-v3.1",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12349,
+      "success": false,
+      "totalSteps": 7,
+      "totalDurationMs": 36277.612624999994,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "left",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v3.1_maze_5_5x5_complex_global_seed12350",
+      "timestamp": "2025-12-14T12:14:31.213Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "deepseek-v3.1",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12350,
+      "success": false,
+      "totalSteps": 5,
+      "totalDurationMs": 29109.002541999987,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "left",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,905 @@
+{
+  "metadata": {
+    "model": "kimi-k2-thinking",
+    "date": "2025-12-14T12:21:03.913Z",
+    "seeds": [
+      12345,
+      12346,
+      12347,
+      12348,
+      12349,
+      12350
+    ]
+  },
+  "stats": {
+    "overall": {
+      "successRate": 0.8333333333333334,
+      "avgSteps": 8.333333333333334,
+      "avgTimeMs": 100177.02841666667
+    },
+    "byConfig": {
+      "simple_global": {
+        "successRate": 1,
+        "avgSteps": 12.666666666666666,
+        "avgTimeMs": 81267.02934733333,
+        "n": 3
+      },
+      "complex_global": {
+        "successRate": 0.6666666666666666,
+        "avgSteps": 4,
+        "avgTimeMs": 119087.02748600002,
+        "n": 3
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "kimi-k2-thinking_maze_1_5x5_simple_global_seed12346",
+      "timestamp": "2025-12-14T12:15:09.932Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "kimi-k2-thinking",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12346,
+      "success": true,
+      "totalSteps": 12,
+      "totalDurationMs": 38717.643542000005,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 5,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 6,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 7,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 8,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 9,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 11,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 12,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        },
+        {
+          "step": 12,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "kimi-k2-thinking_maze_2_5x5_simple_global_seed12347",
+      "timestamp": "2025-12-14T12:15:29.706Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "kimi-k2-thinking",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12347,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 19774.012999999977,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "kimi-k2-thinking_maze_3_5x5_complex_global_seed12348",
+      "timestamp": "2025-12-14T12:15:51.727Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "kimi-k2-thinking",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12348,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 22020.163040999993,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "kimi-k2-thinking_maze_0_5x5_simple_global_seed12345",
+      "timestamp": "2025-12-14T12:17:29.814Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "kimi-k2-thinking",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12345,
+      "success": true,
+      "totalSteps": 22,
+      "totalDurationMs": 185309.4315,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 6,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 8,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 9,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 10,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 11,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 12,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 13,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 14,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 15,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 16,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 17,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 18,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 19,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 20,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 21,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 22,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "kimi-k2-thinking_maze_5_5x5_complex_global_seed12350",
+      "timestamp": "2025-12-14T12:17:52.879Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "kimi-k2-thinking",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12350,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 23064.00816700002,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "kimi-k2-thinking_maze_4_5x5_complex_global_seed12349",
+      "timestamp": "2025-12-14T12:21:03.908Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "kimi-k2-thinking",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12349,
+      "success": false,
+      "totalSteps": 4,
+      "totalDurationMs": 312176.91125,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        }
+      ]
+    }
+  ]
+}

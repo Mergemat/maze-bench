@@ -1,0 +1,1066 @@
+{
+  "metadata": {
+    "model": "gpt-5-mini",
+    "date": "2025-12-14T14:17:19.012Z",
+    "seeds": [
+      12345,
+      12346,
+      12347,
+      12348,
+      12349,
+      12350,
+      12351,
+      12352,
+      12353,
+      12354,
+      12355,
+      12356
+    ]
+  },
+  "stats": {
+    "overall": {
+      "successRate": 0,
+      "avgSteps": 2.25,
+      "avgTimeMs": 45371.33545125,
+      "totalCost": 0.00910009
+    },
+    "byConfig": {
+      "simple_local": {
+        "successRate": 0,
+        "avgSteps": 1.6666666666666667,
+        "avgTimeMs": 38836.895528,
+        "totalCost": 0.00210502,
+        "n": 3
+      },
+      "complex_global": {
+        "successRate": 0,
+        "avgSteps": 4.666666666666667,
+        "avgTimeMs": 61288.912361,
+        "totalCost": 0.00253309,
+        "n": 3
+      },
+      "simple_global": {
+        "successRate": 0,
+        "avgSteps": 1,
+        "avgTimeMs": 36795.91705533333,
+        "totalCost": 0.0026730800000000004,
+        "n": 3
+      },
+      "complex_local": {
+        "successRate": 0,
+        "avgSteps": 1.6666666666666667,
+        "avgTimeMs": 44563.61686066666,
+        "totalCost": 0.0017889,
+        "n": 3
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "gpt-5-mini_maze_8_41x41_simple_local_seed12353",
+      "timestamp": "2025-12-14T14:15:47.665Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "simple",
+        "vision": "local"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#########################################",
+        "#S        #       #         #           #",
+        "######### # ##### # # ##### # ### ##### #",
+        "#     # # #   #   # # #     # # # #   # #",
+        "# ### # # ### # ### # ####### # # # ### #",
+        "# #     #   # # #   #   #       # #     #",
+        "# # ####### # # ##### # # ####### # #####",
+        "# # #   #   # #     # # # #   #   #     #",
+        "# ### # # ### ##### # # # # # # ####### #",
+        "#     #   #   #     # #   # #   #   #   #",
+        "# ########### # ########### ##### # # ###",
+        "# #   #       #   #         #     # # # #",
+        "# # # # ######### # # ####### ##### # # #",
+        "# # # #     #   # # # #       #   # #   #",
+        "# # # ##### # ### ### # ####### # # ### #",
+        "#   # #     #   #     #     #   #   #   #",
+        "##### # ####### ####### ##### ### ### ###",
+        "#   # # #     #     # # #     #   #   # #",
+        "# # # # # ### # # # # # # ######### ### #",
+        "# # # #     # # # # # # # #       # #   #",
+        "# ### ####### ### # # # # # ##### # # # #",
+        "# #   #     # #   # # # #   #     # # # #",
+        "# # ### ### # # ### # # ##### # ### # # #",
+        "# #     # #   #   #   # #     # #   # # #",
+        "# ####### ##### # ##### # ####### ### # #",
+        "#   #   #       # #     #       # #   # #",
+        "# ### # # ####### # ########### # # ### #",
+        "# #   #   #   # # #   #     #   # # # # #",
+        "# # ####### # # # ### ##### # ### # # # #",
+        "# #   #     #   #   #     # #     # # # #",
+        "# ### # ##### ##### ##### # ####### # # #",
+        "#   # #   #   #         #     #     #   #",
+        "# # # # # ##### ############# ### ### ###",
+        "# # # # # #     #           #     # # # #",
+        "# # # ### # ### # ####### ######### # # #",
+        "# # #     # #   #       # #       #   # #",
+        "# ####### # # ####### ### # ### ### ### #",
+        "#   #     # # #     # #   # # #     #   #",
+        "# # # ##### ### ### # # ### # ####### # #",
+        "# #       #       #   #               #G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12353,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 26960.946125000002,
+      "cost": 0.00050585,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A  \n#####\n##   "
+        }
+      ],
+      "lastObservation": "#####\n#####\n#SA  \n#####\n#    ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_3_5x5_complex_global_seed12348",
+      "timestamp": "2025-12-14T14:15:50.412Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12348,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 29709.215791000002,
+      "cost": 0.0006984,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#A# #\n# # #\n#  G#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#S# #\n#A# #\n#  G#\n#####",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_2_5x5_simple_global_seed12347",
+      "timestamp": "2025-12-14T14:15:54.729Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12347,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 34026.178667,
+      "cost": 0.00068095,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#A  #\n### #\n#  G#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#SA #\n### #\n#  G#\n#####",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_10_41x41_simple_global_seed12355",
+      "timestamp": "2025-12-14T14:15:54.861Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#########################################",
+        "#S          #             #       #     #",
+        "########### # ##### ##### ### ##### ### #",
+        "#       #   # #   # #       # #     #   #",
+        "# ### ### ### ### # ####### # # ##### # #",
+        "#   #     # # #   # #   #     #   #   # #",
+        "### ####### # # # # # # ######### # #####",
+        "#   #       #   # #   # #         #     #",
+        "# ##### ### ##### ##### # ############# #",
+        "# #   #   #     #     #   #             #",
+        "# # # ### ### ####### ##### ####### #####",
+        "#   #   #   #       #   # # #     # #   #",
+        "####### ####### ####### # # # ### ### # #",
+        "#     # #   #   #     #   #   #   #   # #",
+        "# ##### # # # ### ### ### ##### # # ### #",
+        "#   #   # # #   # # #   #   #   # #   # #",
+        "# # # ### # ### # # # # ### # ####### # #",
+        "# #   #   #     # # # #   # #         # #",
+        "# ####### ### ### # # ##### ########### #",
+        "#       # #   #   # #                 # #",
+        "####### # ### # ### ############# ##### #",
+        "# #     #   # # #   #     #   # # #   # #",
+        "# # ####### # # # # ##### # # # # # # # #",
+        "# # #       # # # # #     # # # # # # # #",
+        "# # # ######### # # # ##### # # # # # # #",
+        "# # # #       #   #   #     # #   # # # #",
+        "# # # # ##### ####### # ##### ##### # # #",
+        "#   #   #   #         # #   # #   # #   #",
+        "# ####### # ### ####### # # # # # # ### #",
+        "#         #   # #   #   # # #   #   # # #",
+        "############# # ### # ### # ######### # #",
+        "#         #   #     # #   # #   #     # #",
+        "# ### ##### ####### # # ### # # # # ### #",
+        "# # # #     #   # # # #   #   # # #     #",
+        "# # # # ##### # # # # ######### # #######",
+        "# #   # #     # # # #   #       #   #   #",
+        "# ##### # ##### # # ### # ######### ### #",
+        "# #   #   #   # #     # #         #     #",
+        "# # # ##### ### ####### # ##### ####### #",
+        "#   #                   #     #        G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12355,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 34156.994458,
+      "cost": 0.0008069,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#A          #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        }
+      ],
+      "lastObservation": "#########################################\n#SA         #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_7_21x21_complex_global_seed12352",
+      "timestamp": "2025-12-14T14:15:56.556Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####################",
+        "#S#           #     #",
+        "# # ########### ### #",
+        "# # #             # #",
+        "# # # ########### # #",
+        "# #   #       #   # #",
+        "# ##### ##### # ### #",
+        "#       #   # #   # #",
+        "######### ### ### # #",
+        "#       #   #   # # #",
+        "# ##### # # ### # # #",
+        "# #   #   #   # # # #",
+        "# # ####### # # ### #",
+        "# #     #   # # #   #",
+        "# ##### # # ### # ###",
+        "# #     # # #   #   #",
+        "# # ### # ### ### # #",
+        "# # # # #   #   # # #",
+        "# # # # ### ### ### #",
+        "#   #     #        G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12352,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 35851.870624999996,
+      "cost": 0.00079415,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#A#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        }
+      ],
+      "lastObservation": "#####################\n#S#           #     #\n#A# ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_5_21x21_complex_local_seed12350",
+      "timestamp": "2025-12-14T14:16:01.195Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "complex",
+        "vision": "local"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####################",
+        "#S  #         #     #",
+        "### ####### # # ### #",
+        "# #       # #   # # #",
+        "# ####### # ##### # #",
+        "#     #   #       # #",
+        "# ### # ### ####### #",
+        "# # #   #   #       #",
+        "# # ##### ### ##### #",
+        "# #   #     #   #   #",
+        "# # # ##### ### # ###",
+        "#   #     # # # #   #",
+        "######### # # # ### #",
+        "# #   #   #   #   # #",
+        "# # # # ######### ###",
+        "#   #   #       #   #",
+        "# ####### ##### ### #",
+        "#     #   #     #   #",
+        "##### ### # ##### # #",
+        "#         #       #G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12350,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 40491.212290999996,
+      "cost": 0.0007287,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A  \n#### \n## # "
+        }
+      ],
+      "lastObservation": "#####\n#####\n#SA #\n### #\n# #  ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_4_21x21_simple_local_seed12349",
+      "timestamp": "2025-12-14T14:16:02.120Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "simple",
+        "vision": "local"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####################",
+        "#S#     #     #     #",
+        "# # ### ### # ##### #",
+        "#   # #     #   #   #",
+        "##### ######### # ###",
+        "#           #   #   #",
+        "# ### ### ### ##### #",
+        "#   #   # #   #     #",
+        "####### # # ### # ###",
+        "#       # #   # #   #",
+        "# ####### ### ##### #",
+        "# #   #   #   #     #",
+        "# # # ##### ### #####",
+        "#   #   #   #       #",
+        "# ##### # ### ##### #",
+        "# #   #   #   #     #",
+        "# # # ######### ### #",
+        "#   #   #       # # #",
+        "####### ### ##### # #",
+        "#           #      G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12349,
+      "success": false,
+      "totalSteps": 2,
+      "totalDurationMs": 41416.982667,
+      "cost": 0.00064223,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A# \n## # \n##   "
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        }
+      ],
+      "lastObservation": "##S# \n## # \n##A  \n#####\n##   ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_6_21x21_simple_global_seed12351",
+      "timestamp": "2025-12-14T14:16:02.908Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####################",
+        "#S#       #         #",
+        "# # ##### ######### #",
+        "# # #   # #   #   # #",
+        "# # # ### # # # # # #",
+        "#   #   # # #   #   #",
+        "##### # # # #########",
+        "# #   # # #         #",
+        "# # ### # # ####### #",
+        "# #   #   # #     # #",
+        "# ### ##### # ### # #",
+        "#   # # #   # #   # #",
+        "# # # # # ### # ### #",
+        "# # # # # # # #     #",
+        "# # # # # # # ##### #",
+        "# # # #     # #   # #",
+        "# # # ####### # ### #",
+        "# #   #     # # #   #",
+        "# ##### ### # # # ###",
+        "#       #     #    G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12351,
+      "success": false,
+      "totalSteps": 1,
+      "totalDurationMs": 42204.578041,
+      "cost": 0.00118523,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#A#       #         #\n# # ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        }
+      ],
+      "lastObservation": "#####################\n#S#       #         #\n#A# ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_9_41x41_complex_local_seed12354",
+      "timestamp": "2025-12-14T14:16:06.170Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "complex",
+        "vision": "local"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#########################################",
+        "#S#     #             #       #       # #",
+        "# # ### # # ######### # # ### ### ### # #",
+        "#   #   # #   #     # # #   # #   # # # #",
+        "##### ####### # ##### # ### # # ### # # #",
+        "# #   #       #     # #   # # # # #   # #",
+        "# # ##### ##### ### # ##### # # # # ### #",
+        "# #     # #   #   # # #     #   # # #   #",
+        "# ##### # ### ### # # # ######### # # # #",
+        "#     # #   #   # #   #   #   #     # # #",
+        "# ### # ### # ### ####### # # # ##### # #",
+        "#   # # #   #   #   #     # # #     # # #",
+        "##### # # ### # ### ### ##### ##### # # #",
+        "#   # #   # # #   #     #   # #   #   # #",
+        "# # # ##### # ### ####### # # # # ##### #",
+        "# #       #     #       # #   # # #   # #",
+        "# ####### ##### # ##### # # ### # # # # #",
+        "#   #   #     # # #       # #   #   # # #",
+        "### # # ##### ### # ####### # ####### # #",
+        "#   # #   #     # # #   #   #       #   #",
+        "# ### ### ##### # ### # ########### #####",
+        "#   #   #   # #   #   #       #     #   #",
+        "### ### ### # # ### ####### # # ####### #",
+        "#   #   # # #   #   #   #   # # #       #",
+        "# ### ### # ### # ### # # ### # # ##### #",
+        "#     #   #   # #     # # # # # #     # #",
+        "# ##### # ### ######### # # # # # ### # #",
+        "#     # #   #   #       # #   # #   # # #",
+        "##### ### # ### # ####### ##### ##### # #",
+        "#   #   # #   # # #     #   #   #     # #",
+        "# ##### # ##### # ### ##### # ### ##### #",
+        "#   #   # #   # #   # #   #   #   #   # #",
+        "# # # ### # # # ### # # # ##### ### # # #",
+        "# #   #     # #     #   #       # # #   #",
+        "# ####### ### ############### ### # #####",
+        "#   #   #   #               # #     #   #",
+        "### # # ########### ####### # # ##### ###",
+        "#   # # #     #     #     # # # #       #",
+        "# ### # # ### # ##### ##### # # ####### #",
+        "#     #   #     #             #        G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12354,
+      "success": false,
+      "totalSteps": 2,
+      "totalDurationMs": 45465.552790999995,
+      "cost": 0.00061515,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A# \n## # \n##   "
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        }
+      ],
+      "lastObservation": "##S# \n## # \n##A  \n#####\n## # ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_1_5x5_complex_local_seed12346",
+      "timestamp": "2025-12-14T14:16:08.436Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "local"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12346,
+      "success": false,
+      "totalSteps": 2,
+      "totalDurationMs": 47734.085499999994,
+      "cost": 0.00044505,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A# \n## # \n##  G"
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##  G\n#####"
+        }
+      ],
+      "lastObservation": "##S# \n## # \n##A G\n#####\n#####",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_0_5x5_simple_local_seed12345",
+      "timestamp": "2025-12-14T14:16:08.834Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "local"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12345,
+      "success": false,
+      "totalSteps": 2,
+      "totalDurationMs": 48132.757792000004,
+      "cost": 0.00095694,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A  \n#### \n##  G"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n#  G#"
+        }
+      ],
+      "lastObservation": "#####\n#####\nS A##\n## ##\n  G##",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-5-mini_maze_11_41x41_complex_global_seed12356",
+      "timestamp": "2025-12-14T14:17:19.011Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "gpt-5-mini",
+      "maze": [
+        "#########################################",
+        "#S#   #           #     #               #",
+        "# # ### ### ##### # # ### # ##### #######",
+        "# #   # # #   #   # #     #     # #     #",
+        "# # # # # ### # ### ########### # # ### #",
+        "# # #       # #   # #         # # # # # #",
+        "# ### ####### ### ### ####### # ### # # #",
+        "#   #   #     #       #   #   #       # #",
+        "### ### # ### ######### # # ######### # #",
+        "# #   # #   # #     # # # #         # # #",
+        "# ### # ### ### ### # # # ######### # # #",
+        "#   # # # #   # #   #   #     #     # # #",
+        "# # # # # ### # # ### ####### # ####### #",
+        "# # # #     # # # #   #     #   #       #",
+        "# ### ##### # # # ### ##### ##### #######",
+        "# #   # #   #   #   #     #   #         #",
+        "# # ### # ######### ##### # # ######### #",
+        "# # #   #     #     #   #   #     #   # #",
+        "# # # ####### # ####### ######### # # # #",
+        "# # #         # #               #   #   #",
+        "# # ########### # ########### ######### #",
+        "# #   #         # #       #   #       # #",
+        "# ### # ######### # ##### ##### ### # # #",
+        "#     # #         #   # #   #     # # # #",
+        "# ##### # # ##### ### # ### # ##### # # #",
+        "# #     # #   #   # #   #   #   #   # # #",
+        "# # ##### ### # ### ### # # ### # ### # #",
+        "# #   # # # # #     #   # # #   # #   # #",
+        "# ### # # # # ####### ### ### ### ##### #",
+        "#     # #   #   #     # #   #   #     # #",
+        "####### ### ### # ##### ### ### ##### # #",
+        "#     #   # #   #       # #     #   #   #",
+        "# ### # ### # ######### # ####### # #####",
+        "# # # #   # #     #   # #   #     #   # #",
+        "# # # ### # ### # # ### # ### # ##### # #",
+        "# #       # #   #   #   #     # #   # # #",
+        "# ######### # # ##### ######### # ### # #",
+        "#           # # #   #   #   #   #     # #",
+        "# ########### ### # ### # # # ### ##### #",
+        "#           #     #       #   #        G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12356,
+      "success": false,
+      "totalSteps": 12,
+      "totalDurationMs": 118305.65066700001,
+      "cost": 0.00104054,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#########################################\n#A#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n#A# ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n#A#   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 4
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n#A# # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 5,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 6
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n#A# #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 6
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n#A### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#A  #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 8,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n# A #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 9,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 8
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#  A#   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 10,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 8
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n###A### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 11,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#  A#   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 12,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#  A#   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        }
+      ],
+      "lastObservation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#  A#   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    }
+  ]
+}
