@@ -1,0 +1,30 @@
+{
+	"name": "mazebench",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^22.7.8",
+		"@types/react": "^18.3.5"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@ai-sdk-tools/agents": "^1.2.0",
+		"@ai-sdk-tools/artifacts": "^1.2.0",
+		"@ai-sdk-tools/memory": "^1.2.0",
+		"@ai-sdk-tools/store": "^1.2.0",
+		"@ai-sdk/devtools": "^0.0.1-beta.1",
+		"@ai-sdk/groq": "^2.0.33",
+		"@openrouter/ai-sdk-provider": "^1.4.0",
+		"ai": "^6.0.0-beta.150",
+		"ink": "^6.5.1",
+		"ink-select-input": "^6.2.0",
+		"ink-text-input": "^6.0.0",
+		"react": "^19.2.3",
+		"zod": "^4.1.13"
+	},
+	"packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+}

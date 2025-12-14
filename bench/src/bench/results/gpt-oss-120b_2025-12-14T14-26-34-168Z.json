@@ -1,0 +1,3399 @@
+{
+  "metadata": {
+    "model": "gpt-oss-120b",
+    "date": "2025-12-14T14:26:34.168Z",
+    "seeds": [
+      12345,
+      12346,
+      12347,
+      12348,
+      12349,
+      12350,
+      12351,
+      12352,
+      12353,
+      12354,
+      12355,
+      12356
+    ]
+  },
+  "stats": {
+    "overall": {
+      "successRate": 0.3333333333333333,
+      "avgSteps": 16.166666666666668,
+      "avgTimeMs": 255826.49055558335,
+      "totalCost": 0.011982205
+    },
+    "byConfig": {
+      "complex_global": {
+        "successRate": 0.3333333333333333,
+        "avgSteps": 25.333333333333332,
+        "avgTimeMs": 348943.7113056667,
+        "totalCost": 0.008087311,
+        "n": 3
+      },
+      "simple_global": {
+        "successRate": 0.3333333333333333,
+        "avgSteps": 9.666666666666666,
+        "avgTimeMs": 316457.2563196667,
+        "totalCost": 0.0023232459999999997,
+        "n": 3
+      },
+      "simple_local": {
+        "successRate": 0.3333333333333333,
+        "avgSteps": 15.666666666666666,
+        "avgTimeMs": 166852.45341666669,
+        "totalCost": 0.0005282780000000001,
+        "n": 3
+      },
+      "complex_local": {
+        "successRate": 0.3333333333333333,
+        "avgSteps": 14,
+        "avgTimeMs": 191052.54118033336,
+        "totalCost": 0.00104337,
+        "n": 3
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "gpt-oss-120b_maze_3_5x5_complex_global_seed12348",
+      "timestamp": "2025-12-14T14:15:48.292Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12348,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 27575.874166999998,
+      "cost": 0.0003813,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#A# #\n# # #\n#  G#\n#####"
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n#S# #\n#A# #\n#  G#\n#####"
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n#S# #\n# # #\n#A G#\n#####"
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#####\n#S# #\n# # #\n# AG#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#S# #\n# # #\n#  A#\n#####"
+    },
+    {
+      "id": "gpt-oss-120b_maze_2_5x5_simple_global_seed12347",
+      "timestamp": "2025-12-14T14:15:58.686Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12347,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 37970.392292,
+      "cost": 0.000145738,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#A  #\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#SA #\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#S A#\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#####\n#S  #\n###A#\n#  G#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#S  #\n### #\n#  A#\n#####"
+    },
+    {
+      "id": "gpt-oss-120b_maze_0_5x5_simple_local_seed12345",
+      "timestamp": "2025-12-14T14:17:21.644Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "vision": "local"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12345,
+      "success": true,
+      "totalSteps": 10,
+      "totalDurationMs": 120927.365458,
+      "cost": 0.000333847,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A  \n#### \n##  G"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n#  G#"
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A##\n## ##\n  G##"
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A##\n## ##\n  G##"
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A##\n## ##\n  G##"
+        },
+        {
+          "step": 6,
+          "action": "left",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A##\n## ##\n  G##"
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n#  G#"
+        },
+        {
+          "step": 8,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A##\n## ##\n  G##"
+        },
+        {
+          "step": 9,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\nS  ##\n##A##\n  G##\n#####"
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#####\nS  ##\n##A##\n  G##\n#####"
+        }
+      ],
+      "lastObservation": "S  ##\n## ##\n  A##\n#####\n#####"
+    },
+    {
+      "id": "gpt-oss-120b_maze_1_5x5_complex_local_seed12346",
+      "timestamp": "2025-12-14T14:17:46.609Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "vision": "local"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12346,
+      "success": true,
+      "totalSteps": 11,
+      "totalDurationMs": 145892.103917,
+      "cost": 0.00054441,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A# \n## # \n##  G"
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##  G\n#####"
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A G\n#####\n#####"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 5,
+          "action": "up",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 7,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 8,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 9,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        },
+        {
+          "step": 11,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#S# #\n# # #\n# AG#\n#####\n#####"
+        }
+      ],
+      "lastObservation": "S# ##\n # ##\n  A##\n#####\n#####",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_4_21x21_simple_local_seed12349",
+      "timestamp": "2025-12-14T14:18:09.661Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "simple",
+        "vision": "local"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####################",
+        "#S#     #     #     #",
+        "# # ### ### # ##### #",
+        "#   # #     #   #   #",
+        "##### ######### # ###",
+        "#           #   #   #",
+        "# ### ### ### ##### #",
+        "#   #   # #   #     #",
+        "####### # # ### # ###",
+        "#       # #   # #   #",
+        "# ####### ### ##### #",
+        "# #   #   #   #     #",
+        "# # # ##### ### #####",
+        "#   #   #   #       #",
+        "# ##### # ### ##### #",
+        "# #   #   #   #     #",
+        "# # # ######### ### #",
+        "#   #   #       # # #",
+        "####### ### ##### # #",
+        "#           #      G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12349,
+      "success": false,
+      "totalSteps": 24,
+      "totalDurationMs": 168943.869917,
+      "cost": 0.000129989,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A# \n## # \n##   "
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n##   "
+        },
+        {
+          "step": 5,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n##   "
+        },
+        {
+          "step": 6,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n##   "
+        },
+        {
+          "step": 7,
+          "action": "left",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 8,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 9,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n##   "
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n#    "
+        },
+        {
+          "step": 11,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n#    "
+        },
+        {
+          "step": 12,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n#    "
+        },
+        {
+          "step": 13,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n     "
+        },
+        {
+          "step": 14,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n     "
+        },
+        {
+          "step": 15,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n     "
+        },
+        {
+          "step": 16,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n     "
+        },
+        {
+          "step": 17,
+          "action": "left",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\nS#   \n #A##\n   # \n#### "
+        },
+        {
+          "step": 18,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\nS#   \n #A##\n   # \n#### "
+        },
+        {
+          "step": 19,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\nS#A  \n # ##\n   # "
+        },
+        {
+          "step": 20,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\nS#   \n #A##\n   # \n#### "
+        },
+        {
+          "step": 21,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n     "
+        },
+        {
+          "step": 22,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\nS#   \n #A##\n   # \n#### "
+        },
+        {
+          "step": 23,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n     "
+        },
+        {
+          "step": 24,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\nS#   \n #A##\n   # \n#### "
+        }
+      ],
+      "lastObservation": "S#   \n # ##\n  A# \n#### \n     ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_9_41x41_complex_local_seed12354",
+      "timestamp": "2025-12-14T14:18:14.470Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "complex",
+        "vision": "local"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#########################################",
+        "#S#     #             #       #       # #",
+        "# # ### # # ######### # # ### ### ### # #",
+        "#   #   # #   #     # # #   # #   # # # #",
+        "##### ####### # ##### # ### # # ### # # #",
+        "# #   #       #     # #   # # # # #   # #",
+        "# # ##### ##### ### # ##### # # # # ### #",
+        "# #     # #   #   # # #     #   # # #   #",
+        "# ##### # ### ### # # # ######### # # # #",
+        "#     # #   #   # #   #   #   #     # # #",
+        "# ### # ### # ### ####### # # # ##### # #",
+        "#   # # #   #   #   #     # # #     # # #",
+        "##### # # ### # ### ### ##### ##### # # #",
+        "#   # #   # # #   #     #   # #   #   # #",
+        "# # # ##### # ### ####### # # # # ##### #",
+        "# #       #     #       # #   # # #   # #",
+        "# ####### ##### # ##### # # ### # # # # #",
+        "#   #   #     # # #       # #   #   # # #",
+        "### # # ##### ### # ####### # ####### # #",
+        "#   # #   #     # # #   #   #       #   #",
+        "# ### ### ##### # ### # ########### #####",
+        "#   #   #   # #   #   #       #     #   #",
+        "### ### ### # # ### ####### # # ####### #",
+        "#   #   # # #   #   #   #   # # #       #",
+        "# ### ### # ### # ### # # ### # # ##### #",
+        "#     #   #   # #     # # # # # #     # #",
+        "# ##### # ### ######### # # # # # ### # #",
+        "#     # #   #   #       # #   # #   # # #",
+        "##### ### # ### # ####### ##### ##### # #",
+        "#   #   # #   # # #     #   #   #     # #",
+        "# ##### # ##### # ### ##### # ### ##### #",
+        "#   #   # #   # #   # #   #   #   #   # #",
+        "# # # ### # # # ### # # # ##### ### # # #",
+        "# #   #     # #     #   #       # # #   #",
+        "# ####### ### ############### ### # #####",
+        "#   #   #   #               # #     #   #",
+        "### # # ########### ####### # # ##### ###",
+        "#   # # #     #     #     # # # #       #",
+        "# ### # # ### # ##### ##### # # ####### #",
+        "#     #   #     #             #        G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12354,
+      "success": false,
+      "totalSteps": 17,
+      "totalDurationMs": 173752.364791,
+      "cost": 0.00039195,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A# \n## # \n##   "
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 3,
+          "action": "left",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n## # "
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n## # "
+        },
+        {
+          "step": 5,
+          "action": "left",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n# #  "
+        },
+        {
+          "step": 6,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n## # "
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 8,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n##S# \n##A# \n##   \n#####"
+        },
+        {
+          "step": 9,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n## # "
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n## # "
+        },
+        {
+          "step": 11,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "##S# \n## # \n##A  \n#####\n## # "
+        },
+        {
+          "step": 12,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n# #  "
+        },
+        {
+          "step": 13,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n# #  "
+        },
+        {
+          "step": 14,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n# #  "
+        },
+        {
+          "step": 15,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#S#  \n# # #\n# A #\n#####\n# #  "
+        },
+        {
+          "step": 16,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "S#   \n # ##\n  A# \n#### \n #   "
+        },
+        {
+          "step": 17,
+          "action": "left",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\nS#   \n #A##\n   # \n#### "
+        }
+      ],
+      "lastObservation": "#####\nS#   \n #A##\n   # \n#### ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_8_41x41_simple_local_seed12353",
+      "timestamp": "2025-12-14T14:18:51.404Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "simple",
+        "vision": "local"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#########################################",
+        "#S        #       #         #           #",
+        "######### # ##### # # ##### # ### ##### #",
+        "#     # # #   #   # # #     # # # #   # #",
+        "# ### # # ### # ### # ####### # # # ### #",
+        "# #     #   # # #   #   #       # #     #",
+        "# # ####### # # ##### # # ####### # #####",
+        "# # #   #   # #     # # # #   #   #     #",
+        "# ### # # ### ##### # # # # # # ####### #",
+        "#     #   #   #     # #   # #   #   #   #",
+        "# ########### # ########### ##### # # ###",
+        "# #   #       #   #         #     # # # #",
+        "# # # # ######### # # ####### ##### # # #",
+        "# # # #     #   # # # #       #   # #   #",
+        "# # # ##### # ### ### # ####### # # ### #",
+        "#   # #     #   #     #     #   #   #   #",
+        "##### # ####### ####### ##### ### ### ###",
+        "#   # # #     #     # # #     #   #   # #",
+        "# # # # # ### # # # # # # ######### ### #",
+        "# # # #     # # # # # # # #       # #   #",
+        "# ### ####### ### # # # # # ##### # # # #",
+        "# #   #     # #   # # # #   #     # # # #",
+        "# # ### ### # # ### # # ##### # ### # # #",
+        "# #     # #   #   #   # #     # #   # # #",
+        "# ####### ##### # ##### # ####### ### # #",
+        "#   #   #       # #     #       # #   # #",
+        "# ### # # ####### # ########### # # ### #",
+        "# #   #   #   # # #   #     #   # # # # #",
+        "# # ####### # # # ### ##### # ### # # # #",
+        "# #   #     #   #   #     # #     # # # #",
+        "# ### # ##### ##### ##### # ####### # # #",
+        "#   # #   #   #         #     #     #   #",
+        "# # # # # ##### ############# ### ### ###",
+        "# # # # # #     #           #     # # # #",
+        "# # # ### # ### # ####### ######### # # #",
+        "# # #     # #   #       # #       #   # #",
+        "# ####### # # ####### ### # ### ### ### #",
+        "#   #     # # #     # #   # # #     #   #",
+        "# # # ##### ### ### # # ### # ####### # #",
+        "# #       #       #   #               #G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12353,
+      "success": false,
+      "totalSteps": 13,
+      "totalDurationMs": 210686.124875,
+      "cost": 0.000064442,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A  \n#####\n##   "
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA  \n#####\n#    "
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A  \n#####\n     "
+        },
+        {
+          "step": 4,
+          "action": "left",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n    #"
+        },
+        {
+          "step": 5,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A  \n#####\n     "
+        },
+        {
+          "step": 6,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A  \n#####\n     "
+        },
+        {
+          "step": 7,
+          "action": "left",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n    #"
+        },
+        {
+          "step": 8,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A  \n#####\n     "
+        },
+        {
+          "step": 9,
+          "action": "up",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n    #"
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n    #"
+        },
+        {
+          "step": 11,
+          "action": "right",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 5,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n    #"
+        },
+        {
+          "step": 12,
+          "action": "left",
+          "posBefore": {
+            "x": 5,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n   # "
+        },
+        {
+          "step": 13,
+          "action": "down",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n  A  \n#####\n    #"
+        }
+      ],
+      "lastObservation": "#####\n#####\n  A  \n#####\n    #",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_5_21x21_complex_local_seed12350",
+      "timestamp": "2025-12-14T14:19:34.231Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "complex",
+        "vision": "local"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####################",
+        "#S  #         #     #",
+        "### ####### # # ### #",
+        "# #       # #   # # #",
+        "# ####### # ##### # #",
+        "#     #   #       # #",
+        "# ### # ### ####### #",
+        "# # #   #   #       #",
+        "# # ##### ### ##### #",
+        "# #   #     #   #   #",
+        "# # # ##### ### # ###",
+        "#   #     # # # #   #",
+        "######### # # # ### #",
+        "# #   #   #   #   # #",
+        "# # # # ######### ###",
+        "#   #   #       #   #",
+        "# ####### ##### ### #",
+        "#     #   #     #   #",
+        "##### ### # ##### # #",
+        "#         #       #G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12350,
+      "success": false,
+      "totalSteps": 14,
+      "totalDurationMs": 253513.154833,
+      "cost": 0.00010701,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n##A  \n#### \n## # "
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 4,
+          "action": "left",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A# \n## ##\n #   "
+        },
+        {
+          "step": 5,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 6,
+          "action": "up",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 7,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 8,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A# \n## ##\n #   "
+        },
+        {
+          "step": 9,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A# \n## ##\n #   "
+        },
+        {
+          "step": 10,
+          "action": "left",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A# \n## ##\n #   "
+        },
+        {
+          "step": 11,
+          "action": "down",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 12,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\n#SA #\n### #\n# #  "
+        },
+        {
+          "step": 13,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A# \n## ##\n #   "
+        },
+        {
+          "step": 14,
+          "action": "up",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#####\nS A# \n## ##\n #   "
+        }
+      ],
+      "lastObservation": "#####\n#####\nS A# \n## ##\n #   ",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_11_41x41_complex_global_seed12356",
+      "timestamp": "2025-12-14T14:21:06.523Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#########################################",
+        "#S#   #           #     #               #",
+        "# # ### ### ##### # # ### # ##### #######",
+        "# #   # # #   #   # #     #     # #     #",
+        "# # # # # ### # ### ########### # # ### #",
+        "# # #       # #   # #         # # # # # #",
+        "# ### ####### ### ### ####### # ### # # #",
+        "#   #   #     #       #   #   #       # #",
+        "### ### # ### ######### # # ######### # #",
+        "# #   # #   # #     # # # #         # # #",
+        "# ### # ### ### ### # # # ######### # # #",
+        "#   # # # #   # #   #   #     #     # # #",
+        "# # # # # ### # # ### ####### # ####### #",
+        "# # # #     # # # #   #     #   #       #",
+        "# ### ##### # # # ### ##### ##### #######",
+        "# #   # #   #   #   #     #   #         #",
+        "# # ### # ######### ##### # # ######### #",
+        "# # #   #     #     #   #   #     #   # #",
+        "# # # ####### # ####### ######### # # # #",
+        "# # #         # #               #   #   #",
+        "# # ########### # ########### ######### #",
+        "# #   #         # #       #   #       # #",
+        "# ### # ######### # ##### ##### ### # # #",
+        "#     # #         #   # #   #     # # # #",
+        "# ##### # # ##### ### # ### # ##### # # #",
+        "# #     # #   #   # #   #   #   #   # # #",
+        "# # ##### ### # ### ### # # ### # ### # #",
+        "# #   # # # # #     #   # # #   # #   # #",
+        "# ### # # # # ####### ### ### ### ##### #",
+        "#     # #   #   #     # #   #   #     # #",
+        "####### ### ### # ##### ### ### ##### # #",
+        "#     #   # #   #       # #     #   #   #",
+        "# ### # ### # ######### # ####### # #####",
+        "# # # #   # #     #   # #   #     #   # #",
+        "# # # ### # ### # # ### # ### # ##### # #",
+        "# #       # #   #   #   #     # #   # # #",
+        "# ######### # # ##### ######### # ### # #",
+        "#           # # #   #   #   #   #     # #",
+        "# ########### ### # ### # # # ### ##### #",
+        "#           #     #       #   #        G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12356,
+      "success": false,
+      "totalSteps": 6,
+      "totalDurationMs": 345804.26329100004,
+      "cost": 0.002304631,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#########################################\n#A#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n#A# ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n#A# ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n#A#   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 4
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n#A# # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        },
+        {
+          "step": 6,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 4
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n# #   # # #   #   # #     #     # #     #\n#A# # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################"
+        }
+      ],
+      "lastObservation": "#########################################\n#S#   #           #     #               #\n# # ### ### ##### # # ### # ##### #######\n#A#   # # #   #   # #     #     # #     #\n# # # # # ### # ### ########### # # ### #\n# # #       # #   # #         # # # # # #\n# ### ####### ### ### ####### # ### # # #\n#   #   #     #       #   #   #       # #\n### ### # ### ######### # # ######### # #\n# #   # #   # #     # # # #         # # #\n# ### # ### ### ### # # # ######### # # #\n#   # # # #   # #   #   #     #     # # #\n# # # # # ### # # ### ####### # ####### #\n# # # #     # # # #   #     #   #       #\n# ### ##### # # # ### ##### ##### #######\n# #   # #   #   #   #     #   #         #\n# # ### # ######### ##### # # ######### #\n# # #   #     #     #   #   #     #   # #\n# # # ####### # ####### ######### # # # #\n# # #         # #               #   #   #\n# # ########### # ########### ######### #\n# #   #         # #       #   #       # #\n# ### # ######### # ##### ##### ### # # #\n#     # #         #   # #   #     # # # #\n# ##### # # ##### ### # ### # ##### # # #\n# #     # #   #   # #   #   #   #   # # #\n# # ##### ### # ### ### # # ### # ### # #\n# #   # # # # #     #   # # #   # #   # #\n# ### # # # # ####### ### ### ### ##### #\n#     # #   #   #     # #   #   #     # #\n####### ### ### # ##### ### ### ##### # #\n#     #   # #   #       # #     #   #   #\n# ### # ### # ######### # ####### # #####\n# # # #   # #     #   # #   #     #   # #\n# # # ### # ### # # ### # ### # ##### # #\n# #       # #   #   #   #     # #   # # #\n# ######### # # ##### ######### # ### # #\n#           # # #   #   #   #   #     # #\n# ########### ### # ### # # # ### ##### #\n#           #     #       #   #        G#\n#########################################",
+      "modelOutput": "undefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_6_21x21_simple_global_seed12351",
+      "timestamp": "2025-12-14T14:22:12.692Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####################",
+        "#S#       #         #",
+        "# # ##### ######### #",
+        "# # #   # #   #   # #",
+        "# # # ### # # # # # #",
+        "#   #   # # #   #   #",
+        "##### # # # #########",
+        "# #   # # #         #",
+        "# # ### # # ####### #",
+        "# #   #   # #     # #",
+        "# ### ##### # ### # #",
+        "#   # # #   # #   # #",
+        "# # # # # ### # ### #",
+        "# # # # # # # #     #",
+        "# # # # # # # ##### #",
+        "# # # #     # #   # #",
+        "# # # ####### # ### #",
+        "# #   #     # # #   #",
+        "# ##### ### # # # ###",
+        "#       #     #    G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12351,
+      "success": false,
+      "totalSteps": 8,
+      "totalDurationMs": 411972.980208,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#A#       #         #\n# # ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n#A# ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n#A# ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 4,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n# # ##### ######### #\n#A# #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n#A# ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n#A# ##### ######### #\n# # #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 7,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n# # ##### ######### #\n#A# #   # #   #   # #\n# # # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        },
+        {
+          "step": 8,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 4
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#####################\n#S#       #         #\n# # ##### ######### #\n# # #   # #   #   # #\n#A# # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+        }
+      ],
+      "lastObservation": "#####################\n#S#       #         #\n# # ##### ######### #\n# # #   # #   #   # #\n#A# # ### # # # # # #\n#   #   # # #   #   #\n##### # # # #########\n# #   # # #         #\n# # ### # # ####### #\n# #   #   # #     # #\n# ### ##### # ### # #\n#   # # #   # #   # #\n# # # # # ### # ### #\n# # # # # # # #     #\n# # # # # # # ##### #\n# # # #     # #   # #\n# # # ####### # ### #\n# #   #     # # #   #\n# ##### ### # # # ###\n#       #     #    G#\n#####################"
+    },
+    {
+      "id": "gpt-oss-120b_maze_10_41x41_simple_global_seed12355",
+      "timestamp": "2025-12-14T14:23:40.148Z",
+      "config": {
+        "width": 41,
+        "height": 41,
+        "complexity": "simple",
+        "vision": "global"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#########################################",
+        "#S          #             #       #     #",
+        "########### # ##### ##### ### ##### ### #",
+        "#       #   # #   # #       # #     #   #",
+        "# ### ### ### ### # ####### # # ##### # #",
+        "#   #     # # #   # #   #     #   #   # #",
+        "### ####### # # # # # # ######### # #####",
+        "#   #       #   # #   # #         #     #",
+        "# ##### ### ##### ##### # ############# #",
+        "# #   #   #     #     #   #             #",
+        "# # # ### ### ####### ##### ####### #####",
+        "#   #   #   #       #   # # #     # #   #",
+        "####### ####### ####### # # # ### ### # #",
+        "#     # #   #   #     #   #   #   #   # #",
+        "# ##### # # # ### ### ### ##### # # ### #",
+        "#   #   # # #   # # #   #   #   # #   # #",
+        "# # # ### # ### # # # # ### # ####### # #",
+        "# #   #   #     # # # #   # #         # #",
+        "# ####### ### ### # # ##### ########### #",
+        "#       # #   #   # #                 # #",
+        "####### # ### # ### ############# ##### #",
+        "# #     #   # # #   #     #   # # #   # #",
+        "# # ####### # # # # ##### # # # # # # # #",
+        "# # #       # # # # #     # # # # # # # #",
+        "# # # ######### # # # ##### # # # # # # #",
+        "# # # #       #   #   #     # #   # # # #",
+        "# # # # ##### ####### # ##### ##### # # #",
+        "#   #   #   #         # #   # #   # #   #",
+        "# ####### # ### ####### # # # # # # ### #",
+        "#         #   # #   #   # # #   #   # # #",
+        "############# # ### # ### # ######### # #",
+        "#         #   #     # #   # #   #     # #",
+        "# ### ##### ####### # # ### # # # # ### #",
+        "# # # #     #   # # # #   #   # # #     #",
+        "# # # # ##### # # # # ######### # #######",
+        "# #   # #     # # # #   #       #   #   #",
+        "# ##### # ##### # # ### # ######### ### #",
+        "# #   #   #   # #     # #         #     #",
+        "# # # ##### ### ####### # ##### ####### #",
+        "#   #                   #     #        G#",
+        "#########################################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 39,
+        "y": 39
+      },
+      "seed": 12355,
+      "success": false,
+      "totalSteps": 17,
+      "totalDurationMs": 499428.396459,
+      "cost": 0.002177508,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#A          #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#SA         #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S A        #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S A        #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 5,
+          "action": "down",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S  A       #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S  A       #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 7,
+          "action": "up",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S  A       #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 8,
+          "action": "left",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S  A       #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 9,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S A        #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 10,
+          "action": "left",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S  A       #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 11,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S A        #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 12,
+          "action": "right",
+          "posBefore": {
+            "x": 4,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 5,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S  A       #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 13,
+          "action": "right",
+          "posBefore": {
+            "x": 5,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 6,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S   A      #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 14,
+          "action": "down",
+          "posBefore": {
+            "x": 6,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 6,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S    A     #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 15,
+          "action": "right",
+          "posBefore": {
+            "x": 6,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S    A     #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 16,
+          "action": "down",
+          "posBefore": {
+            "x": 7,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S     A    #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        },
+        {
+          "step": 17,
+          "action": "right",
+          "posBefore": {
+            "x": 7,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#########################################\n#S     A    #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################"
+        }
+      ],
+      "lastObservation": "#########################################\n#S      A   #             #       #     #\n########### # ##### ##### ### ##### ### #\n#       #   # #   # #       # #     #   #\n# ### ### ### ### # ####### # # ##### # #\n#   #     # # #   # #   #     #   #   # #\n### ####### # # # # # # ######### # #####\n#   #       #   # #   # #         #     #\n# ##### ### ##### ##### # ############# #\n# #   #   #     #     #   #             #\n# # # ### ### ####### ##### ####### #####\n#   #   #   #       #   # # #     # #   #\n####### ####### ####### # # # ### ### # #\n#     # #   #   #     #   #   #   #   # #\n# ##### # # # ### ### ### ##### # # ### #\n#   #   # # #   # # #   #   #   # #   # #\n# # # ### # ### # # # # ### # ####### # #\n# #   #   #     # # # #   # #         # #\n# ####### ### ### # # ##### ########### #\n#       # #   #   # #                 # #\n####### # ### # ### ############# ##### #\n# #     #   # # #   #     #   # # #   # #\n# # ####### # # # # ##### # # # # # # # #\n# # #       # # # # #     # # # # # # # #\n# # # ######### # # # ##### # # # # # # #\n# # # #       #   #   #     # #   # # # #\n# # # # ##### ####### # ##### ##### # # #\n#   #   #   #         # #   # #   # #   #\n# ####### # ### ####### # # # # # # ### #\n#         #   # #   #   # # #   #   # # #\n############# # ### # ### # ######### # #\n#         #   #     # #   # #   #     # #\n# ### ##### ####### # # ### # # # # ### #\n# # # #     #   # # # #   #   # # #     #\n# # # # ##### # # # # ######### # #######\n# #   # #     # # # #   #       #   #   #\n# ##### # ##### # # ### # ######### ### #\n# #   #   #   # #     # #         #     #\n# # # ##### ### ####### # ##### ####### #\n#   #                   #     #        G#\n#########################################",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined"
+    },
+    {
+      "id": "gpt-oss-120b_maze_7_21x21_complex_global_seed12352",
+      "timestamp": "2025-12-14T14:26:34.168Z",
+      "config": {
+        "width": 21,
+        "height": 21,
+        "complexity": "complex",
+        "vision": "global"
+      },
+      "model": "gpt-oss-120b",
+      "maze": [
+        "#####################",
+        "#S#           #     #",
+        "# # ########### ### #",
+        "# # #             # #",
+        "# # # ########### # #",
+        "# #   #       #   # #",
+        "# ##### ##### # ### #",
+        "#       #   # #   # #",
+        "######### ### ### # #",
+        "#       #   #   # # #",
+        "# ##### # # ### # # #",
+        "# #   #   #   # # # #",
+        "# # ####### # # ### #",
+        "# #     #   # # #   #",
+        "# ##### # # ### # ###",
+        "# #     # # #   #   #",
+        "# # ### # ### ### # #",
+        "# # # # #   #   # # #",
+        "# # # # ### ### ### #",
+        "#   #     #        G#",
+        "#####################"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 19,
+        "y": 19
+      },
+      "seed": 12352,
+      "success": false,
+      "totalSteps": 66,
+      "totalDurationMs": 673450.996459,
+      "cost": 0.00540138,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####################\n#A#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n#A# ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n#A# #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 4,
+          "action": "up",
+          "posBefore": {
+            "x": 1,
+            "y": 4
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n#A# # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 5,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n#A# #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 6,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 4
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n#A# #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 7,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 4
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n#A# # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 8,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 6
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n#A#   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 9,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 6
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n#A##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 10,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#A      #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 11,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#A      #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 12,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#A      #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 13,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#A      #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 14,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#A      #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 15,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#A      #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 16,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n# A     #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 17,
+          "action": "right",
+          "posBefore": {
+            "x": 3,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 4,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#  A    #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 18,
+          "action": "right",
+          "posBefore": {
+            "x": 4,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 5,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#   A   #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 19,
+          "action": "right",
+          "posBefore": {
+            "x": 5,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 6,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#    A  #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 20,
+          "action": "right",
+          "posBefore": {
+            "x": 6,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#     A #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 21,
+          "action": "right",
+          "posBefore": {
+            "x": 7,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#      A#   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 22,
+          "action": "right",
+          "posBefore": {
+            "x": 7,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#      A#   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 23,
+          "action": "up",
+          "posBefore": {
+            "x": 7,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 6
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#      A#   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 24,
+          "action": "up",
+          "posBefore": {
+            "x": 7,
+            "y": 6
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# #####A##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 25,
+          "action": "up",
+          "posBefore": {
+            "x": 7,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #A      #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 26,
+          "action": "up",
+          "posBefore": {
+            "x": 7,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #A      #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 27,
+          "action": "up",
+          "posBefore": {
+            "x": 7,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #A      #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 28,
+          "action": "up",
+          "posBefore": {
+            "x": 7,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #A      #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 29,
+          "action": "left",
+          "posBefore": {
+            "x": 7,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 7,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #A      #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 30,
+          "action": "right",
+          "posBefore": {
+            "x": 7,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #A      #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 31,
+          "action": "down",
+          "posBefore": {
+            "x": 8,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   # A     #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 32,
+          "action": "down",
+          "posBefore": {
+            "x": 8,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   # A     #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 33,
+          "action": "down",
+          "posBefore": {
+            "x": 8,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   # A     #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 34,
+          "action": "down",
+          "posBefore": {
+            "x": 8,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   # A     #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 35,
+          "action": "down",
+          "posBefore": {
+            "x": 8,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 8,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   # A     #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 36,
+          "action": "right",
+          "posBefore": {
+            "x": 8,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 9,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   # A     #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 37,
+          "action": "right",
+          "posBefore": {
+            "x": 9,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 10,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #  A    #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 38,
+          "action": "right",
+          "posBefore": {
+            "x": 10,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 11,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #   A   #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 39,
+          "action": "right",
+          "posBefore": {
+            "x": 11,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 12,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #    A  #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 40,
+          "action": "right",
+          "posBefore": {
+            "x": 12,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #     A #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 41,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 42,
+          "action": "up",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 43,
+          "action": "up",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 44,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 45,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 46,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 47,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 48,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 49,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 5
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 50,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 5
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 6
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #      A#   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 51,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 6
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 7
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### #####A# ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 52,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 7
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 8
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   #A#   # #\n######### ### ### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 53,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 8
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ###A### # #\n#       #   #   # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 54,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 55,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 56,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 57,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 58,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 59,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 60,
+          "action": "down",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 13,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 61,
+          "action": "right",
+          "posBefore": {
+            "x": 13,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 14,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #A  # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 62,
+          "action": "right",
+          "posBefore": {
+            "x": 14,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 15,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   # A # # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 63,
+          "action": "right",
+          "posBefore": {
+            "x": 15,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 15,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #  A# # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 64,
+          "action": "right",
+          "posBefore": {
+            "x": 15,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 15,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #  A# # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 65,
+          "action": "right",
+          "posBefore": {
+            "x": 15,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 15,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #  A# # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        },
+        {
+          "step": 66,
+          "action": "right",
+          "posBefore": {
+            "x": 15,
+            "y": 9
+          },
+          "posAfter": {
+            "x": 15,
+            "y": 9
+          },
+          "success": false,
+          "observation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #  A# # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################"
+        }
+      ],
+      "lastObservation": "#####################\n#S#           #     #\n# # ########### ### #\n# # #             # #\n# # # ########### # #\n# #   #       #   # #\n# ##### ##### # ### #\n#       #   # #   # #\n######### ### ### # #\n#       #   #  A# # #\n# ##### # # ### # # #\n# #   #   #   # # # #\n# # ####### # # ### #\n# #     #   # # #   #\n# ##### # # ### # ###\n# #     # # #   #   #\n# # ### # ### ### # #\n# # # # #   #   # # #\n# # # # ### ### ### #\n#   #     #        G#\n#####################",
+      "modelOutput": "undefinedundefinedundefinedundefinedundefined"
+    }
+  ]
+}
