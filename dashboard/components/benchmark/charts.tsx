@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/chart";
 import { computeModelMetricsPoints, type ModelMetricsPoint } from "@/lib/stats";
 import type { BenchmarkReport } from "@/lib/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type PerformanceChartsProps = {
   reports: Map<string, BenchmarkReport>;
@@ -43,15 +44,6 @@ function getModelColor(index: number): string {
   return CHART_COLORS[index % CHART_COLORS.length];
 }
 
-function _getPointSize(nRuns: number, maxRuns: number): number {
-  const minSize = 60;
-  const maxSize = 400;
-  if (maxRuns === 0) {
-    return minSize;
-  }
-  return minSize + (nRuns / maxRuns) * (maxSize - minSize);
-}
-
 function EmptyState() {
   return (
     <div className="text-muted-foreground text-sm">
@@ -62,14 +54,16 @@ function EmptyState() {
 
 function ModelLegend({ data }: { data: ModelMetricsPoint[] }) {
   return (
-    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+    <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] sm:text-xs">
       {data.map((entry, index) => (
         <div className="flex items-center gap-1.5" key={entry.model}>
           <div
-            className="h-3 w-3 rounded-full"
+            className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3"
             style={{ backgroundColor: getModelColor(index) }}
           />
-          <span>{entry.model}</span>
+          <span className="max-w-[140px] truncate sm:max-w-none">
+            {entry.model}
+          </span>
         </div>
       ))}
     </div>
@@ -92,22 +86,37 @@ export function PerformanceCharts({
   const hasAnyRuns = data.some((d) => d.nRuns > 0);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-medium text-lg">Charts</h2>
+        <h2 className="font-medium text-base sm:text-lg">Charts</h2>
       </div>
 
       {hasAnyRuns && <ModelLegend data={data} />}
 
       <SuccessRateBarCard data={data} showEmpty={!hasAnyRuns} />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <StepsVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
-        <TimeVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
-        <CostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
-      </div>
+
+      <Tabs defaultValue="steps">
+        <TabsList>
+          <TabsTrigger value="steps">Steps</TabsTrigger>
+          <TabsTrigger value="time">Time</TabsTrigger>
+          <TabsTrigger value="cost">Cost</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="steps">
+          <StepsVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
+        </TabsContent>
+        <TabsContent value="time">
+          <TimeVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
+        </TabsContent>
+        <TabsContent value="cost">
+          <CostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
+
+/* ---------------- Success Rate ---------------- */
 
 function SuccessRateBarCard({
   data,
@@ -123,46 +132,34 @@ function SuccessRateBarCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Success Rate by Model</CardTitle>
+        <CardTitle className="text-sm sm:text-base">
+          Success Rate by Model
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {showEmpty ? (
           <EmptyState />
         ) : (
-          <ChartContainer className="h-56 w-full" config={chartConfig}>
+          <ChartContainer className="h-48 w-full sm:h-56" config={chartConfig}>
             <BarChart
               data={data}
-              margin={{ left: 8, right: 8, top: 16, bottom: 8 }}
+              margin={{ left: 4, right: 4, top: 12, bottom: 24 }}
             >
               <CartesianGrid vertical={false} />
               <XAxis
+                angle={-30}
                 dataKey="model"
+                height={50}
                 interval={0}
+                textAnchor="end"
                 tick={{ fontSize: 10 }}
-                tickMargin={8}
               />
               <YAxis
                 domain={[0, 100]}
                 tick={{ fontSize: 10 }}
                 tickFormatter={(v) => `${v}%`}
               />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    formatter={(value, _name, item) => (
-                      <div className="text-xs">
-                        <div>{item.payload.model}</div>
-                        <div>Success: {Number(value).toFixed(1)}%</div>
-                        <div>
-                          Runs: {item.payload.nRuns} ({item.payload.nSuccesses}{" "}
-                          succeeded)
-                        </div>
-                      </div>
-                    )}
-                  />
-                }
-                cursor={false}
-              />
+              <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
               <Bar dataKey="successRatePct" radius={[4, 4, 0, 0]}>
                 {data.map((entry, index) => (
                   <Cell fill={getModelColor(index)} key={entry.model} />
@@ -171,7 +168,10 @@ function SuccessRateBarCard({
                   dataKey="nRuns"
                   formatter={(v: number) => `n=${v}`}
                   position="top"
-                  style={{ fontSize: 9, fill: "var(--muted-foreground)" }}
+                  style={{
+                    fontSize: 9,
+                    fill: "var(--muted-foreground)",
+                  }}
                 />
               </Bar>
             </BarChart>
@@ -182,46 +182,58 @@ function SuccessRateBarCard({
   );
 }
 
-function StepsVsSuccessCard({
+/* ---------------- Scatter Base ---------------- */
+
+function BaseScatterCard({
+  title,
+  subtitle,
+  xKey,
+  xLabel,
+  xFormatter,
+  chartColor,
   data,
   showEmpty,
 }: {
+  title: string;
+  subtitle: string;
+  xKey: keyof ModelMetricsPoint;
+  xLabel: string;
+  xFormatter?: (v: number) => string;
+  chartColor: string;
   data: ModelMetricsPoint[];
   showEmpty: boolean;
 }) {
-  const chartConfig = {
-    avgSteps: { label: "Avg steps (successful runs)", color: CHART_COLORS[1] },
-  } satisfies ChartConfig;
-
-  const _maxRuns = Math.max(...data.map((d) => d.nRuns));
   const filteredData = data.filter((d) => d.nSuccesses > 0);
+
+  const chartConfig = {
+    [xKey]: { label: xLabel, color: chartColor },
+  } satisfies ChartConfig;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Avg Steps vs Success Rate</CardTitle>
-        <p className="text-muted-foreground text-xs">
-          Successful runs only. Dot size = sample size.
+        <CardTitle className="text-sm sm:text-base">{title}</CardTitle>
+        <p className="text-[11px] text-muted-foreground sm:text-xs">
+          {subtitle}
         </p>
       </CardHeader>
       <CardContent>
         {showEmpty || filteredData.length === 0 ? (
           <EmptyState />
         ) : (
-          <ChartContainer className="h-56 w-full" config={chartConfig}>
-            <ScatterChart margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
+          <ChartContainer className="h-48 w-full sm:h-56" config={chartConfig}>
+            <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
               <CartesianGrid />
               <XAxis
-                dataKey="avgSteps"
-                domain={[0, "auto"]}
+                dataKey={xKey}
                 label={{
-                  value: "Avg Steps",
+                  value: xLabel,
                   position: "bottom",
                   fontSize: 10,
-                  offset: -5,
+                  offset: -4,
                 }}
-                name="Avg steps"
                 tick={{ fontSize: 10 }}
+                tickFormatter={xFormatter}
                 type="number"
               />
               <YAxis
@@ -233,17 +245,15 @@ function StepsVsSuccessCard({
                   position: "insideLeft",
                   fontSize: 10,
                 }}
-                name="Success rate"
                 tick={{ fontSize: 10 }}
                 tickFormatter={(v) => `${v}%`}
-                type="number"
               />
               <ChartTooltip
                 content={<ChartTooltipContent indicator="dashed" />}
                 cursor={{ strokeDasharray: "3 3" }}
               />
               <Scatter data={filteredData}>
-                {filteredData.map((entry, _index) => (
+                {filteredData.map((entry) => (
                   <Cell
                     fill={getModelColor(
                       data.findIndex((d) => d.model === entry.model)
@@ -252,6 +262,7 @@ function StepsVsSuccessCard({
                   />
                 ))}
                 <LabelList
+                  className="hidden sm:block"
                   dataKey="model"
                   position="insideBottomLeft"
                   style={{
@@ -269,237 +280,42 @@ function StepsVsSuccessCard({
   );
 }
 
-function TimeVsSuccessCard({
-  data,
-  showEmpty,
-}: {
-  data: ModelMetricsPoint[];
-  showEmpty: boolean;
-}) {
-  const chartConfig = {
-    avgTimeSec: { label: "Avg time (s)", color: CHART_COLORS[2] },
-  } satisfies ChartConfig;
+/* ---------------- Specific Scatter Cards ---------------- */
 
-  const _maxRuns = Math.max(...data.map((d) => d.nRuns));
-  const filteredData = data.filter((d) => d.nSuccesses > 0);
-
+function StepsVsSuccessCard(props: any) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Avg Time vs Success Rate</CardTitle>
-        <p className="text-muted-foreground text-xs">
-          Successful runs only. Dot size = sample size.
-        </p>
-      </CardHeader>
-      <CardContent>
-        {showEmpty || filteredData.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <ChartContainer className="h-56 w-full" config={chartConfig}>
-            <ScatterChart margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
-              <CartesianGrid />
-              <XAxis
-                dataKey="avgTimeSec"
-                domain={[0, "auto"]}
-                label={{
-                  value: "Avg Time (s)",
-                  position: "bottom",
-                  fontSize: 10,
-                  offset: -5,
-                }}
-                name="Avg time (s)"
-                tick={{ fontSize: 10 }}
-                tickFormatter={(v) => `${Number(v).toFixed(0)}s`}
-                type="number"
-              />
-              <YAxis
-                dataKey="successRatePct"
-                domain={[0, 100]}
-                label={{
-                  value: "Success Rate",
-                  angle: -90,
-                  position: "insideLeft",
-                  fontSize: 10,
-                }}
-                name="Success rate"
-                tick={{ fontSize: 10 }}
-                tickFormatter={(v) => `${v}%`}
-                type="number"
-              />
-              <ChartTooltip
-                content={<ChartTooltipContent indicator="dashed" />}
-                cursor={{ strokeDasharray: "3 3" }}
-              />
-              <Scatter data={filteredData}>
-                {filteredData.map((entry, _index) => (
-                  <Cell
-                    fill={getModelColor(
-                      data.findIndex((d) => d.model === entry.model)
-                    )}
-                    key={entry.model}
-                  />
-                ))}
-                <LabelList
-                  dataKey="model"
-                  position="insideBottomLeft"
-                  style={{
-                    fontSize: 10,
-                    fill: "var(--foreground)",
-                    pointerEvents: "none",
-                  }}
-                />
-              </Scatter>
-            </ScatterChart>
-          </ChartContainer>
-        )}
-      </CardContent>
-    </Card>
+    <BaseScatterCard
+      {...props}
+      chartColor={CHART_COLORS[1]}
+      title="Avg Steps vs Success Rate"
+      xKey="avgSteps"
+      xLabel="Avg Steps"
+    />
   );
 }
 
-function CostVsSuccessCard({
-  data,
-  showEmpty,
-}: {
-  data: ModelMetricsPoint[];
-  showEmpty: boolean;
-}) {
-  const chartConfig = {
-    totalCost: { label: "Total Cost ($)", color: CHART_COLORS[3] },
-  } satisfies ChartConfig;
-
-  const _maxRuns = Math.max(...data.map((d) => d.nRuns));
-  const filteredData = data.filter((d) => d.nSuccesses > 0);
-
+function TimeVsSuccessCard(props: any) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Avg Cost vs Success Rate</CardTitle>
-        <p className="text-muted-foreground text-xs">
-          Successful runs only. Dot size = sample size.
-        </p>
-      </CardHeader>
-      <CardContent>
-        {showEmpty || filteredData.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <ChartContainer className="h-56 w-full" config={chartConfig}>
-            <ScatterChart margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
-              <CartesianGrid />
-              <XAxis
-                dataKey="totalCost"
-                domain={[0, "auto"]}
-                label={{
-                  value: "Total Cost ($)",
-                  position: "bottom",
-                  fontSize: 10,
-                }}
-                name="Total Cost"
-                tick={{ fontSize: 10 }}
-                tickFormatter={(v) => `$${Number(v).toFixed(3)}`}
-                type="number"
-              />
-              <YAxis
-                dataKey="successRatePct"
-                domain={[0, 100]}
-                label={{
-                  value: "Success Rate",
-                  angle: -90,
-                  position: "insideLeft",
-                  fontSize: 10,
-                }}
-                name="Success rate"
-                tick={{ fontSize: 10 }}
-                tickFormatter={(v) => `${v}%`}
-                type="number"
-              />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    className="w-52"
-                    formatter={(value, name, item) => (
-                      <div className="flex flex-1 justify-between leading-none">
-                        <div className="grid gap-1.5">
-                          <span className="text-muted-foreground">{name}</span>
-                        </div>
-                        {value && (
-                          <span className="font-medium font-mono text-foreground tabular-nums">
-                            {item.dataKey === "totalCost"
-                              ? `$${Number(value).toFixed(4)}`
-                              : `${Number(value).toFixed(1)}%`}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    indicator="dashed"
-                  />
-                }
-                cursor={{ strokeDasharray: "3 3" }}
-              />
-              <Scatter data={filteredData}>
-                {filteredData.map((entry, _index) => (
-                  <Cell
-                    fill={getModelColor(
-                      data.findIndex((d) => d.model === entry.model)
-                    )}
-                    key={entry.model}
-                  />
-                ))}
-                <LabelList
-                  dataKey="model"
-                  position="insideBottomLeft"
-                  style={{
-                    fontSize: 10,
-                    fill: "var(--foreground)",
-                    pointerEvents: "none",
-                  }}
-                />
-              </Scatter>
-            </ScatterChart>
-          </ChartContainer>
-        )}
-      </CardContent>
-    </Card>
+    <BaseScatterCard
+      {...props}
+      chartColor={CHART_COLORS[2]}
+      title="Avg Time vs Success Rate"
+      xFormatter={(v) => `${Number(v).toFixed(0)}s`}
+      xKey="avgTimeSec"
+      xLabel="Avg Time (s)"
+    />
   );
 }
 
-type CostVsSuccessTooltipProps = {
-  active?: boolean;
-  payload?: any[];
-};
-
-function _CostVsSuccessTooltip({ active, payload }: CostVsSuccessTooltipProps) {
-  if (!(active && payload) || payload.length === 0) {
-    return null;
-  }
-
-  const d = payload[0].payload;
-
+function CostVsSuccessCard(props: any) {
   return (
-    <div className="rounded-md border bg-background p-2 shadow-sm">
-      <div className="font-medium text-xs">{d.model}</div>
-
-      <div className="mt-1 space-y-0.5 text-muted-foreground text-xs">
-        <div>
-          Cost:{" "}
-          <span className="font-medium text-foreground">
-            ${d.totalCost.toFixed(4)}
-          </span>
-        </div>
-        <div>
-          Success rate:{" "}
-          <span className="font-medium text-foreground">
-            {d.successRatePct.toFixed(1)}%
-          </span>
-        </div>
-        <div>
-          Runs: <span className="font-medium text-foreground">{d.nRuns}</span>
-        </div>
-        <div>
-          Successes:{" "}
-          <span className="font-medium text-foreground">{d.nSuccesses}</span>
-        </div>
-      </div>
-    </div>
+    <BaseScatterCard
+      {...props}
+      chartColor={CHART_COLORS[3]}
+      title="Total const vs Success Rate"
+      xFormatter={(v) => `$${Number(v).toFixed(3)}`}
+      xKey="totalCost"
+      xLabel="Total Cost ($)"
+    />
   );
 }
