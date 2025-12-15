@@ -237,24 +237,22 @@ function StepInfo({ totalSteps }: { totalSteps: number }) {
       <div className="text-muted-foreground">
         Step: {currentStep} / {totalSteps}
       </div>
-      {currentTraceStep && (
-        <div className="mt-2 space-y-1">
-          <div>
-            Action: <span className="font-mono">{currentTraceStep.action}</span>
-          </div>
-          <div>
-            From: ({currentTraceStep.posBefore.x},{" "}
-            {currentTraceStep.posBefore.y}) → To: ({currentTraceStep.posAfter.x}
-            , {currentTraceStep.posAfter.y})
-          </div>
-          <div>
-            Move Success:{" "}
-            <Badge variant={currentTraceStep.success ? "default" : "secondary"}>
-              {currentTraceStep.success ? "Yes" : "No"}
-            </Badge>
-          </div>
+      <div className="mt-2 space-y-1">
+        <div>
+          Action: <span className="font-mono">{currentTraceStep?.action}</span>
         </div>
-      )}
+        <div>
+          From: ({currentTraceStep?.posBefore.x},{" "}
+          {currentTraceStep?.posBefore.y}) → To: ({currentTraceStep?.posAfter.x}
+          , {currentTraceStep?.posAfter.y})
+        </div>
+        <div>
+          Move Success:{" "}
+          <Badge variant={currentTraceStep?.success ? "default" : "secondary"}>
+            {currentTraceStep?.success ? "Yes" : "No"}
+          </Badge>
+        </div>
+      </div>
     </div>
   );
 }
@@ -300,14 +298,14 @@ export function RunReplicator({ run, children }: RunReplicatorProps) {
   const setCurrentStep = useSetAtom(currentStepAtom);
   const setIsPlaying = useSetAtom(isPlayingAtom);
 
-  useEffect(() => {
+  const init = () => {
     setRun(run);
     setCurrentStep(0);
     setIsPlaying(false);
-  }, [run, setRun, setCurrentStep, setIsPlaying]);
+  };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => init()}>
       <DialogTrigger render={children} />
       <DialogContent className="w-fit sm:max-w-5xl">
         <RunHeader run={run} />
