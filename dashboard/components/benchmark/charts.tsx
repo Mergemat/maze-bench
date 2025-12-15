@@ -325,7 +325,7 @@ function CostVsSuccessCard(props: any) {
     <BaseScatterCard
       {...props}
       chartColor={CHART_COLORS[3]}
-      title="Total const vs Success Rate"
+      title="Total cost vs Success Rate"
       xFormatter={(v) => `$${Number(v).toFixed(3)}`}
       xKey="totalCost"
       xLabel="Total Cost ($)"

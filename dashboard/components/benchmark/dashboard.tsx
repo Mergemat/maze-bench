@@ -11,6 +11,7 @@ import { PerformanceCharts } from "./charts";
 import { Filters } from "./filters";
 import { ModelComparison } from "./model-comparison";
 import { RunList } from "./run-list";
+import { SuccessfulOnlyToggle } from "./successful-only-toggle";
 
 type DashboardProps = {
   reports: BenchmarkReport[];
@@ -46,15 +47,20 @@ export function Dashboard({ reports }: DashboardProps) {
           <PerformanceCharts reports={latestReports} />
         </section>
 
-        <section>
-          <h2 className="mb-3 font-medium text-lg">Model Comparison</h2>
-          <ModelComparison reports={latestReports} />
-        </section>
+        <div className="mt-4 flex flex-col gap-6 bg-secondary p-4 sm:p-6">
+          <section>
+            <div className="flex justify-between">
+              <h2 className="mb-3 font-medium text-lg">Model Comparison</h2>
+              <SuccessfulOnlyToggle />
+            </div>
+            <ModelComparison reports={latestReports} />
+          </section>
 
-        <section>
-          <h2 className="mb-3 font-medium text-lg">Individual Runs</h2>
-          <RunList reports={latestReports} />
-        </section>
+          <section>
+            <h2 className="mb-3 font-medium text-lg">Individual Runs</h2>
+            <RunList reports={latestReports} />
+          </section>
+        </div>
       </div>
     </>
   );
