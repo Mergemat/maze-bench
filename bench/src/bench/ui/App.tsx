@@ -1,20 +1,20 @@
-import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
-import { Box, Text, render } from "ink";
-import type { RunState, MazeData, BenchmarkStats, RunResult } from "../types";
+import { Box, render, Text } from "ink";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { CONCURRENCY_LIMIT } from "../config";
+import { generateSharedMazes } from "../maze";
 import type { ModelKey } from "../models";
 import { MODELS } from "../models";
-import { generateSharedMazes } from "../maze";
 import { runSingleMaze } from "../runner";
-import { computeStats } from "../stats";
 import { saveRunResult } from "../save";
-import { CONCURRENCY_LIMIT } from "../config";
+import { computeStats } from "../stats";
+import type { BenchmarkStats, MazeData, RunResult, RunState } from "../types";
 import {
-	Header,
-	RunRow,
-	ProgressBar,
-	StatsDisplay,
 	Divider,
+	Header,
+	ProgressBar,
 	RunningStats,
+	RunRow,
+	StatsDisplay,
 } from "./components";
 
 type AppState = {
@@ -56,7 +56,10 @@ function BenchmarkApp() {
 
 	const runsList = Array.from(state.runs.values());
 
-	const active = runsList.filter((r) => r.status === "running" || r.status === "failed");
+	const active = runsList.filter((r) => r.status === "running");
+	const maxVisibleRuns = 20;
+	const visibleRuns = active.slice(0, maxVisibleRuns);
+	const hiddenCount = active.length - visibleRuns.length;
 
 	return (
 		<Box flexDirection="column">
@@ -65,9 +68,10 @@ function BenchmarkApp() {
 				<ProgressBar completed={state.completed} total={state.total} />
 				<RunningStats elapsedMs={elapsed} totalCost={state.totalCost} />
 			</Box>
-			{active.map((run) => (
+			{visibleRuns.map((run) => (
 				<RunRow key={`${run.model}_${run.mazeId}`} run={run} />
 			))}
+			{hiddenCount > 0 && <Text dimColor> +{hiddenCount} more running...</Text>}
 			{state.phase === "done" && state.stats && (
 				<Box flexDirection="column">
 					<Divider />
@@ -78,9 +82,7 @@ function BenchmarkApp() {
 	);
 }
 
-async function runBenchmark(
-	setState: Dispatch<SetStateAction<AppState>>,
-) {
+async function runBenchmark(setState: Dispatch<SetStateAction<AppState>>) {
 	const models = Object.keys(MODELS) as ModelKey[];
 	const mazes = generateSharedMazes();
 	const tasks: Array<{ model: ModelKey; maze: MazeData }> = [];
@@ -109,63 +111,75 @@ async function runBenchmark(
 	const savedModels = new Set<ModelKey>();
 	const mazesPerModel = mazes.length;
 
-	await runWithConcurrency(tasks, CONCURRENCY_LIMIT, async ({ model, maze }) => {
-		const key = `${model}_${maze.id}`;
+	await runWithConcurrency(
+		tasks,
+		CONCURRENCY_LIMIT,
+		async ({ model, maze }) => {
+			const key = `${model}_${maze.id}`;
 
-		setState((s) => {
-			const runs = new Map(s.runs);
-			runs.set(key, { ...runs.get(key)!, status: "running" });
-			return { ...s, runs };
-		});
-
-		const result = await runSingleMaze(model, maze, (step, success) => {
 			setState((s) => {
 				const runs = new Map(s.runs);
-				const run = runs.get(key)!;
-				runs.set(key, {
-					...run,
-					currentStep: step,
-					status: success ? "success" : "running",
-				});
+				runs.set(key, { ...runs.get(key)!, status: "running" });
 				return { ...s, runs };
 			});
-		});
 
-		allResults.push(result);
-
-		if (!resultsByModel.has(model)) {
-			resultsByModel.set(model, []);
-		}
-		resultsByModel.get(model)!.push(result);
-
-		if (!savedModels.has(model) && resultsByModel.get(model)!.length === mazesPerModel) {
-			savedModels.add(model);
-			const modelResults = resultsByModel.get(model)!;
-			const stats = computeStats(modelResults);
-			const filename = `${model}_${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
-			saveRunResult(filename, {
-				metadata: {
-					model,
-					date: new Date().toISOString(),
-					seeds: mazes.map((m) => m.seed),
-				},
-				stats,
-				results: modelResults,
+			const result = await runSingleMaze(model, maze, (step, success) => {
+				setState((s) => {
+					const runs = new Map(s.runs);
+					const run = runs.get(key)!;
+					runs.set(key, {
+						...run,
+						currentStep: step,
+						status: success ? "success" : "running",
+					});
+					return { ...s, runs };
+				});
 			});
-		}
 
-		setState((s) => {
-			const runs = new Map(s.runs);
-			runs.set(key, {
-				...runs.get(key)!,
-				status: result.success ? "success" : "failed",
-				error: result.error,
-				timeMs: result.totalDurationMs,
-				cost: result.cost,
+			allResults.push(result);
+
+			if (!resultsByModel.has(model)) {
+				resultsByModel.set(model, []);
+			}
+			resultsByModel.get(model)!.push(result);
+
+			if (
+				!savedModels.has(model) &&
+				resultsByModel.get(model)!.length === mazesPerModel
+			) {
+				savedModels.add(model);
+				const modelResults = resultsByModel.get(model)!;
+				const stats = computeStats(modelResults);
+				const filename = `${model}_${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+				saveRunResult(filename, {
+					metadata: {
+						model,
+						date: new Date().toISOString(),
+						seeds: mazes.map((m) => m.seed),
+					},
+					stats,
+					results: modelResults,
+				});
+			}
+
+			setState((s) => {
+				const runs = new Map(s.runs);
+				runs.set(key, {
+					...runs.get(key)!,
+					status: result.success ? "success" : "failed",
+					error: result.error,
+					timeMs: result.totalDurationMs,
+					cost: result.cost,
+				});
+				return {
+					...s,
+					runs,
+					completed: s.completed + 1,
+					totalCost: s.totalCost + (result.cost ?? 0),
+				};
 			});
-			return { ...s, runs, completed: s.completed + 1, totalCost: s.totalCost + (result.cost ?? 0) };
-		});
-	});
+		},
+	);
 
 	const finalStats = computeStats(allResults);
 	setState((s) => ({ ...s, phase: "done", stats: finalStats }));
@@ -185,9 +199,8 @@ async function runWithConcurrency<T>(
 		}
 	}
 
-	const workers = Array.from(
-		{ length: Math.min(limit, items.length) },
-		() => worker(),
+	const workers = Array.from({ length: Math.min(limit, items.length) }, () =>
+		worker(),
 	);
 	await Promise.all(workers);
 }
