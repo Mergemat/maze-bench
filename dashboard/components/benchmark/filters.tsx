@@ -32,7 +32,7 @@ export function Filters({
   onVisionChange,
 }: FiltersProps) {
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="flex flex-col gap-1">
         <span className="text-muted-foreground text-xs">Complexity</span>
         <Select

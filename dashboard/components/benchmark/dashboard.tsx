@@ -30,7 +30,7 @@ export function Dashboard({ reports }: DashboardProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-4">
+      <header className="flex flex-col justify-between sm:flex-row gap-5">
         <div className="flex flex-col gap-1">
           <h1 className="font-semibold text-xl">MazeBench</h1>
           <p className="text-muted-foreground text-sm">
