@@ -50,14 +50,12 @@ export async function runSingleMaze(
 ): Promise<RunResult> {
   const env = createMazeEnv(mazeData);
   const stepTrace: StepTrace[] = [];
-  let moveHappened = false;
 
   const onMove = (
     direction: Direction,
     posBefore: { x: number; y: number },
     observation: string
   ) => {
-    moveHappened = true;
     stepTrace.push({
       step: env.steps,
       action: direction,
@@ -81,9 +79,6 @@ export async function runSingleMaze(
 
   const start = performance.now();
 
-  let lastModelText = "";
-  let currentText = "";
-
   try {
     const stream = streamText({
       model: MODELS[model] as Parameters<typeof streamText>[0]["model"],
@@ -94,6 +89,7 @@ export async function runSingleMaze(
     });
 
     const metadata = await stream.providerMetadata;
+    console.log("metadata", metadata);
     const cost = (metadata?.openrouter as { usage?: { cost?: number } })?.usage
       ?.cost;
 
@@ -104,8 +100,7 @@ export async function runSingleMaze(
       stepTrace,
       start,
       cost,
-      undefined,
-      lastModelText
+      undefined
     );
   } catch (error) {
     return createResult(
@@ -115,8 +110,7 @@ export async function runSingleMaze(
       stepTrace,
       start,
       undefined,
-      error,
-      lastModelText || currentText
+      error
     );
   }
 }
@@ -141,8 +135,7 @@ function createResult(
   stepTrace: StepTrace[],
   startTime: number,
   cost?: number,
-  error?: unknown,
-  modelOutput?: string
+  error?: unknown
 ): RunResult {
   return {
     id: `${model}_${mazeData.id}`,
@@ -159,7 +152,6 @@ function createResult(
     cost,
     stepsTrace: stepTrace,
     lastObservation: getObservation(env),
-    modelOutput: modelOutput || undefined,
     error: error
       ? error instanceof Error
         ? error.message
