@@ -23,6 +23,7 @@ export function Dashboard({ reports }: DashboardProps) {
   const [sizeFilter, setSizeFilter] = useState<string | null>(null);
   const [visionFilter, setVisionFilter] = useState<string | null>(null);
   const [selectedRun, setSelectedRun] = useState<RunResult | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const latestReports = getLatestReportByModel(reports);
   const complexities = getUniqueComplexities(reports);
@@ -31,8 +32,14 @@ export function Dashboard({ reports }: DashboardProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-semibold text-xl">MazeBench</h1>
+      <header className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-semibold text-xl">MazeBench</h1>
+          <p className="text-muted-foreground text-sm">
+            Benchmark measuring how well AI models solve mazes. Models are given a maze and must find a way out using tools.
+          </p>
+        </div>
+        <div className="flex sm:items-center sm:justify-end">
         <Filters
           complexities={complexities}
           onComplexityChange={setComplexityFilter}
@@ -44,6 +51,7 @@ export function Dashboard({ reports }: DashboardProps) {
           sizes={sizes}
           visions={visions}
         />
+        </div>
       </header>
 
       <section>
@@ -80,8 +88,10 @@ export function Dashboard({ reports }: DashboardProps) {
         <h2 className="mb-3 font-medium text-lg">Individual Runs</h2>
         <RunList
           complexityFilter={complexityFilter}
+          onModelChange={setSelectedModel}
           onSelectRun={setSelectedRun}
           reports={latestReports}
+          selectedModel={selectedModel}
           sizeFilter={sizeFilter}
           visionFilter={visionFilter}
         />
