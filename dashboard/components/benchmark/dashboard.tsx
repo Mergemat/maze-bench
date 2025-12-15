@@ -32,7 +32,7 @@ export function Dashboard({ reports }: DashboardProps) {
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-semibold text-xl">Mazebench</h1>
+        <h1 className="font-semibold text-xl">MazeBench</h1>
         <Filters
           complexities={complexities}
           onComplexityChange={setComplexityFilter}
