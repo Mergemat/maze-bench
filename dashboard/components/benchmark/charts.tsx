@@ -20,7 +20,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { computeModelMetricsPoints, type ModelMetricsPoint } from "@/lib/stats";
-import type { BenchmarkReport } from "@/lib/types";
+import { type BenchmarkReport } from "@/lib/types";
+import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
@@ -30,6 +31,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type PerformanceChartsProps = {
   reports: Map<string, BenchmarkReport>;
+};
+
+const CREATOR_COLORS: Record<string, string> = {
+  google: "#4285F4",
+  openai: "#10a37f",
+  "x-ai": "#1f2937",
+  anthropic: "#d97757",
+  meta: "#0668E1",
+  mistral: "#facc15",
+  cohere: "#395144",
 };
 
 const CHART_COLORS = [
@@ -45,8 +56,26 @@ const CHART_COLORS = [
   "#84cc16",
 ];
 
-function getModelColor(index: number): string {
-  return CHART_COLORS[index % CHART_COLORS.length];
+function getCreator(model: string): string {
+  const match = model.match(/^\[(.*?)\]/);
+  if (match && match[1]) {
+    return match[1].toLowerCase();
+  }
+  return "unknown";
+}
+
+function getModelColor(model: string): string {
+  const creator = getCreator(model);
+  if (CREATOR_COLORS[creator]) {
+    return CREATOR_COLORS[creator];
+  }
+
+  let hash = 0;
+  for (let i = 0; i < creator.length; i++) {
+    hash = creator.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % CHART_COLORS.length;
+  return CHART_COLORS[index];
 }
 
 function EmptyState() {
@@ -60,14 +89,14 @@ function EmptyState() {
 function ModelLegend({ data }: { data: ModelMetricsPoint[] }) {
   return (
     <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] sm:text-xs">
-      {data.map((entry, index) => (
+      {data.map((entry) => (
         <div className="flex items-center gap-1.5" key={entry.model}>
           <div
             className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3"
-            style={{ backgroundColor: getModelColor(index) }}
+            style={{ backgroundColor: getModelColor(entry.model) }}
           />
           <span className="max-w-[140px] truncate sm:max-w-none">
-            {entry.model}
+            {formatModelName(entry.model)}
           </span>
         </div>
       ))}
@@ -155,6 +184,7 @@ function SuccessRateBarCard({
                 interval={0}
                 textAnchor="end"
                 tick={{ fontSize: 10 }}
+                tickFormatter={(v) => formatModelName(v)}
               />
               <YAxis
                 domain={[0, 100]}
@@ -162,13 +192,13 @@ function SuccessRateBarCard({
                 tickFormatter={(v) => `${v}%`}
               />
               <ChartTooltip
-                content={<ChartTooltipContent />}
+                content={<ChartTooltipContent labelFormatter={formatModelName} />}
                 cursor={false}
                 formatter={(v) => `${Number(v).toFixed(1)}%`}
               />
               <Bar dataKey="successRatePct" radius={[4, 4, 0, 0]}>
-                {data.map((entry, index) => (
-                  <Cell fill={getModelColor(index)} key={entry.model} />
+                {data.map((entry) => (
+                  <Cell fill={getModelColor(entry.model)} key={entry.model} />
                 ))}
                 <LabelList
                   dataKey="nRuns"
@@ -263,6 +293,7 @@ function BaseScatterCard({
                       </span>
                     )}
                     indicator="dashed"
+                    labelFormatter={formatModelName}
                   />
                 }
                 cursor={{ strokeDasharray: "3 3" }}
@@ -270,15 +301,14 @@ function BaseScatterCard({
               <Scatter data={filteredData}>
                 {filteredData.map((entry) => (
                   <Cell
-                    fill={getModelColor(
-                      data.findIndex((d) => d.model === entry.model)
-                    )}
+                    fill={getModelColor(entry.model)}
                     key={entry.model}
                   />
                 ))}
                 <LabelList
                   className="hidden sm:block"
                   dataKey="model"
+                  formatter={(v: string) => formatModelName(v)}
                   position="insideBottomLeft"
                   style={{
                     fontSize: 10,

@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Pos, RunResult } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, formatModelName } from "@/lib/utils";
 
 const runAtom = atom<RunResult | null>(null);
 const currentStepAtom = atom(0);
@@ -270,6 +270,7 @@ const RunInfo = function RunInfo({ run }: { run: RunResult }) {
       <div>Total Time: {(run.totalDurationMs / 1000).toFixed(2)}s</div>
       <div>Cost: ${run.cost?.toFixed(6) ?? "N/A"}</div>
       <div>Seed: {run.seed}</div>
+      {run.modelOutput}
     </div>
   );
 };
@@ -278,7 +279,7 @@ const RunHeader = function RunHeader({ run }: { run: RunResult }) {
   return (
     <DialogHeader className="flex-row items-center justify-between">
       <div className="flex flex-col gap-1">
-        <DialogTitle className="text-sm">{run.model}</DialogTitle>
+        <DialogTitle className="text-sm">{formatModelName(run.model)}</DialogTitle>
         <div className="flex gap-2">
           <Badge variant="outline">{run.config.complexity}</Badge>
           <Badge variant="outline">

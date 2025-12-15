@@ -4,6 +4,7 @@ import { useAtomValue } from "jotai";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
+import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
@@ -90,7 +91,7 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
           <Card key={model}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>{model}</span>
+                <span>{formatModelName(model)}</span>
                 {successfulOnly ? null : (
                   <Badge
                     variant={stats.successRate > 50 ? "default" : "destructive"}

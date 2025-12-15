@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
+import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
@@ -81,7 +82,7 @@ export function RunList({ reports }: RunListProps) {
         <SelectContent>
           {models.map((m) => (
             <SelectItem key={m} value={m}>
-              {m}
+              {formatModelName(m)}
             </SelectItem>
           ))}
         </SelectContent>
