@@ -1,6 +1,9 @@
+<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/e162b7c1-37aa-4576-bb2b-090c3104addd" />
+
 # MazeBench
 
 A benchmark for evaluating LLM spatial reasoning and navigation abilities through maze-solving tasks.
+<img width="547" height="276" alt="image" src="https://github.com/user-attachments/assets/04aaccec-ffd6-4b49-badb-adf8fd0f50cf" />
 
 ## What it measures
 
