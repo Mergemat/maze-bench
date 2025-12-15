@@ -131,7 +131,7 @@ function MazeRenderer({
                   text,
                   size === 5 && "h-7 w-7 sm:h-12 sm:w-12",
                   size === 21 && "h-3 w-3 sm:h-5 sm:w-5",
-                  size === 41 && "h-1.5 w-1.5 sm:h-2 sm:w-2"
+                  size === 41 && "h-1.5 w-1.5 text-xs sm:h-2 sm:w-2"
                 )}
                 key={x}
               >

@@ -1,14 +1,23 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
+import { Button } from "../ui/button";
 
 type RunListProps = {
   reports: Map<string, BenchmarkReport>;
   complexityFilter: string | null;
   sizeFilter: string | null;
   visionFilter: string | null;
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
   onSelectRun: (run: RunResult) => void;
 };
 
@@ -37,60 +46,56 @@ export function RunList({
   complexityFilter,
   sizeFilter,
   visionFilter,
+  selectedModel,
+  onModelChange,
   onSelectRun,
 }: RunListProps) {
-  const models = Array.from(reports.entries());
+  const models = Array.from(reports.keys());
+  const activeModel = selectedModel ?? models[0] ?? null;
+  const report = activeModel ? reports.get(activeModel) : null;
+  const filtered = report
+    ? filterResults(report.results, complexityFilter, sizeFilter, visionFilter)
+    : [];
 
   return (
-    <div className="w-full space-y-6">
-      {models.map(([model, report]) => {
-        const filtered = filterResults(
-          report.results,
-          complexityFilter,
-          sizeFilter,
-          visionFilter
-        );
+    <div className="space-y-3">
+      <Select onValueChange={(v) => onModelChange(v)} value={activeModel ?? ""}>
+        <SelectTrigger className="w-48">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {models.map((m) => (
+            <SelectItem key={m} value={m}>
+              {m}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-        return (
-          <div className="space-y-2" key={model}>
-            <h3 className="font-medium text-sm">{model}</h3>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filtered.map((run) => (
-                <Button
-                  className="h-auto justify-start px-3 py-2 text-left"
-                  key={run.id}
-                  onClick={() => onSelectRun(run)}
-                  variant="outline"
-                >
-                  <div className="flex w-full flex-col gap-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge className="text-[10px]" variant="outline">
-                        {run.config.complexity}
-                      </Badge>
-                      <Badge className="text-[10px]" variant="outline">
-                        {run.config.width}x{run.config.height}
-                      </Badge>
-                      <Badge className="text-[10px]" variant="outline">
-                        {run.config.vision}
-                      </Badge>
-                      <Badge
-                        className="text-[10px]"
-                        variant={run.success ? "default" : "destructive"}
-                      >
-                        {run.success ? "✓" : "✗"}
-                      </Badge>
-                    </div>
-                    <div className="text-[10px] text-muted-foreground">
-                      {run.totalSteps} steps •{" "}
-                      {(run.totalDurationMs / 1000).toFixed(1)}s
-                    </div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+      <div className="flex flex-wrap gap-1">
+        {filtered.map((run) => (
+          <Button
+            key={run.id}
+            onClick={() => onSelectRun(run)}
+            type="button"
+            variant="outline"
+          >
+            <span className="text-muted-foreground">
+              {run.config.complexity}
+            </span>
+            <span className="text-muted-foreground">
+              {run.config.width}x{run.config.height}
+            </span>
+            <span className="text-muted-foreground">{run.config.vision}</span>
+            <Badge
+              className="h-4 px-1 text-[9px]"
+              variant={run.success ? "default" : "destructive"}
+            >
+              {run.success ? "✓" : "✗"}
+            </Badge>
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }

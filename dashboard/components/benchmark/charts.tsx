@@ -30,14 +30,16 @@ type PerformanceChartsProps = {
 };
 
 const CHART_COLORS = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
-  "hsl(200, 70%, 50%)",
-  "hsl(280, 70%, 50%)",
-  "hsl(30, 70%, 50%)",
+  "#2563eb",
+  "#dc2626",
+  "#16a34a",
+  "#f59e0b",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#f97316",
+  "#6366f1",
+  "#84cc16",
 ];
 
 function getModelColor(index: number): string {
