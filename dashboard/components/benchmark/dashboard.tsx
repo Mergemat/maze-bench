@@ -7,7 +7,7 @@ import {
   getUniqueSizes,
   getUniqueVisions,
 } from "@/lib/data";
-import type { BenchmarkReport, RunResult } from "@/lib/types";
+import type { BenchmarkReport } from "@/lib/types";
 import { PerformanceCharts } from "./charts";
 import { Filters } from "./filters";
 import { ModelComparison } from "./model-comparison";
@@ -21,7 +21,7 @@ export function Dashboard({ reports }: DashboardProps) {
   const [complexityFilter, setComplexityFilter] = useState<string | null>(null);
   const [sizeFilter, setSizeFilter] = useState<string | null>(null);
   const [visionFilter, setVisionFilter] = useState<string | null>(null);
-  const [selectedRun, setSelectedRun] = useState<RunResult | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const latestReports = getLatestReportByModel(reports);
   const complexities = getUniqueComplexities(reports);
@@ -76,7 +76,9 @@ export function Dashboard({ reports }: DashboardProps) {
         <h2 className="mb-3 font-medium text-lg">Individual Runs</h2>
         <RunList
           complexityFilter={complexityFilter}
+          onModelChange={setSelectedModel}
           reports={latestReports}
+          selectedModel={selectedModel}
           sizeFilter={sizeFilter}
           visionFilter={visionFilter}
         />
