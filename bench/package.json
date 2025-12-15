@@ -3,6 +3,11 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "lint": "biome check",
+    "format": "biome format --write",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
     "@types/bun": "latest",
@@ -21,7 +26,7 @@
     "@ai-sdk/devtools": "^0.0.1-beta.1",
     "@ai-sdk/groq": "^2.0.33",
     "@openrouter/ai-sdk-provider": "^1.4.0",
-    "ai": "^6.0.0-beta.150",
+    "ai": "^5.0.113",
     "ink": "^6.5.1",
     "ink-select-input": "^6.2.0",
     "ink-text-input": "^6.0.0",
