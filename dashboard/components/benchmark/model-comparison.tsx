@@ -56,9 +56,19 @@ export function ModelComparison({
 }: ModelComparisonProps) {
   const models = Array.from(reports.entries());
 
+  const sortedModels = models.sort((a, b) => {
+    const aStats = computeStats(
+      filterResults(a[1].results, complexityFilter, sizeFilter, visionFilter)
+    );
+    const bStats = computeStats(
+      filterResults(b[1].results, complexityFilter, sizeFilter, visionFilter)
+    );
+    return bStats.successRate - aStats.successRate;
+  });
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {models.map(([model, report]) => {
+      {sortedModels.map(([model, report]) => {
         const filtered = filterResults(
           report.results,
           complexityFilter,
