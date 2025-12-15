@@ -7,6 +7,7 @@ import type { BenchmarkReport, RunResult } from "@/lib/types";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
+  successfulOnlyAtom,
   visionFilterAtom,
 } from "@/store/filters";
 
@@ -18,7 +19,8 @@ function filterResults(
   results: RunResult[],
   complexity: string | null,
   size: string | null,
-  vision: string | null
+  vision: string | null,
+  successfulOnly?: boolean | null
 ): RunResult[] {
   return results.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
@@ -28,6 +30,9 @@ function filterResults(
       return false;
     }
     if (vision && r.config.vision !== vision) {
+      return false;
+    }
+    if (successfulOnly && !r.success) {
       return false;
     }
     return true;
@@ -55,6 +60,7 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
   const complexityFilter = useAtomValue(complexityFilterAtom);
   const sizeFilter = useAtomValue(sizeFilterAtom);
   const visionFilter = useAtomValue(visionFilterAtom);
+  const successfulOnly = useAtomValue(successfulOnlyAtom);
 
   const models = Array.from(reports.entries());
 
@@ -75,7 +81,8 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
           report.results,
           complexityFilter,
           sizeFilter,
-          visionFilter
+          visionFilter,
+          successfulOnly
         );
         const stats = computeStats(filtered);
 
@@ -84,11 +91,13 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>{model}</span>
-                <Badge
-                  variant={stats.successRate > 50 ? "default" : "destructive"}
-                >
-                  {stats.successRate.toFixed(1)}%
-                </Badge>
+                {successfulOnly ? null : (
+                  <Badge
+                    variant={stats.successRate > 50 ? "default" : "destructive"}
+                  >
+                    {stats.successRate.toFixed(1)}%
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>

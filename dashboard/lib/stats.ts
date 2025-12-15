@@ -55,7 +55,6 @@ export function computeModelMetricsPoints(
 
     const totalSteps = filtered.reduce((acc, r) => acc + r.totalSteps, 0);
     const totalTimeMs = filtered.reduce((acc, r) => acc + r.totalDurationMs, 0);
-    const totalCost = filtered.reduce((acc, r) => acc + (r.cost ?? 0), 0);
 
     points.push({
       model,
@@ -64,7 +63,8 @@ export function computeModelMetricsPoints(
       successRatePct: nRuns === 0 ? 0 : (nSuccesses / nRuns) * 100,
       avgSteps: report.stats.overall.avgSteps,
       avgTimeSec: report.stats.overall.avgTimeMs / 1000,
-      avgCostPerRun: nSuccesses === 0 ? 0 : totalCost / nSuccesses,
+      avgCostPerRun:
+        nSuccesses === 0 ? 0 : report.stats.overall.totalCost / nSuccesses,
       totalSteps,
       totalTimeMs,
       totalCost: report.stats.overall.totalCost,

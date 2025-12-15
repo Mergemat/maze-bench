@@ -14,6 +14,7 @@ import type { BenchmarkReport, RunResult } from "@/lib/types";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
+  successfulOnlyAtom,
   visionFilterAtom,
 } from "@/store/filters";
 import { Button } from "../ui/button";
@@ -27,7 +28,8 @@ function filterResults(
   results: RunResult[],
   complexity: string | null,
   size: string | null,
-  vision: string | null
+  vision: string | null,
+  successfulOnly?: boolean | null
 ): RunResult[] {
   return results.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
@@ -37,6 +39,9 @@ function filterResults(
       return false;
     }
     if (vision && r.config.vision !== vision) {
+      return false;
+    }
+    if (successfulOnly && !r.success) {
       return false;
     }
     return true;
@@ -49,12 +54,19 @@ export function RunList({ reports }: RunListProps) {
   const complexityFilter = useAtomValue(complexityFilterAtom);
   const sizeFilter = useAtomValue(sizeFilterAtom);
   const visionFilter = useAtomValue(visionFilterAtom);
+  const successfulOnly = useAtomValue(successfulOnlyAtom);
 
   const models = Array.from(reports.keys());
   const activeModel = selectedModel ?? models[0] ?? null;
   const report = activeModel ? reports.get(activeModel) : null;
   const filtered = report
-    ? filterResults(report.results, complexityFilter, sizeFilter, visionFilter)
+    ? filterResults(
+        report.results,
+        complexityFilter,
+        sizeFilter,
+        visionFilter,
+        successfulOnly
+      )
     : [];
 
   return (
@@ -86,6 +98,9 @@ export function RunList({ reports }: RunListProps) {
                 {run.config.width}x{run.config.height}
               </span>
               <span className="text-muted-foreground">{run.config.vision}</span>
+              <span className="text-muted-foreground">
+                | {run.totalSteps} steps
+              </span>
               <Badge
                 className="h-4 px-1 text-[9px]"
                 variant={run.success ? "default" : "destructive"}
