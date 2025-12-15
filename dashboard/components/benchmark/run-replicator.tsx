@@ -21,7 +21,9 @@ const isPlayingAtom = atom(false);
 const currentPosAtom = atom((get) => {
   const run = get(runAtom);
   const currentStep = get(currentStepAtom);
-  if (!run) return { x: 0, y: 0 };
+  if (!run) {
+    return { x: 0, y: 0 };
+  }
   return currentStep === 0
     ? run.startPos
     : (run.stepsTrace[currentStep - 1]?.posAfter ?? run.startPos);
@@ -30,7 +32,9 @@ const currentPosAtom = atom((get) => {
 const currentTraceStepAtom = atom((get) => {
   const run = get(runAtom);
   const currentStep = get(currentStepAtom);
-  if (!run || currentStep === 0) return null;
+  if (!run || currentStep === 0) {
+    return null;
+  }
   return run.stepsTrace[currentStep - 1] ?? null;
 });
 
@@ -178,7 +182,9 @@ function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
   const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying) {
+      return;
+    }
     const interval = setInterval(() => {
       setCurrentStep((s) => {
         if (s >= totalSteps) {
