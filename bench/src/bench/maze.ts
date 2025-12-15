@@ -12,16 +12,41 @@ function mulberry32(seed: number) {
 	};
 }
 
+// Define bias parameters and loop density depending on complexity
+function getComplexityConfig(
+	complexity: MazeComplexity,
+	width: number,
+	height: number,
+) {
+	const area = width * height;
+
+	switch (complexity) {
+		case "simple":
+			return { loopDensity: 0.001, straightBias: 0.85 };
+		case "normal":
+			return { loopDensity: 0.003, straightBias: 0.65 };
+		case "complex":
+			return { loopDensity: 0.006, straightBias: 0.45 };
+		case "extreme":
+			return { loopDensity: 0.012, straightBias: 0.25 };
+	}
+}
+
 export function generateMaze(
 	width: number,
 	height: number,
-	_complexity: MazeComplexity,
+	complexity: MazeComplexity,
 	seed = Date.now(),
 ): string[] {
 	if (width % 2 === 0) width++;
 	if (height % 2 === 0) height++;
 
 	const rand = mulberry32(seed);
+	const { loopDensity, straightBias } = getComplexityConfig(
+		complexity,
+		width,
+		height,
+	);
 
 	const grid: Cell[][] = Array.from({ length: height }, () =>
 		Array<Cell>(width).fill("#"),
@@ -37,16 +62,23 @@ export function generateMaze(
 	function shuffle<T>(a: T[]): T[] {
 		for (let i = a.length - 1; i > 0; i--) {
 			const j = Math.floor(rand() * (i + 1));
-			const temp = a[i]!;
-			a[i] = a[j]!;
-			a[j] = temp;
+			[a[i], a[j]] = [a[j]!, a[i]!];
 		}
 		return a;
 	}
 
-	function carve(x: number, y: number) {
+	function carve(x: number, y: number, prevDir?: { dx: number; dy: number }) {
 		grid[y]![x] = " ";
-		for (const { dx, dy } of shuffle([...dirs])) {
+
+		const possibleDirs = [...dirs];
+
+		// Add bias towards continuing in the same direction
+		if (prevDir && rand() < straightBias) {
+			possibleDirs.unshift(prevDir);
+		}
+
+		// Randomize order to create unpredictability
+		for (const { dx, dy } of shuffle(possibleDirs)) {
 			const nx = x + dx;
 			const ny = y + dy;
 			if (
@@ -57,14 +89,33 @@ export function generateMaze(
 				grid[ny]?.[nx] === "#"
 			) {
 				grid[y + dy / 2]![x + dx / 2] = " ";
-				carve(nx, ny);
+				carve(nx, ny, { dx, dy });
+			}
+		}
+	}
+
+	// Adds additional loops / holes to make it less tree-like
+	function addLoops(loopCount: number) {
+		for (let i = 0; i < loopCount; i++) {
+			const x = Math.floor(rand() * ((width - 1) / 2)) * 2 + 1;
+			const y = Math.floor(rand() * ((height - 1) / 2)) * 2 + 1;
+
+			const { dx, dy } = dirs[Math.floor(rand() * dirs.length)]!;
+			const wx = x + dx / 2;
+			const wy = y + dy / 2;
+
+			if (grid[wy]?.[wx] === "#") {
+				grid[wy][wx] = " ";
 			}
 		}
 	}
 
 	carve(1, 1);
+	addLoops(Math.floor(width * height * loopDensity));
+
 	grid[1]![1] = "S";
 	grid[height - 2]![width - 2] = "G";
+
 	return grid.map((r) => r.join(""));
 }
 
