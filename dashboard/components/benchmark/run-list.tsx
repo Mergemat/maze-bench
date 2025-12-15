@@ -77,7 +77,7 @@ export function RunList({ reports }: RunListProps) {
         value={activeModel ?? ""}
       >
         <SelectTrigger className="w-48">
-          <SelectValue />
+          <SelectValue>{formatModelName(activeModel)}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {models.map((m) => (

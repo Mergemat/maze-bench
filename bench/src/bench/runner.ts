@@ -50,12 +50,14 @@ export async function runSingleMaze(
 ): Promise<RunResult> {
   const env = createMazeEnv(mazeData);
   const stepTrace: StepTrace[] = [];
+  let moveHappened = false;
 
   const onMove = (
     direction: Direction,
     posBefore: { x: number; y: number },
     observation: string
   ) => {
+    moveHappened = true;
     stepTrace.push({
       step: env.steps,
       action: direction,
@@ -91,20 +93,6 @@ export async function runSingleMaze(
       system: SYSTEM_PROMPT,
     });
 
-    for await (const step of stream.fullStream) {
-      if (step.type === "text-delta") {
-        currentText += step.text;
-      } else if (step.type === "finish-step") {
-        if (currentText) {
-          lastModelText = currentText;
-        }
-        currentText = "";
-      }
-    }
-    if (currentText) {
-      lastModelText = currentText;
-    }
-
     const metadata = await stream.providerMetadata;
     const cost = (metadata?.openrouter as { usage?: { cost?: number } })?.usage
       ?.cost;
@@ -135,12 +123,15 @@ export async function runSingleMaze(
 
 function findGoalPos(maze: string[]): { x: number; y: number } {
   for (let y = 0; y < maze.length; y++) {
-    const x = maze[y]?.indexOf("G");
-    if (x !== -1) {
-      return { x, y };
+    const row = maze[y];
+    if (row) {
+      const x = row.indexOf("G");
+      if (x !== -1) {
+        return { x, y };
+      }
     }
   }
-  return { x: maze[0]?.length - 2, y: maze.length - 2 };
+  return { x: (maze[0]?.length ?? 2) - 2, y: maze.length - 2 };
 }
 
 function createResult(

@@ -237,6 +237,7 @@ function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
 function StepInfo({ totalSteps }: { totalSteps: number }) {
   const currentStep = useAtomValue(currentStepAtom);
   const currentTraceStep = useAtomValue(currentTraceStepAtom);
+  const run = useAtomValue(runAtom);
 
   return (
     <div className="text-sm">
@@ -258,6 +259,14 @@ function StepInfo({ totalSteps }: { totalSteps: number }) {
             {currentTraceStep?.success ? "Yes" : "No"}
           </Badge>
         </div>
+        {currentTraceStep?.reasoning && (
+          <div className="mt-2">
+            <div className="font-semibold text-xs">Reasoning:</div>
+            <div className="whitespace-pre-wrap rounded-md bg-muted p-2 font-mono text-xs">
+              {currentTraceStep.reasoning}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -270,7 +279,6 @@ const RunInfo = function RunInfo({ run }: { run: RunResult }) {
       <div>Total Time: {(run.totalDurationMs / 1000).toFixed(2)}s</div>
       <div>Cost: ${run.cost?.toFixed(6) ?? "N/A"}</div>
       <div>Seed: {run.seed}</div>
-      {run.modelOutput}
     </div>
   );
 };
@@ -279,7 +287,9 @@ const RunHeader = function RunHeader({ run }: { run: RunResult }) {
   return (
     <DialogHeader className="flex-row items-center justify-between">
       <div className="flex flex-col gap-1">
-        <DialogTitle className="text-sm">{formatModelName(run.model)}</DialogTitle>
+        <DialogTitle className="text-sm">
+          {formatModelName(run.model)}
+        </DialogTitle>
         <div className="flex gap-2">
           <Badge variant="outline">{run.config.complexity}</Badge>
           <Badge variant="outline">

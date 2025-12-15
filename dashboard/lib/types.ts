@@ -17,6 +17,7 @@ export type StepTrace = {
   posAfter: Pos;
   success: boolean;
   observation?: string;
+  reasoning?: string;
 };
 
 export type RunResult = {
