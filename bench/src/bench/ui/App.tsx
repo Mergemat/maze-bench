@@ -1,4 +1,5 @@
 import { Box, render, Text } from "ink";
+
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { CONCURRENCY_LIMIT } from "../config";
 import { generateSharedMazes } from "../maze";
@@ -57,7 +58,7 @@ function BenchmarkApp() {
 	const runsList = Array.from(state.runs.values());
 
 	const active = runsList.filter((r) => r.status === "running");
-	const maxVisibleRuns = 20;
+	const maxVisibleRuns = 40;
 	const visibleRuns = active.slice(0, maxVisibleRuns);
 	const hiddenCount = active.length - visibleRuns.length;
 

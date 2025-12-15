@@ -12,13 +12,13 @@ export function RunRow({ run }: { run: RunState }) {
 	const c = COLORS[run.status];
 	const t = run.timeMs !== undefined ? ` ${(run.timeMs / 1000).toFixed(1)}s` : "";
 	const $ = run.cost !== undefined ? ` $${run.cost.toFixed(4)}` : "";
-	const step = run.status === "running" ? ` s${run.currentStep}` : "";
+	const step = run.status === "running" ? ` step ${run.currentStep}` : "";
 	const err = run.error ? ` ${run.error}` : "";
 	return (
 		<Text>
 			<Text color={c}>{STATUS[run.status]}</Text>
 			<Text color="white"> {run.model.slice(0, 12).padEnd(12)}</Text>
-			<Text color="gray"> {run.mazeId}</Text>
+			<Text color="gray"> {run.mazeId.split("_")[1]}</Text>
 			<Text color="cyan">{step}</Text>
 			<Text color="magenta">{t}</Text>
 			<Text color="yellow">{$}</Text>
