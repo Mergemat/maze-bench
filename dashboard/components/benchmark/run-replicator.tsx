@@ -1,17 +1,38 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { memo, type ReactElement, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Pos, RunResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+const runAtom = atom<RunResult | null>(null);
+const currentStepAtom = atom(0);
+const isPlayingAtom = atom(false);
+
+const currentPosAtom = atom((get) => {
+  const run = get(runAtom);
+  const currentStep = get(currentStepAtom);
+  if (!run) return { x: 0, y: 0 };
+  return currentStep === 0
+    ? run.startPos
+    : (run.stepsTrace[currentStep - 1]?.posAfter ?? run.startPos);
+});
+
+const currentTraceStepAtom = atom((get) => {
+  const run = get(runAtom);
+  const currentStep = get(currentStepAtom);
+  if (!run || currentStep === 0) return null;
+  return run.stepsTrace[currentStep - 1] ?? null;
+});
 
 function getLocalVision(maze: string[], pos: Pos, radius = 2): string[][] {
   const out: string[][] = [];
@@ -31,15 +52,14 @@ function getLocalVision(maze: string[], pos: Pos, radius = 2): string[][] {
   return out;
 }
 
-function LocalVisionRenderer({
+const LocalVisionRenderer = memo(function LocalVisionRenderer({
   maze,
-  currentPos,
   goalPos,
 }: {
   maze: string[];
-  currentPos: Pos;
   goalPos: Pos;
 }) {
+  const currentPos = useAtomValue(currentPosAtom);
   const localView = getLocalVision(maze, currentPos);
   const radius = 2;
 
@@ -88,19 +108,19 @@ function LocalVisionRenderer({
       ))}
     </div>
   );
-}
+});
 
-function MazeRenderer({
+const MazeRenderer = memo(function MazeRenderer({
   maze,
-  currentPos,
   goalPos,
   size,
 }: {
   maze: string[];
-  currentPos: Pos;
   goalPos: Pos;
   size: number;
 }) {
+  const currentPos = useAtomValue(currentPosAtom);
+
   return (
     <div className="select-none font-mono text-xs leading-none">
       {maze.map((row, y) => (
@@ -151,174 +171,168 @@ function MazeRenderer({
       ))}
     </div>
   );
-}
+});
 
-type RunReplicatorProps = {
-  run: RunResult;
-  onClose: () => void;
-  open: boolean;
-};
-
-export function RunReplicator({ run, open, onClose }: RunReplicatorProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const currentPos =
-    currentStep === 0
-      ? run.startPos
-      : (run.stepsTrace[currentStep - 1]?.posAfter ?? run.startPos);
-
-  const step = useCallback(() => {
-    setCurrentStep((s) => {
-      if (s >= run.stepsTrace.length) {
-        setIsPlaying(false);
-        return s;
-      }
-      return s + 1;
-    });
-  }, [run.stepsTrace.length]);
+function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
+  const [currentStep, setCurrentStep] = useAtom(currentStepAtom);
+  const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom);
 
   useEffect(() => {
-    if (!isPlaying) {
-      return;
-    }
-    const interval = setInterval(step, 100);
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      setCurrentStep((s) => {
+        if (s >= totalSteps) {
+          setIsPlaying(false);
+          return s;
+        }
+        return s + 1;
+      });
+    }, 100);
     return () => clearInterval(interval);
-  }, [isPlaying, step]);
+  }, [isPlaying, totalSteps, setCurrentStep, setIsPlaying]);
 
   const reset = () => {
     setCurrentStep(0);
     setIsPlaying(false);
   };
 
-  const currentTraceStep =
-    currentStep > 0 ? run.stepsTrace[currentStep - 1] : null;
+  return (
+    <div className="flex gap-2">
+      <Button
+        disabled={currentStep === 0}
+        onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+        size="sm"
+        variant="outline"
+      >
+        Prev
+      </Button>
+      <Button
+        onClick={() => setIsPlaying(!isPlaying)}
+        size="sm"
+        variant={isPlaying ? "destructive" : "default"}
+      >
+        {isPlaying ? "Pause" : "Play"}
+      </Button>
+      <Button
+        disabled={currentStep >= totalSteps}
+        onClick={() => setCurrentStep((s) => Math.min(totalSteps, s + 1))}
+        size="sm"
+        variant="outline"
+      >
+        Next
+      </Button>
+      <Button onClick={reset} size="sm" variant="outline">
+        Reset
+      </Button>
+    </div>
+  );
+}
+
+function StepInfo({ totalSteps }: { totalSteps: number }) {
+  const currentStep = useAtomValue(currentStepAtom);
+  const currentTraceStep = useAtomValue(currentTraceStepAtom);
 
   return (
-    <Dialog onOpenChange={(v) => !v && onClose()} open={open}>
-      <DialogContent className="w-fit sm:max-w-5xl">
-        <DialogHeader className="flex-row items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <DialogTitle className="text-sm">{run.model}</DialogTitle>
-            <div className="flex gap-2">
-              <Badge variant="outline">{run.config.complexity}</Badge>
-              <Badge variant="outline">
-                {run.config.width}x{run.config.height}
-              </Badge>
-              <Badge variant="outline">{run.config.vision}</Badge>
-              <Badge variant={run.success ? "default" : "destructive"}>
-                {run.success ? "Success" : "Failed"}
-              </Badge>
-            </div>
+    <div className="text-sm">
+      <div className="text-muted-foreground">
+        Step: {currentStep} / {totalSteps}
+      </div>
+      {currentTraceStep && (
+        <div className="mt-2 space-y-1">
+          <div>
+            Action: <span className="font-mono">{currentTraceStep.action}</span>
           </div>
-        </DialogHeader>
+          <div>
+            From: ({currentTraceStep.posBefore.x},{" "}
+            {currentTraceStep.posBefore.y}) → To: ({currentTraceStep.posAfter.x}
+            , {currentTraceStep.posAfter.y})
+          </div>
+          <div>
+            Move Success:{" "}
+            <Badge variant={currentTraceStep.success ? "default" : "secondary"}>
+              {currentTraceStep.success ? "Yes" : "No"}
+            </Badge>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
+const RunInfo = memo(function RunInfo({ run }: { run: RunResult }) {
+  return (
+    <div className="mt-auto space-y-1 text-sm">
+      <div className="text-muted-foreground">Run Info:</div>
+      <div>Total Time: {(run.totalDurationMs / 1000).toFixed(2)}s</div>
+      <div>Cost: ${run.cost?.toFixed(6) ?? "N/A"}</div>
+      <div>Seed: {run.seed}</div>
+    </div>
+  );
+});
+
+const RunHeader = memo(function RunHeader({ run }: { run: RunResult }) {
+  return (
+    <DialogHeader className="flex-row items-center justify-between">
+      <div className="flex flex-col gap-1">
+        <DialogTitle className="text-sm">{run.model}</DialogTitle>
+        <div className="flex gap-2">
+          <Badge variant="outline">{run.config.complexity}</Badge>
+          <Badge variant="outline">
+            {run.config.width}x{run.config.height}
+          </Badge>
+          <Badge variant="outline">{run.config.vision}</Badge>
+          <Badge variant={run.success ? "default" : "destructive"}>
+            {run.success ? "Success" : "Failed"}
+          </Badge>
+        </div>
+      </div>
+    </DialogHeader>
+  );
+});
+
+type RunReplicatorProps = {
+  run: RunResult;
+  children: ReactElement;
+};
+
+export function RunReplicator({ run, children }: RunReplicatorProps) {
+  const setRun = useSetAtom(runAtom);
+  const setCurrentStep = useSetAtom(currentStepAtom);
+  const setIsPlaying = useSetAtom(isPlayingAtom);
+
+  useEffect(() => {
+    setRun(run);
+    setCurrentStep(0);
+    setIsPlaying(false);
+  }, [run, setRun, setCurrentStep, setIsPlaying]);
+
+  return (
+    <Dialog>
+      <DialogTrigger render={children} />
+      <DialogContent className="w-fit sm:max-w-5xl">
+        <RunHeader run={run} />
         <div className="flex flex-col gap-4">
-          {/* Maze + Vision */}
           <div className="flex flex-col gap-2">
             <div className="w-fit overflow-auto border p-2">
               <MazeRenderer
-                currentPos={currentPos}
                 goalPos={run.goalPos}
                 maze={run.maze}
                 size={run.config.width}
               />
             </div>
-
             {run.config.vision === "local" && (
               <div className="w-fit border p-2">
                 <div className="mb-1 text-muted-foreground text-xs">
                   Model View (5x5)
                 </div>
-                <LocalVisionRenderer
-                  currentPos={currentPos}
-                  goalPos={run.goalPos}
-                  maze={run.maze}
-                />
+                <LocalVisionRenderer goalPos={run.goalPos} maze={run.maze} />
               </div>
             )}
           </div>
-
-          {/* Controls + Info */}
           <div className="flex flex-col gap-4">
-            <div className="flex gap-2">
-              <Button
-                disabled={currentStep === 0}
-                onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
-                size="sm"
-                variant="outline"
-              >
-                Prev
-              </Button>
-
-              <Button
-                onClick={() => setIsPlaying(!isPlaying)}
-                size="sm"
-                variant={isPlaying ? "destructive" : "default"}
-              >
-                {isPlaying ? "Pause" : "Play"}
-              </Button>
-
-              <Button
-                disabled={currentStep >= run.stepsTrace.length}
-                onClick={step}
-                size="sm"
-                variant="outline"
-              >
-                Next
-              </Button>
-
-              <Button onClick={reset} size="sm" variant="outline">
-                Reset
-              </Button>
-            </div>
-
-            <div className="text-sm">
-              <div className="text-muted-foreground">
-                Step: {currentStep} / {run.stepsTrace.length}
-              </div>
-
-              {currentTraceStep && (
-                <div className="mt-2 space-y-1">
-                  <div>
-                    Action:{" "}
-                    <span className="font-mono">{currentTraceStep.action}</span>
-                  </div>
-                  <div>
-                    From: ({currentTraceStep.posBefore.x},{" "}
-                    {currentTraceStep.posBefore.y}) → To: (
-                    {currentTraceStep.posAfter.x}, {currentTraceStep.posAfter.y}
-                    )
-                  </div>
-                  <div>
-                    Move Success:{" "}
-                    <Badge
-                      variant={
-                        currentTraceStep.success ? "default" : "secondary"
-                      }
-                    >
-                      {currentTraceStep.success ? "Yes" : "No"}
-                    </Badge>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-auto space-y-1 text-sm">
-              <div className="text-muted-foreground">Run Info:</div>
-              <div>Total Time: {(run.totalDurationMs / 1000).toFixed(2)}s</div>
-              <div>Cost: ${run.cost?.toFixed(6) ?? "N/A"}</div>
-              <div>Seed: {run.seed}</div>
-            </div>
-
-            {/* {run.modelOutput && ( */}
-            {/* 	<div className="text-sm space-y-1"> */}
-            {/* 		<div className="text-muted-foreground">Model Output:</div> */}
-            {/* 		<div className="font-mono text-xs bg-muted p-2 rounded max-h-32 overflow-auto whitespace-pre-wrap"> */}
-            {/* 			{run.modelOutput} */}
-            {/* 		</div> */}
-            {/* 	</div> */}
-            {/* )} */}
+            <ReplicatorControls totalSteps={run.stepsTrace.length} />
+            <StepInfo totalSteps={run.stepsTrace.length} />
+            <RunInfo run={run} />
           </div>
         </div>
       </DialogContent>

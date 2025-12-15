@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
 import { Button } from "../ui/button";
+import { RunReplicator } from "./run-replicator";
 
 type RunListProps = {
   reports: Map<string, BenchmarkReport>;
@@ -18,7 +19,6 @@ type RunListProps = {
   visionFilter: string | null;
   selectedModel: string | null;
   onModelChange: (model: string | null) => void;
-  onSelectRun: (run: RunResult) => void;
 };
 
 function filterResults(
@@ -48,7 +48,6 @@ export function RunList({
   visionFilter,
   selectedModel,
   onModelChange,
-  onSelectRun,
 }: RunListProps) {
   const models = Array.from(reports.keys());
   const activeModel = selectedModel ?? models[0] ?? null;
@@ -74,26 +73,23 @@ export function RunList({
 
       <div className="flex flex-wrap gap-1">
         {filtered.map((run) => (
-          <Button
-            key={run.id}
-            onClick={() => onSelectRun(run)}
-            type="button"
-            variant="outline"
-          >
-            <span className="text-muted-foreground">
-              {run.config.complexity}
-            </span>
-            <span className="text-muted-foreground">
-              {run.config.width}x{run.config.height}
-            </span>
-            <span className="text-muted-foreground">{run.config.vision}</span>
-            <Badge
-              className="h-4 px-1 text-[9px]"
-              variant={run.success ? "default" : "destructive"}
-            >
-              {run.success ? "✓" : "✗"}
-            </Badge>
-          </Button>
+          <RunReplicator key={run.id} run={run}>
+            <Button key={run.id} type="button" variant="outline">
+              <span className="text-muted-foreground">
+                {run.config.complexity}
+              </span>
+              <span className="text-muted-foreground">
+                {run.config.width}x{run.config.height}
+              </span>
+              <span className="text-muted-foreground">{run.config.vision}</span>
+              <Badge
+                className="h-4 px-1 text-[9px]"
+                variant={run.success ? "default" : "destructive"}
+              >
+                {run.success ? "✓" : "✗"}
+              </Badge>
+            </Button>
+          </RunReplicator>
         ))}
       </div>
     </div>
