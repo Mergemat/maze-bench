@@ -120,8 +120,6 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
   );
 }
 
-/* ---------------- Success Rate ---------------- */
-
 function SuccessRateBarCard({
   data,
   showEmpty,
@@ -163,7 +161,11 @@ function SuccessRateBarCard({
                 tick={{ fontSize: 10 }}
                 tickFormatter={(v) => `${v}%`}
               />
-              <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
+              <ChartTooltip
+                content={<ChartTooltipContent />}
+                cursor={false}
+                formatter={(v) => `${Number(v).toFixed(1)}%`}
+              />
               <Bar dataKey="successRatePct" radius={[4, 4, 0, 0]}>
                 {data.map((entry, index) => (
                   <Cell fill={getModelColor(index)} key={entry.model} />
@@ -185,8 +187,6 @@ function SuccessRateBarCard({
     </Card>
   );
 }
-
-/* ---------------- Scatter Base ---------------- */
 
 function BaseScatterCard({
   title,
@@ -253,7 +253,18 @@ function BaseScatterCard({
                 tickFormatter={(v) => `${v}%`}
               />
               <ChartTooltip
-                content={<ChartTooltipContent indicator="dashed" />}
+                content={
+                  <ChartTooltipContent
+                    formatter={(v, name) => (
+                      <span>
+                        {name}: {name === "totalCost" ? "$" : ""}
+                        {Number(v).toFixed(5)}
+                        {name === "successRatePct" ? "%" : ""}
+                      </span>
+                    )}
+                    indicator="dashed"
+                  />
+                }
                 cursor={{ strokeDasharray: "3 3" }}
               />
               <Scatter data={filteredData}>
@@ -283,8 +294,6 @@ function BaseScatterCard({
     </Card>
   );
 }
-
-/* ---------------- Specific Scatter Cards ---------------- */
 
 function StepsVsSuccessCard(props: any) {
   return (
