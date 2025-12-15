@@ -1,96 +1,190 @@
-import { Text } from "ink";
-import type { BenchmarkStats, RunState } from "../types";
-
-const STATUS = {
-  pending: "○",
-  running: "◐",
-  success: "●",
-  failed: "✗",
-} as const;
-const COLORS = {
-  pending: "gray",
-  running: "cyan",
-  success: "green",
-  failed: "red",
-} as const;
-
-export function Header({ title }: { title: string }) {
-  return (
-    <Text bold color="yellow">
-      {title}
-    </Text>
-  );
-}
-
-export function RunRow({ run }: { run: RunState }) {
-  const c = COLORS[run.status];
-  const t =
-    run.timeMs !== undefined ? ` ${(run.timeMs / 1000).toFixed(1)}s` : "";
-  const $ = run.cost !== undefined ? ` $${run.cost.toFixed(4)}` : "";
-  const step = run.status === "running" ? ` step ${run.currentStep}` : "";
-  const err = run.error ? ` ${run.error}` : "";
-  return (
-    <Text>
-      <Text color={c}>{STATUS[run.status]}</Text>
-      <Text color="white"> {run.model.slice(0, 12).padEnd(12)}</Text>
-      <Text color="gray"> {run.mazeId.split("_")[1]}</Text>
-      <Text color="cyan">{step}</Text>
-      <Text color="magenta">{t}</Text>
-      <Text color="yellow">{$}</Text>
-      <Text color="red">{err}</Text>
-    </Text>
-  );
-}
+import { Box, Text } from "ink";
+import SelectInput from "ink-select-input";
+import TextInput from "ink-text-input";
+import React from "react";
+import type { ModelStats, SuiteChoice } from "./types";
+import { formatRowData, pad, padLeft, pctColor } from "./utils";
 
 export function ProgressBar({
   completed,
   total,
-  width = 20,
 }: {
   completed: number;
   total: number;
-  width?: number;
 }) {
-  const p = total === 0 ? 0 : completed / total;
-  const f = Math.round(width * p);
+  const stdout = process.stdout as { columns?: number };
+  const width =
+    typeof stdout.columns === "number"
+      ? Math.max(20, Math.min(60, stdout.columns - 30))
+      : 40;
+
+  const ratio = total > 0 ? completed / total : 0;
+  const filled = Math.round(width * ratio);
+  const empty = width - filled;
+  const percent = total > 0 ? Math.floor(ratio * 100) : 0;
+
   return (
     <Text>
-      <Text color="green">{"█".repeat(f)}</Text>
-      <Text color="gray">{"░".repeat(width - f)}</Text>
-      <Text>
-        {" "}
-        {completed}/{total} {Math.round(p * 100)}%
-      </Text>
+      [<Text color="green">{"█".repeat(filled)}</Text>
+      <Text color="gray">{"░".repeat(empty)}</Text>]{" "}
+      <Text color="cyan">{percent}%</Text> (
+      <Text color="green">{completed}</Text>/<Text color="white">{total}</Text>)
     </Text>
   );
 }
 
-export function RunningStats({
-  elapsedMs,
-  totalCost,
+export function SuiteSelector({
+  suites,
+  onSelect,
 }: {
-  elapsedMs: number;
-  totalCost: number;
+  suites: SuiteChoice[];
+  onSelect: (id: string) => void;
 }) {
-  const s = Math.floor(elapsedMs / 1000);
-  const t = s >= 60 ? `${Math.floor(s / 60)}m${s % 60}s` : `${s}s`;
   return (
-    <Text color="gray">
-      {t} │ ${totalCost.toFixed(4)}
-    </Text>
+    <Box flexDirection="column">
+      <Text>Select a suite:</Text>
+      <SelectInput
+        items={suites.map((s) => ({
+          key: s.id,
+          label: `${s.name}${s.description ? ` — ${s.description}` : ""}`,
+          value: s.id,
+        }))}
+        onSelect={(item) => onSelect(item.value)}
+      />
+    </Box>
   );
 }
 
-export function StatsDisplay({ stats }: { stats: BenchmarkStats }) {
-  const o = stats.overall;
+export function VersionInput({
+  version,
+  onChange,
+  onSubmit,
+}: {
+  version: string;
+  onChange: (v: string) => void;
+  onSubmit: () => void;
+}) {
   return (
-    <Text color="yellow">
-      ✓{(o.successRate * 100).toFixed(0)}% │ ~{o.avgSteps.toFixed(1)}steps │ ~
-      {(o.avgTimeMs / 1000).toFixed(1)}s │ ${o.totalCost.toFixed(4)}
-    </Text>
+    <Box flexDirection="column">
+      <Text>Version label (press Enter to start):</Text>
+      <Box marginTop={1}>
+        <TextInput onChange={onChange} onSubmit={onSubmit} value={version} />
+      </Box>
+    </Box>
   );
 }
 
-export function Divider() {
-  return <Text color="gray">{"─".repeat(40)}</Text>;
+export function ResultsTable({
+  modelOrder,
+  stats,
+}: {
+  modelOrder: string[];
+  stats: Record<string, ModelStats>;
+}) {
+  const header = [
+    "Model",
+    "Tests",
+    "% Right",
+    "Errors",
+    "Running",
+    "Avg Cost",
+    "Avg Tokens",
+    "Avg Duration",
+    "Slowest",
+  ] as const;
+
+  const rows = modelOrder.map((name) => formatRowData(name, stats[name]));
+
+  const widths = {
+    model: Math.max(header[0].length, ...rows.map((r) => r.model.length)),
+    tests: Math.max(header[1].length, ...rows.map((r) => r.tests.length)),
+    correct: Math.max(header[2].length, ...rows.map((r) => r.correct.length)),
+    err: Math.max(header[3].length, ...rows.map((r) => r.err.length)),
+    running: Math.max(header[4].length, ...rows.map((r) => r.running.length)),
+    avgCost: Math.max(header[5].length, ...rows.map((r) => r.avgCost.length)),
+    avgTokens: Math.max(
+      header[6].length,
+      ...rows.map((r) => r.avgTokens.length)
+    ),
+    avg: Math.max(header[7].length, ...rows.map((r) => r.avg.length)),
+    slow: Math.max(header[8].length, ...rows.map((r) => r.slow.length)),
+  };
+
+  return (
+    <Box flexDirection="column" marginTop={1}>
+      <Text>
+        <Text color="whiteBright" underline>
+          {pad(header[0], widths.model)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[1], widths.tests)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[2], widths.correct)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[3], widths.err)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[4], widths.running)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[5], widths.avgCost)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[6], widths.avgTokens)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[7], widths.avg)}
+        </Text>
+        {"  "}
+        <Text color="whiteBright" underline>
+          {pad(header[8], widths.slow)}
+        </Text>
+      </Text>
+
+      {rows.map((r) => (
+        <Text key={r.model}>
+          <Text color="whiteBright">{pad(r.model, widths.model)}</Text>
+          {"  "}
+          <Text color="white">{padLeft(r.tests, widths.tests)}</Text>
+          {"  "}
+          <Text color={r.pct === null ? "gray" : pctColor(r.pct)}>
+            {padLeft(r.correct, widths.correct)}
+          </Text>
+          {"  "}
+          <Text color={r.err === "-" ? "gray" : "red"}>
+            {padLeft(r.err, widths.err)}
+          </Text>
+          {"  "}
+          <Text color={r.running === "-" ? "gray" : "yellow"}>
+            {padLeft(r.running, widths.running)}
+          </Text>
+          {"  "}
+          <Text color={r.avgCost === "-" ? "gray" : "green"}>
+            {padLeft(r.avgCost, widths.avgCost)}
+          </Text>
+          {"  "}
+          <Text color={r.avgTokens === "-" ? "gray" : "blue"}>
+            {padLeft(r.avgTokens, widths.avgTokens)}
+          </Text>
+          {"  "}
+          <Text color={r.avg === "-" ? "gray" : "cyan"}>
+            {padLeft(r.avg, widths.avg)}
+          </Text>
+          {"  "}
+          <Text color={r.slow === "-" ? "gray" : "magenta"}>
+            {padLeft(r.slow, widths.slow)}
+          </Text>
+        </Text>
+      ))}
+    </Box>
+  );
 }
