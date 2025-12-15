@@ -1,5 +1,6 @@
 "use client";
 
+import { useAtom } from "jotai";
 import {
   Select,
   SelectContent,
@@ -7,36 +8,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { MazeComplexity, VisionMode } from "@/lib/types";
+import {
+  complexityFilterAtom,
+  sizeFilterAtom,
+  visionFilterAtom,
+} from "@/store/filters";
 
 type FiltersProps = {
   complexities: string[];
   sizes: string[];
   visions: string[];
-  selectedComplexity: string | null;
-  selectedSize: string | null;
-  selectedVision: string | null;
-  onComplexityChange: (value: string | null) => void;
-  onSizeChange: (value: string | null) => void;
-  onVisionChange: (value: string | null) => void;
 };
 
-export function Filters({
-  complexities,
-  sizes,
-  visions,
-  selectedComplexity,
-  selectedSize,
-  selectedVision,
-  onComplexityChange,
-  onSizeChange,
-  onVisionChange,
-}: FiltersProps) {
+export function Filters({ complexities, sizes, visions }: FiltersProps) {
+  const [selectedComplexity, setComplexityFilter] =
+    useAtom(complexityFilterAtom);
+  const [selectedSize, setSizeFilter] = useAtom(sizeFilterAtom);
+  const [selectedVision, setVisionFilter] = useAtom(visionFilterAtom);
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="flex flex-col gap-1">
         <span className="text-muted-foreground text-xs">Complexity</span>
         <Select
-          onValueChange={(v) => onComplexityChange(v === "all" ? null : v)}
+          onValueChange={(v) =>
+            setComplexityFilter(v === "all" ? null : (v as MazeComplexity))
+          }
           value={selectedComplexity ?? "all"}
         >
           <SelectTrigger className="w-32">
@@ -56,7 +53,7 @@ export function Filters({
       <div className="flex flex-col gap-1">
         <span className="text-muted-foreground text-xs">Size</span>
         <Select
-          onValueChange={(v) => onSizeChange(v === "all" ? null : v)}
+          onValueChange={(v) => setSizeFilter(v === "all" ? null : v)}
           value={selectedSize ?? "all"}
         >
           <SelectTrigger className="w-32">
@@ -76,7 +73,9 @@ export function Filters({
       <div className="flex flex-col gap-1">
         <span className="text-muted-foreground text-xs">Vision</span>
         <Select
-          onValueChange={(v) => onVisionChange(v === "all" ? null : v)}
+          onValueChange={(v) =>
+            setVisionFilter(v === "all" ? null : (v as VisionMode))
+          }
           value={selectedVision ?? "all"}
         >
           <SelectTrigger className="w-32">

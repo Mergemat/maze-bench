@@ -1,5 +1,7 @@
 "use client";
 
+import { useAtomValue } from "jotai";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -9,16 +11,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
+import {
+  complexityFilterAtom,
+  sizeFilterAtom,
+  visionFilterAtom,
+} from "@/store/filters";
 import { Button } from "../ui/button";
 import { RunReplicator } from "./run-replicator";
 
 type RunListProps = {
   reports: Map<string, BenchmarkReport>;
-  complexityFilter: string | null;
-  sizeFilter: string | null;
-  visionFilter: string | null;
-  selectedModel: string | null;
-  onModelChange: (model: string | null) => void;
 };
 
 function filterResults(
@@ -41,14 +43,13 @@ function filterResults(
   });
 }
 
-export function RunList({
-  reports,
-  complexityFilter,
-  sizeFilter,
-  visionFilter,
-  selectedModel,
-  onModelChange,
-}: RunListProps) {
+export function RunList({ reports }: RunListProps) {
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
+
+  const complexityFilter = useAtomValue(complexityFilterAtom);
+  const sizeFilter = useAtomValue(sizeFilterAtom);
+  const visionFilter = useAtomValue(visionFilterAtom);
+
   const models = Array.from(reports.keys());
   const activeModel = selectedModel ?? models[0] ?? null;
   const report = activeModel ? reports.get(activeModel) : null;
@@ -58,7 +59,10 @@ export function RunList({
 
   return (
     <div className="space-y-3">
-      <Select onValueChange={(v) => onModelChange(v)} value={activeModel ?? ""}>
+      <Select
+        onValueChange={(v) => setSelectedModel(v)}
+        value={activeModel ?? ""}
+      >
         <SelectTrigger className="w-48">
           <SelectValue />
         </SelectTrigger>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useAtomValue } from "jotai";
 import {
   Bar,
   BarChart,
@@ -20,13 +21,15 @@ import {
 } from "@/components/ui/chart";
 import { computeModelMetricsPoints, type ModelMetricsPoint } from "@/lib/stats";
 import type { BenchmarkReport } from "@/lib/types";
+import {
+  complexityFilterAtom,
+  sizeFilterAtom,
+  visionFilterAtom,
+} from "@/store/filters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type PerformanceChartsProps = {
   reports: Map<string, BenchmarkReport>;
-  complexityFilter: string | null;
-  sizeFilter: string | null;
-  visionFilter: string | null;
 };
 
 const CHART_COLORS = [
@@ -72,12 +75,11 @@ function ModelLegend({ data }: { data: ModelMetricsPoint[] }) {
   );
 }
 
-export function PerformanceCharts({
-  reports,
-  complexityFilter,
-  sizeFilter,
-  visionFilter,
-}: PerformanceChartsProps) {
+export function PerformanceCharts({ reports }: PerformanceChartsProps) {
+  const complexityFilter = useAtomValue(complexityFilterAtom);
+  const sizeFilter = useAtomValue(sizeFilterAtom);
+  const visionFilter = useAtomValue(visionFilterAtom);
+
   const data = computeModelMetricsPoints(
     reports,
     complexityFilter,
