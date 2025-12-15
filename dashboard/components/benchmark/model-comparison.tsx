@@ -1,14 +1,17 @@
 "use client";
 
+import { useAtomValue } from "jotai";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
+import {
+  complexityFilterAtom,
+  sizeFilterAtom,
+  visionFilterAtom,
+} from "@/store/filters";
 
 type ModelComparisonProps = {
   reports: Map<string, BenchmarkReport>;
-  complexityFilter: string | null;
-  sizeFilter: string | null;
-  visionFilter: string | null;
 };
 
 function filterResults(
@@ -48,12 +51,11 @@ function computeStats(results: RunResult[]) {
   };
 }
 
-export function ModelComparison({
-  reports,
-  complexityFilter,
-  sizeFilter,
-  visionFilter,
-}: ModelComparisonProps) {
+export function ModelComparison({ reports }: ModelComparisonProps) {
+  const complexityFilter = useAtomValue(complexityFilterAtom);
+  const sizeFilter = useAtomValue(sizeFilterAtom);
+  const visionFilter = useAtomValue(visionFilterAtom);
+
   const models = Array.from(reports.entries());
 
   const sortedModels = models.sort((a, b) => {

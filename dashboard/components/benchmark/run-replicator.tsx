@@ -1,7 +1,7 @@
 "use client";
 
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import { memo, type ReactElement, useEffect } from "react";
+import { type ReactElement, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +52,7 @@ function getLocalVision(maze: string[], pos: Pos, radius = 2): string[][] {
   return out;
 }
 
-const LocalVisionRenderer = memo(function LocalVisionRenderer({
+const LocalVisionRenderer = function LocalVisionRenderer({
   maze,
   goalPos,
 }: {
@@ -108,9 +108,9 @@ const LocalVisionRenderer = memo(function LocalVisionRenderer({
       ))}
     </div>
   );
-});
+};
 
-const MazeRenderer = memo(function MazeRenderer({
+const MazeRenderer = function MazeRenderer({
   maze,
   goalPos,
   size,
@@ -171,7 +171,7 @@ const MazeRenderer = memo(function MazeRenderer({
       ))}
     </div>
   );
-});
+};
 
 function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
   const [currentStep, setCurrentStep] = useAtom(currentStepAtom);
@@ -257,7 +257,7 @@ function StepInfo({ totalSteps }: { totalSteps: number }) {
   );
 }
 
-const RunInfo = memo(function RunInfo({ run }: { run: RunResult }) {
+const RunInfo = function RunInfo({ run }: { run: RunResult }) {
   return (
     <div className="mt-auto space-y-1 text-sm">
       <div className="text-muted-foreground">Run Info:</div>
@@ -266,9 +266,9 @@ const RunInfo = memo(function RunInfo({ run }: { run: RunResult }) {
       <div>Seed: {run.seed}</div>
     </div>
   );
-});
+};
 
-const RunHeader = memo(function RunHeader({ run }: { run: RunResult }) {
+const RunHeader = function RunHeader({ run }: { run: RunResult }) {
   return (
     <DialogHeader className="flex-row items-center justify-between">
       <div className="flex flex-col gap-1">
@@ -286,7 +286,7 @@ const RunHeader = memo(function RunHeader({ run }: { run: RunResult }) {
       </div>
     </DialogHeader>
   );
-});
+};
 
 type RunReplicatorProps = {
   run: RunResult;
