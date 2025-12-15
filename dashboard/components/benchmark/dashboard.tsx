@@ -35,7 +35,7 @@ export function Dashboard({ reports }: DashboardProps) {
           <h1 className="font-semibold text-xl">MazeBench</h1>
           <p className="text-muted-foreground text-sm">
             Benchmark measuring how well AI models solve mazes. Models are given
-            a maze and must find a way out using tools.
+            a maze and must find a way out using a move tool.
           </p>
         </div>
         <div className="flex sm:items-center sm:justify-end">
