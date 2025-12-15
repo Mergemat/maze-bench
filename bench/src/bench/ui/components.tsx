@@ -1,127 +1,59 @@
-
 import { Box, Text } from "ink";
 import type { RunState, BenchmarkStats } from "../types";
 
+const STATUS = { pending: "○", running: "◐", success: "●", failed: "✗" } as const;
+const COLORS = { pending: "gray", running: "cyan", success: "green", failed: "red" } as const;
+
 export function Header({ title }: { title: string }) {
-	return (
-		<Box marginBottom={1}>
-			<Text bold color="yellow">
-				{title}
-			</Text>
-		</Box>
-	);
+	return <Text bold color="yellow">{title}</Text>;
 }
 
 export function RunRow({ run }: { run: RunState }) {
-	const statusIcon = {
-		pending: "○",
-		running: "◐",
-		success: "●",
-		failed: "✗",
-	}[run.status];
-
-	const statusColor = {
-		pending: "gray",
-		running: "cyan",
-		success: "green",
-		failed: "red",
-	}[run.status] as "gray" | "cyan" | "green" | "red";
-
-	const timeStr = run.timeMs !== undefined ? `${(run.timeMs / 1000).toFixed(1)}s` : null;
-	const costStr = run.cost !== undefined ? `$${run.cost.toFixed(4)}` : null;
-
+	const c = COLORS[run.status];
+	const t = run.timeMs !== undefined ? ` ${(run.timeMs / 1000).toFixed(1)}s` : "";
+	const $ = run.cost !== undefined ? ` $${run.cost.toFixed(4)}` : "";
+	const step = run.status === "running" ? ` s${run.currentStep}` : "";
+	const err = run.error ? ` ${run.error}` : "";
 	return (
-		<Box>
-			<Text color={statusColor}>{statusIcon} </Text>
-			<Text color="white">{run.model}</Text>
-			<Text color="gray"> │ </Text>
-			<Text>{run.mazeId}</Text>
-			{run.status === "running" && (
-				<Text color="cyan"> │ Step {run.currentStep}</Text>
-			)}
-			{(run.status === "success" || run.status === "failed") && timeStr && (
-				<Text color="magenta"> │ {timeStr}</Text>
-			)}
-			{(run.status === "success" || run.status === "failed") && costStr && (
-				<Text color="yellow"> │ {costStr}</Text>
-			)}
-			{run.error && <Text color="red"> │ {run.error}</Text>}
-		</Box>
+		<Text>
+			<Text color={c}>{STATUS[run.status]}</Text>
+			<Text color="white"> {run.model.slice(0, 12).padEnd(12)}</Text>
+			<Text color="gray"> {run.mazeId}</Text>
+			<Text color="cyan">{step}</Text>
+			<Text color="magenta">{t}</Text>
+			<Text color="yellow">{$}</Text>
+			<Text color="red">{err}</Text>
+		</Text>
 	);
 }
 
-export function ProgressBar({
-	completed,
-	total,
-	width = 30,
-}: {
-	completed: number;
-	total: number;
-	width?: number;
-}) {
-	const percent = total === 0 ? 0 : completed / total;
-	const filled = Math.round(width * percent);
-	const empty = width - filled;
-
+export function ProgressBar({ completed, total, width = 20 }: { completed: number; total: number; width?: number }) {
+	const p = total === 0 ? 0 : completed / total;
+	const f = Math.round(width * p);
 	return (
-		<Box>
-			<Text color="green">{"█".repeat(filled)}</Text>
-			<Text color="gray">{"░".repeat(empty)}</Text>
-			<Text color="white">
-				{" "}
-				{completed}/{total} ({Math.round(percent * 100)}%)
-			</Text>
-		</Box>
+		<Text>
+			<Text color="green">{"█".repeat(f)}</Text>
+			<Text color="gray">{"░".repeat(width - f)}</Text>
+			<Text> {completed}/{total} {Math.round(p * 100)}%</Text>
+		</Text>
 	);
 }
 
 export function RunningStats({ elapsedMs, totalCost }: { elapsedMs: number; totalCost: number }) {
-	const seconds = Math.floor(elapsedMs / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const secs = seconds % 60;
-	const timeStr = minutes > 0 ? `${minutes}m ${secs}s` : `${secs}s`;
-
-	return (
-		<Box marginTop={1}>
-			<Text color="magenta">Time: </Text>
-			<Text>{timeStr}</Text>
-			<Text color="gray"> │ </Text>
-			<Text color="yellow">Cost: </Text>
-			<Text>${totalCost.toFixed(4)}</Text>
-		</Box>
-	);
+	const s = Math.floor(elapsedMs / 1000);
+	const t = s >= 60 ? `${Math.floor(s / 60)}m${s % 60}s` : `${s}s`;
+	return <Text color="gray">{t} │ ${totalCost.toFixed(4)}</Text>;
 }
 
 export function StatsDisplay({ stats }: { stats: BenchmarkStats }) {
+	const o = stats.overall;
 	return (
-		<Box flexDirection="column" marginTop={1}>
-			<Text bold color="yellow">
-				Results
-			</Text>
-			<Box>
-				<Text color="green">Success Rate: </Text>
-				<Text>{(stats.overall.successRate * 100).toFixed(1)}%</Text>
-			</Box>
-			<Box>
-				<Text color="cyan">Avg Steps: </Text>
-				<Text>{stats.overall.avgSteps.toFixed(1)}</Text>
-			</Box>
-			<Box>
-				<Text color="magenta">Avg Time: </Text>
-				<Text>{(stats.overall.avgTimeMs / 1000).toFixed(2)}s</Text>
-			</Box>
-			<Box>
-				<Text color="yellow">Total Cost: </Text>
-				<Text>${stats.overall.totalCost.toFixed(4)}</Text>
-			</Box>
-		</Box>
+		<Text color="yellow">
+			✓{(o.successRate * 100).toFixed(0)}% │ ~{o.avgSteps.toFixed(1)}steps │ ~{(o.avgTimeMs / 1000).toFixed(1)}s │ ${o.totalCost.toFixed(4)}
+		</Text>
 	);
 }
 
 export function Divider() {
-	return (
-		<Box marginY={1}>
-			<Text color="gray">{"─".repeat(50)}</Text>
-		</Box>
-	);
+	return <Text color="gray">{"─".repeat(40)}</Text>;
 }

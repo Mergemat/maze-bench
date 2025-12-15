@@ -56,30 +56,23 @@ function BenchmarkApp() {
 
 	const runsList = Array.from(state.runs.values());
 
+	const active = runsList.filter((r) => r.status === "running" || r.status === "failed");
+
 	return (
-		<Box flexDirection="column" padding={1}>
-			<Header title="Maze Benchmark" />
-
-			<ProgressBar completed={state.completed} total={state.total} />
-
-			<RunningStats elapsedMs={elapsed} totalCost={state.totalCost} />
-
-			<Divider />
-
-			<Box flexDirection="column">
-				{runsList.map((run) => (
-					<RunRow key={`${run.model}_${run.mazeId}`} run={run} />
-				))}
+		<Box flexDirection="column">
+			<Box gap={2}>
+				<Header title="Maze Bench" />
+				<ProgressBar completed={state.completed} total={state.total} />
+				<RunningStats elapsedMs={elapsed} totalCost={state.totalCost} />
 			</Box>
-
+			{active.map((run) => (
+				<RunRow key={`${run.model}_${run.mazeId}`} run={run} />
+			))}
 			{state.phase === "done" && state.stats && (
-				<>
+				<Box flexDirection="column">
 					<Divider />
 					<StatsDisplay stats={state.stats} />
-					<Box marginTop={1}>
-						<Text color="green">Benchmark complete!</Text>
-					</Box>
-				</>
+				</Box>
 			)}
 		</Box>
 	);
