@@ -90,7 +90,7 @@ export async function runSingleMaze(
       model: MODELS[model] as Parameters<typeof streamText>[0]["model"],
       tools,
       stopWhen: stop,
-      prompt: getObservation(env),
+      prompt: `this is what you see: ${getObservation(env)}`,
       system: SYSTEM_PROMPT,
       temperature: 1,
     });
