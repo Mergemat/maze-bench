@@ -1,4 +1,10 @@
-import { type StopCondition, streamText, type ToolSet, tool } from "ai";
+import {
+  generateText,
+  type StopCondition,
+  type streamText,
+  type ToolSet,
+  tool,
+} from "ai";
 import z from "zod";
 import { MAX_STEPS } from "./config";
 import { createMazeEnv, getObservation, moveInMaze } from "./maze";
@@ -80,15 +86,16 @@ export async function runSingleMaze(
   const start = performance.now();
 
   try {
-    const stream = streamText({
+    const result = await generateText({
       model: MODELS[model] as Parameters<typeof streamText>[0]["model"],
       tools,
       stopWhen: stop,
       prompt: getObservation(env),
       system: SYSTEM_PROMPT,
+      temperature: 1,
     });
 
-    const metadata = await stream.providerMetadata;
+    const metadata = result.providerMetadata;
     console.log("metadata", metadata);
     const cost = (metadata?.openrouter as { usage?: { cost?: number } })?.usage
       ?.cost;
