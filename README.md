@@ -7,15 +7,12 @@ A benchmark for evaluating LLM spatial reasoning and navigation abilities throug
 
 ## What it measures
 
-MazeBench tests how well language models can:
-- Understand and navigate 2D grid-based mazes
-- Plan paths from start (S) to goal (G)
-- Handle different levels of spatial complexity
-- Operate with limited (local) or full (global) visibility
+Honestly, I'm not sure.
+I think spatial reasoning and tool use.
 
 ## How it works
 
-The model receives a maze representation and must output movement commands (`up`, `down`, `left`, `right`) to navigate from start to goal. Performance is measured by success rate, steps taken, time, and API cost.
+The model receives a maze representation and must use a tool call to output movement commands (`up`, `down`, `left`, `right`) to navigate from start to goal. Performance is measured by success rate, steps taken, time, and API cost.
 
 ### Vision modes
 
@@ -38,7 +35,10 @@ The model receives a maze representation and must output movement commands (`up`
 ```
 mazebench/
 ├── bench/          # Benchmark runner (Bun + AI SDK)
-│   └── src/bench/  # Core benchmark logic
+│   ├── src/bench/
+│   │   ├── ui/     # Interactive CLI interface (Ink + React)
+│   │   └── ...     # Core benchmark logic
+│   └── package.json
 └── dashboard/      # Results visualization (Next.js)
 ```
 
@@ -49,8 +49,13 @@ mazebench/
 ```bash
 cd bench
 bun install
-bun run src/bench/run.ts
+bun run run
 ```
+
+This launches an interactive CLI interface where you can:
+- Select a benchmark suite
+- Enter a version tag for the run
+- View real-time progress and results
 
 Results are saved to `bench/src/bench/results/`.
 
