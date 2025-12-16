@@ -237,7 +237,7 @@ function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
 function StepInfo({ totalSteps }: { totalSteps: number }) {
   const currentStep = useAtomValue(currentStepAtom);
   const currentTraceStep = useAtomValue(currentTraceStepAtom);
-  const run = useAtomValue(runAtom);
+  const _run = useAtomValue(runAtom);
 
   return (
     <div className="text-sm">
