@@ -15,6 +15,7 @@ import {
 } from "./runnerUtils";
 import type { ModelStats, Phase } from "./types";
 import { formatDefaultVersion } from "./utils";
+import { enhanceResultsWithOptimalPaths } from "../optimal-paths-utils";
 
 export function useBenchmarkRunner() {
   const { exit } = useApp();
@@ -205,7 +206,11 @@ export function useBenchmarkRunner() {
       setFinalStats(computeStats(allResults));
       setPhase("done");
 
-      // if you want it to “stay open”, remove this:
+      // Enhance results with optimal paths
+      console.log("\nEnhancing results with optimal paths...");
+      enhanceResultsWithOptimalPaths();
+
+      // if you want it to "stay open", remove this:
       exit();
     })();
 
