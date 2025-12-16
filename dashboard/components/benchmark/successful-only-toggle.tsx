@@ -1,3 +1,4 @@
+"use client";
 import { useAtom } from "jotai";
 import { successfulOnlyAtom } from "@/store/filters";
 import { Switch } from "../ui/switch";

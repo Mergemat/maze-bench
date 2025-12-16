@@ -20,7 +20,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { computeModelMetricsPoints, type ModelMetricsPoint } from "@/lib/stats";
-import { type BenchmarkReport } from "@/lib/types";
+import type { BenchmarkReport } from "@/lib/types";
 import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
@@ -58,7 +58,7 @@ const CHART_COLORS = [
 
 function getCreator(model: string): string {
   const match = model.match(/^\[(.*?)\]/);
-  if (match && match[1]) {
+  if (match?.[1]) {
     return match[1].toLowerCase();
   }
   return "unknown";
@@ -95,7 +95,7 @@ function ModelLegend({ data }: { data: ModelMetricsPoint[] }) {
             className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3"
             style={{ backgroundColor: getModelColor(entry.model) }}
           />
-          <span className="max-w-[140px] truncate sm:max-w-none">
+          <span className="max-w-35 truncate sm:max-w-none">
             {formatModelName(entry.model)}
           </span>
         </div>
@@ -192,7 +192,9 @@ function SuccessRateBarCard({
                 tickFormatter={(v) => `${v}%`}
               />
               <ChartTooltip
-                content={<ChartTooltipContent labelFormatter={formatModelName} />}
+                content={
+                  <ChartTooltipContent labelFormatter={formatModelName} />
+                }
                 cursor={false}
                 formatter={(v) => `${Number(v).toFixed(1)}%`}
               />
@@ -298,12 +300,9 @@ function BaseScatterCard({
                 }
                 cursor={{ strokeDasharray: "3 3" }}
               />
-              <Scatter data={filteredData}>
+              <Scatter data={filteredData} isAnimationActive={false}>
                 {filteredData.map((entry) => (
-                  <Cell
-                    fill={getModelColor(entry.model)}
-                    key={entry.model}
-                  />
+                  <Cell fill={getModelColor(entry.model)} key={entry.model} />
                 ))}
                 <LabelList
                   className="hidden sm:block"
