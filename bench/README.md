@@ -6,10 +6,16 @@ To install dependencies:
 bun install
 ```
 
-To run:
+To run the benchmark:
 
 ```bash
-bun run index.ts
+bun run bench
 ```
 
-This project was created using `bun init` in bun v1.3.1. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+This launches an interactive CLI for running maze benchmarks.
+
+Other scripts:
+- `bun run stats`: Compute optimal paths and stats for all mazes
+- `bun run enhance-results`: Enhance existing results with optimal path data
+
+This project uses [Bun](https://bun.com).
