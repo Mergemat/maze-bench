@@ -88,7 +88,7 @@ export function RunList({ reports }: RunListProps) {
         </SelectContent>
       </Select>
 
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-2 xl:h-60 2xl:h-52">
         {filtered.map((run) => (
           <RunReplicator key={run.id} run={run}>
             <Button key={run.id} type="button" variant="outline">
