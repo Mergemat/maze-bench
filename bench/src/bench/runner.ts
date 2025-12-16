@@ -12,6 +12,34 @@ import type { ModelKey } from "./models";
 import { MODELS } from "./models";
 import type { MazeData, MazeEnv, RunResult, StepTrace } from "./types";
 
+function isRetryableError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.includes("socket connection was closed unexpectedly") ||
+         message.includes("ECONNRESET") ||
+         message.includes("ETIMEDOUT") ||
+         message.includes("ENOTFOUND");
+}
+
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 4,
+  baseDelay: number = 100,
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxRetries || !isRetryableError(error)) {
+        throw error;
+      }
+      const delay = baseDelay * Math.pow(2, attempt);
+      console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error("Unreachable");
+}
+
 type Direction = "up" | "down" | "left" | "right";
 
 function createMoveTool(
@@ -86,14 +114,16 @@ export async function runSingleMaze(
   const start = performance.now();
 
   try {
-    const result = await generateText({
-      model: MODELS[model] as Parameters<typeof streamText>[0]["model"],
-      tools,
-      stopWhen: stop,
-      prompt: `this is what you see: ${getObservation(env)}`,
-      system: SYSTEM_PROMPT,
-      temperature: 1,
-    });
+    const result = await retryWithBackoff(() =>
+      generateText({
+        model: MODELS[model] as Parameters<typeof streamText>[0]["model"],
+        tools,
+        stopWhen: stop,
+        prompt: `this is what you see: ${getObservation(env)}`,
+        system: SYSTEM_PROMPT,
+        temperature: 1,
+      })
+    );
 
     const metadata = result.providerMetadata;
     console.log("metadata", metadata);
