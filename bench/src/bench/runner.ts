@@ -1,7 +1,7 @@
 import {
   generateText,
+  type LanguageModel,
   type StopCondition,
-  type streamText,
   type ToolSet,
   tool,
 } from "ai";
@@ -14,16 +14,18 @@ import type { MazeData, MazeEnv, RunResult, StepTrace } from "./types";
 
 function isRetryableError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
-  return message.includes("socket connection was closed unexpectedly") ||
-         message.includes("ECONNRESET") ||
-         message.includes("ETIMEDOUT") ||
-         message.includes("ENOTFOUND");
+  return (
+    message.includes("socket connection was closed unexpectedly") ||
+    message.includes("ECONNRESET") ||
+    message.includes("ETIMEDOUT") ||
+    message.includes("ENOTFOUND")
+  );
 }
 
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  maxRetries: number = 4,
-  baseDelay: number = 100,
+  maxRetries = 4,
+  baseDelay = 100
 ): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -32,9 +34,9 @@ async function retryWithBackoff<T>(
       if (attempt === maxRetries || !isRetryableError(error)) {
         throw error;
       }
-      const delay = baseDelay * Math.pow(2, attempt);
+      const delay = baseDelay * 2 ** attempt;
       console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
   throw new Error("Unreachable");
@@ -51,31 +53,47 @@ function createMoveTool(
   ) => void
 ) {
   return tool({
-    description: "Move in the maze",
+    description: "Move the character one step in the specified direction.",
     inputSchema: z.object({
       direction: z.enum(["up", "down", "left", "right"]),
     }),
     execute: async ({ direction }) => {
-      const observation = getObservation(env);
       const posBefore = { ...env.pos };
+
+      // Perform the move logic
       const result = moveInMaze(env, direction, MAX_STEPS);
-      onMove(direction, posBefore, observation);
-      return result;
+
+      // Log for the trace
+      onMove(direction, posBefore, result.view);
+
+      // Return rich data to the model state
+      return {
+        success: result.success,
+        newPosition: { x: env.pos.x, y: env.pos.y },
+        observation: result.view,
+        message: result.success
+          ? "Goal reached!"
+          : posBefore.x === env.pos.x && posBefore.y === env.pos.y
+            ? "Hit a wall, position unchanged."
+            : `Moved ${direction} to (${env.pos.x}, ${env.pos.y})`,
+      };
     },
   });
 }
 
-const SYSTEM_PROMPT = `You are navigating a maze. Find a way out.
+export type StepCallback = (step: number, success: boolean) => void;
+
+const SYSTEM_PROMPT = `You are navigating a maze. 
+Your goal is to find the exit (G).
 
 Legend:
 # = wall
 (space) = empty
-A = you
+A = your current position
 G = goal
 
-Choose one move using the move tool.`;
-
-export type StepCallback = (step: number, success: boolean) => void;
+You can move 'up', 'down', 'left', or 'right'. 
+Every time you move, you will receive your new coordinates and a view of the maze.`;
 
 export async function runSingleMaze(
   model: ModelKey,
@@ -98,17 +116,14 @@ export async function runSingleMaze(
       success: env.success,
       observation,
     });
-    onStep?.(env.steps, env.success);
   };
 
   const tools = { move: createMoveTool(env, onMove) } satisfies ToolSet;
 
+  // Stop the loop if the tool reports success
   const stop: StopCondition<typeof tools> = ({ steps }) =>
     steps.some((s) =>
-      s.toolResults?.some(
-        (r) =>
-          (r as { output?: { success?: boolean } }).output?.success === true
-      )
+      s.toolResults?.some((r: any) => r.output?.success === true)
     );
 
   const start = performance.now();
@@ -116,29 +131,21 @@ export async function runSingleMaze(
   try {
     const result = await retryWithBackoff(() =>
       generateText({
-        model: MODELS[model] as Parameters<typeof streamText>[0]["model"],
+        model: MODELS[model] as LanguageModel,
         tools,
         stopWhen: stop,
-        prompt: `this is what you see: ${getObservation(env)}`,
         system: SYSTEM_PROMPT,
-        temperature: 1,
+        prompt: `Start Position: (1, 1). Initial view:\n${getObservation(env)}`,
+        temperature: 0, // Deterministic logic is better for navigation
+        onStepFinish: () => {
+          onStep?.(env.steps, env.success);
+        },
       })
     );
 
-    const metadata = result.providerMetadata;
-    console.log("metadata", metadata);
-    const cost = (metadata?.openrouter as { usage?: { cost?: number } })?.usage
-      ?.cost;
+    const cost = (result.providerMetadata?.openrouter as any)?.usage?.cost;
 
-    return createResult(
-      env,
-      mazeData,
-      model,
-      stepTrace,
-      start,
-      cost,
-      undefined
-    );
+    return createResult(env, mazeData, model, stepTrace, start, cost);
   } catch (error) {
     return createResult(
       env,
@@ -151,7 +158,6 @@ export async function runSingleMaze(
     );
   }
 }
-
 function findGoalPos(maze: string[]): { x: number; y: number } {
   for (let y = 0; y < maze.length; y++) {
     const row = maze[y];
