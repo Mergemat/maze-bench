@@ -71,33 +71,45 @@ export function generateMaze(
     return a;
   }
 
-  function carve(x: number, y: number, prevDir?: { dx: number; dy: number }) {
-    grid[y]![x] = " ";
+  function carve(startX: number, startY: number) {
+    const stack: {
+      x: number;
+      y: number;
+      prevDir?: { dx: number; dy: number };
+    }[] = [{ x: startX, y: startY }];
+    grid[startY]![startX] = " ";
 
-    const possibleDirs = [...dirs];
+    while (stack.length > 0) {
+      const { x, y, prevDir } = stack[stack.length - 1]!;
+      const possibleDirs = [...dirs];
 
-    // Add bias towards continuing in the same direction
-    if (prevDir && rand() < straightBias) {
-      possibleDirs.unshift(prevDir);
-    }
+      if (prevDir && rand() < straightBias) {
+        possibleDirs.unshift(prevDir);
+      }
 
-    // Randomize order to create unpredictability
-    for (const { dx, dy } of shuffle(possibleDirs)) {
-      const nx = x + dx;
-      const ny = y + dy;
-      if (
-        nx > 0 &&
-        ny > 0 &&
-        nx < width - 1 &&
-        ny < height - 1 &&
-        grid[ny]?.[nx] === "#"
-      ) {
+      // Find unvisited neighbors
+      const neighbors = shuffle(possibleDirs).filter((d) => {
+        const nx = x + d.dx;
+        const ny = y + d.dy;
+        return (
+          nx > 0 &&
+          ny > 0 &&
+          nx < width - 1 &&
+          ny < height - 1 &&
+          grid[ny]?.[nx] === "#"
+        );
+      });
+
+      if (neighbors.length > 0) {
+        const { dx, dy } = neighbors[0]!;
         grid[y + dy / 2]![x + dx / 2] = " ";
-        carve(nx, ny, { dx, dy });
+        grid[y + dy]![x + dx] = " ";
+        stack.push({ x: x + dx, y: y + dy, prevDir: { dx, dy } });
+      } else {
+        stack.pop();
       }
     }
   }
-
   // Adds additional loops / holes to make it less tree-like
   function addLoops(loopCount: number) {
     for (let i = 0; i < loopCount; i++) {
@@ -125,14 +137,12 @@ export function generateMaze(
 
 export function getObservation(env: MazeEnv): string {
   if (env.visionMode === "global") {
-    return env.maze
-      .map((row, y) =>
-        row
-          .split("")
-          .map((c, x) => (x === env.pos.x && y === env.pos.y ? "A" : c))
-          .join("")
-      )
-      .join("\n");
+    const width = env.maze[0]!.length;
+    const mazeStr = env.maze.join("\n");
+    const playerIdx = env.pos.y * (width + 1) + env.pos.x;
+    return (
+      mazeStr.substring(0, playerIdx) + "A" + mazeStr.substring(playerIdx + 1)
+    );
   }
 
   const r = 2;
@@ -184,6 +194,13 @@ export function generateSharedMazes(): MazeData[] {
   return mazes;
 }
 
+const d: Record<string, Pos> = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+};
+
 export function moveInMaze(
   env: MazeEnv,
   direction: "up" | "down" | "left" | "right",
@@ -194,13 +211,6 @@ export function moveInMaze(
   }
 
   env.steps++;
-
-  const d: Record<string, Pos> = {
-    up: { x: 0, y: -1 },
-    down: { x: 0, y: 1 },
-    left: { x: -1, y: 0 },
-    right: { x: 1, y: 0 },
-  };
 
   const delta = d[direction]!;
   const next = { x: env.pos.x + delta.x, y: env.pos.y + delta.y };
