@@ -35,7 +35,6 @@ export type RunResult = {
   cost?: number;
   stepsTrace: StepTrace[];
   lastObservation?: string;
-  modelOutput?: string;
   error?: string;
 };
 
