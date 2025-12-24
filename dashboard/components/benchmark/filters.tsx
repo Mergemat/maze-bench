@@ -40,7 +40,7 @@ export function Filters({ complexities, sizes, visions }: FiltersProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="all">all</SelectItem>
             {complexities.map((c) => (
               <SelectItem key={c} value={c}>
                 {c}
@@ -60,7 +60,7 @@ export function Filters({ complexities, sizes, visions }: FiltersProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="all">all</SelectItem>
             {sizes.map((s) => (
               <SelectItem key={s} value={s}>
                 {s}
@@ -82,7 +82,7 @@ export function Filters({ complexities, sizes, visions }: FiltersProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="all">all</SelectItem>
             {visions.map((v) => (
               <SelectItem key={v} value={v}>
                 {v}
