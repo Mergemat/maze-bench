@@ -1,4 +1,3 @@
-import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 
@@ -13,12 +12,6 @@ const lmStudio = createOpenAICompatible({
   name: "lmstudio",
   baseURL: "http://localhost:1234/v1",
   includeUsage: true,
-});
-
-const anth = createAnthropic({
-  name: "opencode-zen",
-  apiKey: process.env.OPENCODEZEN_API_KEY,
-  baseURL: "https://opencode.ai/zen/v1",
 });
 
 const defaultProviderOptions = {
