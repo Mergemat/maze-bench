@@ -285,19 +285,24 @@ function BaseScatterCard({
                 tickFormatter={(v) => `${v}%`}
               />
               <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    formatter={(v, name) => (
-                      <span>
-                        {name}: {name === "totalCost" ? "$" : ""}
-                        {Number(v).toFixed(5)}
-                        {name === "successRatePct" ? "%" : ""}
-                      </span>
-                    )}
-                    indicator="dashed"
-                    labelFormatter={formatModelName}
-                  />
-                }
+                content={({ active, payload }) => {
+                  if (!(active && payload?.length)) return null;
+                  const entry = payload[0]?.payload as ModelMetricsPoint;
+                  return (
+                    <div className="rounded-md border bg-background p-2 text-xs shadow-md">
+                      <p className="mb-1 font-medium">
+                        {formatModelName(entry.model)}
+                      </p>
+                      <p>
+                        {xLabel}:{" "}
+                        {xFormatter
+                          ? xFormatter(entry[xKey] as number)
+                          : entry[xKey]}
+                      </p>
+                      <p>Success Rate: {entry.successRatePct.toFixed(1)}%</p>
+                    </div>
+                  );
+                }}
                 cursor={{ strokeDasharray: "3 3" }}
               />
               <Scatter data={filteredData} isAnimationActive={false}>
@@ -330,6 +335,7 @@ function StepsVsSuccessCard(props: any) {
       {...props}
       chartColor={CHART_COLORS[1]}
       title="Avg Steps vs Success Rate"
+      xFormatter={(v) => `${Number(v).toFixed(2)}`}
       xKey="avgSteps"
       xLabel="Avg Steps"
     />
