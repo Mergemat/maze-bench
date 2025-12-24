@@ -102,11 +102,7 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Runs:</span>
-                  <span className="ml-2 font-mono">{filtered.length}</span>
-                </div>
+              <div className="flex flex-wrap justify-between text-xs gap-2">
                 <div>
                   <span className="text-muted-foreground">Avg Steps:</span>
                   <span className="ml-2 font-mono">
