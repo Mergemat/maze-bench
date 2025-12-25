@@ -143,6 +143,7 @@ export async function runSingleMaze(
       })
     );
 
+    console.log(result.providerMetadata?.openrouter);
     const cost = (result.providerMetadata?.openrouter as any)?.usage?.cost;
 
     return createResult(env, mazeData, model, stepTrace, start, cost);

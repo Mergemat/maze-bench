@@ -35,30 +35,48 @@ export const MODELS = {
   // // anthropic
   // "[anthropic]claude-sonnet-4": withReasoning("anthropic/claude-sonnet-4"),
   // "[anthropic]claude-sonnet-4.5": withReasoning("anthropic/claude-sonnet-4.5"),
-  //
+
   // // deepseek
   // "[deepseek]deepseek-v3.1": withReasoning("deepseek/deepseek-chat-v3.1"),
   //
   // // google
   // "[google]gemini-2.5-flash": withReasoning("google/gemini-2.5-flash"),
+  // "[google]gemini-3-flash-low": withReasoning(
+  //   "google/gemini-3-flash-preview",
+  //   "low"
+  // ),
+  //
+  // "[google]gemini-3-flash-high": withReasoning(
+  //   "google/gemini-3-flash-preview",
+  //   "high"
+  // ),
+  // "[google]gemini-3-pro-low": withReasoning(
+  //   "google/gemini-3-pro-preview",
+  //   "low"
+  // ),
+  //
+  // "[google]gemini-3-pro-high": withReasoning(
+  //   "google/gemini-3-pro-preview",
+  //   "high"
+  // ),
   //
   // // moonshotai
   // "[moonshotai]kimi-k2-thinking": withReasoning("moonshotai/kimi-k2-thinking"),
-  //
-  // // openai
-  // "[openai]gpt-5-mini": withReasoning("openai/gpt-5-mini"),
-  // "[openai]gpt-5-default": withReasoning("openai/gpt-5"),
-  // "[openai]gpt-5-high": withReasoning("openai/gpt-5", "high"),
-  // "[openai]gpt-5.2-none": withReasoning("openai/gpt-5.2", "none"),
-  // "[openai]gpt-5.2-default": withReasoning("openai/gpt-5.2"),
-  // "[openai]gpt-5.2-high": withReasoning("openai/gpt-5.2", "high"),
-  // "[openai]gpt-5.2-xhigh": withReasoning("openai/gpt-5.2", "xhigh"),
-  // "[openai]gpt-oss-120b": withReasoning("openai/gpt-oss-120b"),
-  //
+
+  // openai
+  "[openai]gpt-5-mini": withReasoning("openai/gpt-5-mini"),
+  "[openai]gpt-5-default": withReasoning("openai/gpt-5"),
+  "[openai]gpt-5-high": withReasoning("openai/gpt-5", "high"),
+  "[openai]gpt-5.2-none": withReasoning("openai/gpt-5.2", "none"),
+  "[openai]gpt-5.2-default": withReasoning("openai/gpt-5.2"),
+  "[openai]gpt-5.2-high": withReasoning("openai/gpt-5.2", "high"),
+  "[openai]gpt-5.2-xhigh": withReasoning("openai/gpt-5.2", "xhigh"),
+  "[openai]gpt-oss-120b": withReasoning("openai/gpt-oss-120b"),
+
   // // x-ai
   // "[x-ai]grok-4.1-fast": withReasoning("x-ai/grok-4.1-fast"),
 
-  "[z-ai]glm-4.7-free": opencodeZen("glm-4.7-free"),
+  // "[z-ai]glm-4.7-free": opencodeZen("glm-4.7-free"),
 } as const;
 
 export type ModelKey = keyof typeof MODELS;
