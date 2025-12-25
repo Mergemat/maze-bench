@@ -19,5 +19,5 @@ export const BENCHMARK_CONFIGS: BenchmarkConfig[] = [
 ];
 
 export const MAX_STEPS = 200;
-export const RUNS_PER_CONFIG = 2;
+export const RUNS_PER_CONFIG = 1;
 export const CONCURRENCY_LIMIT = 40;
