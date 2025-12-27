@@ -12,34 +12,175 @@ import type { ModelKey } from "./models";
 import { MODELS } from "./models";
 import type { MazeData, MazeEnv, RunResult, StepTrace } from "./types";
 
-function isRetryableError(error: unknown): boolean {
+// Error categories for better handling
+export const ErrorCategory = {
+  Network: "network",
+  RateLimit: "rate_limit",
+  Timeout: "timeout",
+  ServerError: "server_error",
+  InvalidResponse: "invalid_response",
+  Unknown: "unknown",
+} as const;
+
+export type ErrorCategory = (typeof ErrorCategory)[keyof typeof ErrorCategory];
+
+export interface BenchError extends Error {
+  category: ErrorCategory;
+  retryable: boolean;
+  statusCode?: number;
+  originalError?: unknown;
+}
+
+// Create a typed error with category
+function createBenchError(
+  message: string,
+  category: ErrorCategory,
+  retryable: boolean,
+  originalError?: unknown,
+  statusCode?: number
+): BenchError {
+  const error = new Error(message) as BenchError;
+  error.category = category;
+  error.retryable = retryable;
+  error.originalError = originalError;
+  error.statusCode = statusCode;
+  return error;
+}
+
+// Categorize errors for better handling
+function categorizeError(error: unknown): BenchError {
   const message = error instanceof Error ? error.message : String(error);
-  return (
-    message.includes("socket connection was closed unexpectedly") ||
-    message.includes("ECONNRESET") ||
-    message.includes("ETIMEDOUT") ||
-    message.includes("ENOTFOUND")
-  );
+  const lowerMessage = message.toLowerCase();
+
+  // Network errors - retryable
+  if (
+    lowerMessage.includes("socket connection was closed unexpectedly") ||
+    lowerMessage.includes("econnreset") ||
+    lowerMessage.includes("econnrefused") ||
+    lowerMessage.includes("etimedout") ||
+    lowerMessage.includes("enotfound") ||
+    lowerMessage.includes("network") ||
+    lowerMessage.includes("dns") ||
+    lowerMessage.includes("fetch failed")
+  ) {
+    return createBenchError(message, ErrorCategory.Network, true, error);
+  }
+
+  // Rate limit errors - retryable with longer backoff
+  if (
+    lowerMessage.includes("rate limit") ||
+    lowerMessage.includes("too many requests") ||
+    lowerMessage.includes("429") ||
+    lowerMessage.includes("quota exceeded")
+  ) {
+    return createBenchError(message, ErrorCategory.RateLimit, true, error, 429);
+  }
+
+  // Timeout errors - retryable
+  if (
+    lowerMessage.includes("timeout") ||
+    lowerMessage.includes("timed out") ||
+    lowerMessage.includes("deadline exceeded")
+  ) {
+    return createBenchError(message, ErrorCategory.Timeout, true, error);
+  }
+
+  // Server errors (5xx) - retryable
+  if (
+    lowerMessage.includes("500") ||
+    lowerMessage.includes("502") ||
+    lowerMessage.includes("503") ||
+    lowerMessage.includes("504") ||
+    lowerMessage.includes("internal server error") ||
+    lowerMessage.includes("bad gateway") ||
+    lowerMessage.includes("service unavailable")
+  ) {
+    return createBenchError(
+      message,
+      ErrorCategory.ServerError,
+      true,
+      error,
+      500
+    );
+  }
+
+  // Invalid response - not retryable (likely a bug)
+  if (
+    lowerMessage.includes("invalid") ||
+    lowerMessage.includes("parse") ||
+    lowerMessage.includes("json") ||
+    lowerMessage.includes("unexpected token")
+  ) {
+    return createBenchError(
+      message,
+      ErrorCategory.InvalidResponse,
+      false,
+      error
+    );
+  }
+
+  // Unknown errors - not retryable by default
+  return createBenchError(message, ErrorCategory.Unknown, false, error);
+}
+
+// Retry configuration
+interface RetryConfig {
+  maxRetries: number;
+  baseDelayMs: number;
+  maxDelayMs: number;
+  rateLimitMultiplier: number;
+}
+
+const DEFAULT_RETRY_CONFIG: RetryConfig = {
+  maxRetries: 4,
+  baseDelayMs: 500,
+  maxDelayMs: 30_000,
+  rateLimitMultiplier: 3, // Rate limit errors get longer backoff
+};
+
+// Calculate delay with exponential backoff and jitter
+function calculateDelay(
+  attempt: number,
+  config: RetryConfig,
+  isRateLimit: boolean
+): number {
+  const multiplier = isRateLimit ? config.rateLimitMultiplier : 1;
+  const exponentialDelay = config.baseDelayMs * 2 ** attempt * multiplier;
+  const jitter = Math.random() * 0.3 * exponentialDelay; // 30% jitter
+  return Math.min(exponentialDelay + jitter, config.maxDelayMs);
 }
 
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  maxRetries = 4,
-  baseDelay = 100
+  config: RetryConfig = DEFAULT_RETRY_CONFIG,
+  onRetry?: (error: BenchError, attempt: number, delayMs: number) => void
 ): Promise<T> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  let lastError: BenchError | null = null;
+
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
-      if (attempt === maxRetries || !isRetryableError(error)) {
-        throw error;
+      lastError = categorizeError(error);
+
+      // Don't retry non-retryable errors
+      if (!lastError.retryable || attempt === config.maxRetries) {
+        throw lastError;
       }
-      const delay = baseDelay * 2 ** attempt;
-      console.log(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`);
+
+      const isRateLimit = lastError.category === ErrorCategory.RateLimit;
+      const delay = calculateDelay(attempt, config, isRateLimit);
+
+      onRetry?.(lastError, attempt + 1, delay);
+
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  throw new Error("Unreachable");
+
+  throw (
+    lastError ??
+    createBenchError("Unexpected retry loop exit", ErrorCategory.Unknown, false)
+  );
 }
 
 type Direction = "up" | "down" | "left" | "right";
@@ -57,7 +198,7 @@ function createMoveTool(
     inputSchema: z.object({
       direction: z.enum(["up", "down", "left", "right"]),
     }),
-    execute: async ({ direction }) => {
+    execute: ({ direction }) => {
       const posBefore = { ...env.pos };
 
       // Perform the move logic
@@ -66,22 +207,33 @@ function createMoveTool(
       // Log for the trace
       onMove(direction, posBefore, result.view);
 
+      // Determine message based on result
+      let moveMessage: string;
+      if (result.success) {
+        moveMessage = "Goal reached!";
+      } else if (posBefore.x === env.pos.x && posBefore.y === env.pos.y) {
+        moveMessage = "Hit a wall, position unchanged.";
+      } else {
+        moveMessage = `Moved ${direction} to (${env.pos.x}, ${env.pos.y})`;
+      }
+
       // Return rich data to the model state
       return {
         success: result.success,
         newPosition: { x: env.pos.x, y: env.pos.y },
         observation: result.view,
-        message: result.success
-          ? "Goal reached!"
-          : posBefore.x === env.pos.x && posBefore.y === env.pos.y
-            ? "Hit a wall, position unchanged."
-            : `Moved ${direction} to (${env.pos.x}, ${env.pos.y})`,
+        message: moveMessage,
       };
     },
   });
 }
 
 export type StepCallback = (step: number, success: boolean) => void;
+export type RetryCallback = (
+  error: BenchError,
+  attempt: number,
+  delayMs: number
+) => void;
 
 const SYSTEM_PROMPT = `You are navigating a maze. 
 Your goal is to find the exit (G).
@@ -98,7 +250,8 @@ Every time you move, you will receive your new coordinates and a view of the maz
 export async function runSingleMaze(
   model: ModelKey,
   mazeData: MazeData,
-  onStep?: StepCallback
+  onStep?: StepCallback,
+  onRetry?: RetryCallback
 ): Promise<RunResult> {
   const env = createMazeEnv(mazeData);
   const stepTrace: StepTrace[] = [];
@@ -123,31 +276,44 @@ export async function runSingleMaze(
   // Stop the loop if the tool reports success
   const stop: StopCondition<typeof tools> = ({ steps }) =>
     steps.some((s) =>
-      s.toolResults?.some((r: any) => r.output?.success === true)
+      s.toolResults?.some((r) => {
+        const output = r.output as { success?: boolean } | undefined;
+        return output?.success === true;
+      })
     );
 
   const start = performance.now();
 
   try {
-    const result = await retryWithBackoff(() =>
-      generateText({
-        model: MODELS[model] as LanguageModel,
-        tools,
-        stopWhen: stop,
-        system: SYSTEM_PROMPT,
-        prompt: `Start Position: (1, 1). Initial view:\n${getObservation(env)}`,
-        temperature: 0, // Deterministic logic is better for navigation
-        onStepFinish: () => {
-          onStep?.(env.steps, env.success);
-        },
-      })
+    const result = await retryWithBackoff(
+      () =>
+        generateText({
+          model: MODELS[model] as LanguageModel,
+          tools,
+          stopWhen: stop,
+          system: SYSTEM_PROMPT,
+          prompt: `Start Position: (1, 1). Initial view:\n${getObservation(env)}`,
+          temperature: 0, // Deterministic logic is better for navigation
+          onStepFinish: () => {
+            onStep?.(env.steps, env.success);
+          },
+        }),
+      DEFAULT_RETRY_CONFIG,
+      onRetry
     );
 
-    console.log(result.providerMetadata?.openrouter);
-    const cost = (result.providerMetadata?.openrouter as any)?.usage?.cost;
+    const providerMeta = result.providerMetadata?.openrouter as
+      | { usage?: { cost?: number } }
+      | undefined;
+    const cost = providerMeta?.usage?.cost;
 
     return createResult(env, mazeData, model, stepTrace, start, cost);
   } catch (error) {
+    const benchError =
+      error instanceof Error && "category" in error
+        ? (error as BenchError)
+        : categorizeError(error);
+
     return createResult(
       env,
       mazeData,
@@ -155,10 +321,11 @@ export async function runSingleMaze(
       stepTrace,
       start,
       undefined,
-      error
+      benchError
     );
   }
 }
+
 function findGoalPos(maze: string[]): { x: number; y: number } {
   for (let y = 0; y < maze.length; y++) {
     const row = maze[y];
@@ -179,8 +346,13 @@ function createResult(
   stepTrace: StepTrace[],
   startTime: number,
   cost?: number,
-  error?: unknown
+  error?: BenchError
 ): RunResult {
+  let errorMessage: string | undefined;
+  if (error) {
+    errorMessage = `[${error.category}] ${error.message}`;
+  }
+
   return {
     id: `${model}_${mazeData.id}`,
     timestamp: new Date().toISOString(),
@@ -196,10 +368,6 @@ function createResult(
     cost,
     stepsTrace: stepTrace,
     lastObservation: getObservation(env),
-    error: error
-      ? error instanceof Error
-        ? error.message
-        : String(error)
-      : undefined,
+    error: errorMessage,
   };
 }

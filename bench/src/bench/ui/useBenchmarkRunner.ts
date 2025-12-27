@@ -1,33 +1,67 @@
 import { useApp } from "ink";
 import { useEffect, useMemo, useState } from "react";
 import { CONCURRENCY_LIMIT } from "../config";
-import { MODELS } from "../models";
-import type { ModelKey } from "../models";
-import { runSingleMaze } from "../runner";
+import {
+  type ModelKey,
+  getAllModels,
+  getModelKey,
+  MODELS,
+  setModelEnabled,
+} from "../models";
+import { enhanceResultsWithOptimalPaths } from "../optimal-paths-utils";
+import { runSingleMaze, type BenchError } from "../runner";
+import { IncrementalResultSaver } from "../save";
 import { computeStats } from "../stats";
 import { generateMazesForSuite, getSuites } from "../suites";
 import type { BenchmarkStats, MazeData, RunResult } from "../types";
 import {
   runWithConcurrency,
-  saveModelResults,
   updateErrorStats,
   updateSuccessStats,
 } from "./runnerUtils";
-import type { ModelStats, Phase } from "./types";
+import type { ModelStats, Phase, RecentError } from "./types";
 import { formatDefaultVersion } from "./utils";
-import { enhanceResultsWithOptimalPaths } from "../optimal-paths-utils";
+
+// Regex for extracting error category - defined at module level for performance
+const ERROR_CATEGORY_REGEX = /^\[(\w+)\]/;
+
+function createEmptyModelStats(total: number): ModelStats {
+  return {
+    total,
+    executedStarted: 0,
+    executedDone: 0,
+    executedErrors: 0,
+    durationSumMs: 0,
+    maxDurationMs: 0,
+    correctCount: 0,
+    incorrectCount: 0,
+    costSum: 0,
+    completionTokensSum: 0,
+    errorCategories: {},
+  };
+}
 
 export function useBenchmarkRunner() {
   const { exit } = useApp();
 
   const suites = useMemo(() => getSuites(), []);
-  const models = useMemo(() => Object.keys(MODELS) as ModelKey[], []);
+  const allModels = useMemo(() => getAllModels(), []);
 
   const [phase, setPhase] = useState<Phase>("pickSuite");
   const [selectedSuiteId, setSelectedSuiteId] = useState<string | null>(null);
+  const [selectedModels, setSelectedModels] = useState<Set<string>>(() => {
+    // Initialize with currently enabled models
+    const enabled = new Set<string>();
+    for (const def of allModels) {
+      if (def.enabled) {
+        enabled.add(getModelKey(def));
+      }
+    }
+    return enabled;
+  });
   const [version, setVersion] = useState(formatDefaultVersion());
 
-  const [modelOrder, setModelOrder] = useState<string[]>(models);
+  const [modelOrder, setModelOrder] = useState<string[]>([]);
   const [stats, setStats] = useState<Record<string, ModelStats>>({});
   const [total, setTotal] = useState(0);
 
@@ -35,8 +69,32 @@ export function useBenchmarkRunner() {
   const [errors, setErrors] = useState(0);
   const [runningCount, setRunningCount] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
+  const [recentErrors, setRecentErrors] = useState<RecentError[]>([]);
 
   const [finalStats, setFinalStats] = useState<BenchmarkStats | null>(null);
+
+  // Toggle model selection
+  const toggleModel = (modelKey: string) => {
+    setSelectedModels((prev) => {
+      const next = new Set(prev);
+      if (next.has(modelKey)) {
+        next.delete(modelKey);
+      } else {
+        next.add(modelKey);
+      }
+      return next;
+    });
+  };
+
+  // Confirm model selection and update MODELS
+  const confirmModels = () => {
+    // Update enabled status for all models
+    for (const def of allModels) {
+      const key = getModelKey(def);
+      setModelEnabled(key, selectedModels.has(key));
+    }
+    setPhase("version");
+  };
 
   useEffect(() => {
     if (phase !== "running") {
@@ -56,6 +114,14 @@ export function useBenchmarkRunner() {
     (async () => {
       const mazes = generateMazesForSuite(suite);
 
+      // Get enabled model keys
+      const models = Object.keys(MODELS) as ModelKey[];
+      if (models.length === 0) {
+        console.error("No models enabled!");
+        exit();
+        return;
+      }
+
       const tasks: Array<{ model: ModelKey; maze: MazeData }> = [];
       for (const model of models) {
         for (const maze of mazes) {
@@ -73,36 +139,31 @@ export function useBenchmarkRunner() {
       setErrors(0);
       setRunningCount(0);
       setTotalCost(0);
+      setRecentErrors([]);
       setFinalStats(null);
 
-      // init per-model stats
-      setStats(
-        models.reduce(
-          (acc, name) => {
-            acc[name] = {
-              total: mazes.length,
-              executedStarted: 0,
-              executedDone: 0,
-              executedErrors: 0,
-              durationSumMs: 0,
-              maxDurationMs: 0,
-              correctCount: 0,
-              incorrectCount: 0,
-              costSum: 0,
-              completionTokensSum: 0,
-            };
-            return acc;
-          },
-          {} as Record<string, ModelStats>
-        )
-      );
+      // Init per-model stats
+      const initialStats: Record<string, ModelStats> = {};
+      for (const name of models) {
+        initialStats[name] = createEmptyModelStats(mazes.length);
+      }
+      setStats(initialStats);
 
       const allResults: RunResult[] = [];
 
-      // for per-model save
-      const resultsByModel = new Map<ModelKey, RunResult[]>();
-      const savedModels = new Set<ModelKey>();
-      const mazesPerModel = mazes.length;
+      // Create incremental savers for each model
+      const savers = new Map<ModelKey, IncrementalResultSaver>();
+      for (const model of models) {
+        savers.set(
+          model,
+          new IncrementalResultSaver({
+            model,
+            version,
+            suiteId: suite.id,
+            seeds: mazes.map((m) => m.seed),
+          })
+        );
+      }
 
       await runWithConcurrency(
         tasks,
@@ -112,7 +173,9 @@ export function useBenchmarkRunner() {
 
           setStats((prev) => {
             const prevStats = prev[model];
-            if (!prevStats) return prev;
+            if (!prevStats) {
+              return prev;
+            }
             return {
               ...prev,
               [model]: {
@@ -125,9 +188,24 @@ export function useBenchmarkRunner() {
 
           let result: RunResult;
           try {
-            result = await runSingleMaze(model, maze, () => {
-              // you can still wire per-step UI separately if you want
-            });
+            result = await runSingleMaze(
+              model,
+              maze,
+              () => {
+                // Per-step callback if needed
+              },
+              (error: BenchError, attempt: number, delayMs: number) => {
+                // Retry callback - track retries
+                setRecentErrors((prev) => [
+                  ...prev.slice(-9),
+                  {
+                    model,
+                    error: `[Retry ${attempt}] ${error.message} (waiting ${Math.round(delayMs / 1000)}s)`,
+                    timestamp: Date.now(),
+                  },
+                ]);
+              }
+            );
           } catch (e) {
             // If runSingleMaze throws instead of returning { success:false }
             result = {
@@ -142,15 +220,18 @@ export function useBenchmarkRunner() {
 
           allResults.push(result);
 
-          if (!resultsByModel.has(model)) {
-            resultsByModel.set(model, []);
+          // Save result incrementally to file as it comes in
+          const saver = savers.get(model);
+          if (saver) {
+            saver.addResult(result);
           }
-          resultsByModel.get(model)?.push(result);
 
           if (result.success) {
             setStats((prev) => {
               const prevStats = prev[model];
-              if (!prevStats) return prev;
+              if (!prevStats) {
+                return prev;
+              }
               return {
                 ...prev,
                 [model]: {
@@ -162,40 +243,49 @@ export function useBenchmarkRunner() {
           } else {
             setStats((prev) => {
               const prevStats = prev[model];
-              if (!prevStats) return prev;
+              if (!prevStats) {
+                return prev;
+              }
+              const updates = updateErrorStats(prevStats, result);
+
+              // Track error category
+              const errorCategories = { ...prevStats.errorCategories };
+              if (result.error) {
+                const match = ERROR_CATEGORY_REGEX.exec(result.error);
+                const category = match?.[1] ?? "unknown";
+                errorCategories[category] =
+                  (errorCategories[category] ?? 0) + 1;
+              }
+
               return {
                 ...prev,
                 [model]: {
                   ...prevStats,
-                  ...updateErrorStats(prevStats, result),
+                  ...updates,
+                  lastError: result.error,
+                  errorCategories,
                 },
               };
             });
+
             if (result.error) {
               setErrors((e) => e + 1);
+              const errorMessage = result.error;
+              setRecentErrors((prev) => [
+                ...prev.slice(-9),
+                {
+                  model,
+                  error: errorMessage,
+                  timestamp: Date.now(),
+                },
+              ]);
             }
           }
 
-          // global counters
+          // Global counters
           setCompleted((c) => c + 1);
           setRunningCount((r) => Math.max(0, r - 1));
           setTotalCost((c) => c + (result.cost ?? 0));
-
-          const modelResults = resultsByModel.get(model);
-          if (
-            !savedModels.has(model) &&
-            modelResults &&
-            modelResults.length === mazesPerModel
-          ) {
-            savedModels.add(model);
-            saveModelResults({
-              model,
-              version,
-              suite,
-              mazes,
-              results: modelResults,
-            });
-          }
         }
       );
 
@@ -210,14 +300,14 @@ export function useBenchmarkRunner() {
       console.log("\nEnhancing results with optimal paths...");
       enhanceResultsWithOptimalPaths();
 
-      // if you want it to "stay open", remove this:
+      // Exit after completion
       exit();
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [phase, selectedSuiteId, version, suites, models, exit]);
+  }, [phase, selectedSuiteId, version, suites, exit]);
 
   return {
     phase,
@@ -225,6 +315,10 @@ export function useBenchmarkRunner() {
     suites,
     selectedSuiteId,
     setSelectedSuiteId,
+    allModels,
+    selectedModels,
+    toggleModel,
+    confirmModels,
     version,
     setVersion,
     modelOrder,
@@ -234,6 +328,7 @@ export function useBenchmarkRunner() {
     errors,
     runningCount,
     totalCost,
+    recentErrors,
     finalStats,
   };
 }

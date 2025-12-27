@@ -3,16 +3,19 @@ import type { ModelKey } from "./models";
 export type MazeComplexity = "simple" | "normal" | "complex" | "extreme";
 export type VisionMode = "local" | "global";
 
-export type Pos = { x: number; y: number };
+export interface Pos {
+  x: number;
+  y: number;
+}
 
-export type BenchmarkConfig = {
+export interface BenchmarkConfig {
   width: number;
   height: number;
   complexity: MazeComplexity;
   vision: VisionMode;
-};
+}
 
-export type MazeEnv = {
+export interface MazeEnv {
   id: string;
   maze: string[];
   pos: Pos;
@@ -20,16 +23,16 @@ export type MazeEnv = {
   done: boolean;
   success: boolean;
   visionMode: VisionMode;
-};
+}
 
-export type MazeData = {
+export interface MazeData {
   id: string;
   cfg: BenchmarkConfig;
   maze: string[];
   seed: number;
-};
+}
 
-export type StepTrace = {
+export interface StepTrace {
   step: number;
   action: "up" | "down" | "left" | "right";
   posBefore: Pos;
@@ -37,9 +40,9 @@ export type StepTrace = {
   success: boolean;
   observation?: string;
   reasoning?: string;
-};
+}
 
-export type RunResult = {
+export interface RunResult {
   id: string;
   timestamp: string;
   config: BenchmarkConfig;
@@ -55,11 +58,11 @@ export type RunResult = {
   stepsTrace: StepTrace[];
   lastObservation?: string;
   error?: string;
-};
+}
 
 export type RunStatus = "pending" | "running" | "success" | "failed";
 
-export type RunState = {
+export interface RunState {
   mazeId: string;
   model: ModelKey;
   status: RunStatus;
@@ -67,9 +70,9 @@ export type RunState = {
   error?: string;
   timeMs?: number;
   cost?: number;
-};
+}
 
-export type BenchmarkStats = {
+export interface BenchmarkStats {
   overall: {
     successRate: number;
     avgSteps: number;
@@ -86,9 +89,9 @@ export type BenchmarkStats = {
       n: number;
     }
   >;
-};
+}
 
-export type BenchmarkReport = {
+export interface BenchmarkReport {
   metadata: {
     model: ModelKey;
     date: string;
@@ -98,4 +101,4 @@ export type BenchmarkReport = {
   };
   stats: BenchmarkStats;
   results: RunResult[];
-};
+}

@@ -27,7 +27,7 @@
     "@ai-sdk-tools/memory": "^1.2.0",
     "@ai-sdk-tools/store": "^1.2.0",
     "@ai-sdk/anthropic": "^3.0.1",
-    "@ai-sdk/devtools": "^0.0.1",
+    "@ai-sdk/devtools": "^0.0.2",
     "@ai-sdk/groq": "^3.0.1",
     "@ai-sdk/openai-compatible": "^2.0.1",
     "@openrouter/ai-sdk-provider": "^1.5.4",

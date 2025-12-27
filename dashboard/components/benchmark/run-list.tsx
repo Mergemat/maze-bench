@@ -91,7 +91,7 @@ export function RunList({ reports }: RunListProps) {
       <div className="flex flex-wrap gap-2 xl:h-60 2xl:h-52">
         {filtered.map((run) => (
           <RunReplicator key={run.id} run={run}>
-            <Button key={run.id} type="button" variant="outline">
+            <Button key={run.id} type="button" variant="outline" title={run.error ?? undefined}>
               <span className="text-muted-foreground">
                 {run.config.complexity}
               </span>
@@ -102,12 +102,21 @@ export function RunList({ reports }: RunListProps) {
               <span className="text-muted-foreground">
                 | {run.totalSteps} steps
               </span>
-              <Badge
-                className="h-4 px-1 text-[9px]"
-                variant={run.success ? "default" : "destructive"}
-              >
-                {run.success ? "✓" : "✗"}
-              </Badge>
+              {run.error ? (
+                <Badge
+                  className="h-4 px-1 text-[9px]"
+                  variant="destructive"
+                >
+                  ERROR
+                </Badge>
+              ) : (
+                <Badge
+                  className="h-4 px-1 text-[9px]"
+                  variant={run.success ? "default" : "destructive"}
+                >
+                  {run.success ? "✓" : "✗"}
+                </Badge>
+              )}
             </Button>
           </RunReplicator>
         ))}

@@ -75,8 +75,9 @@ export function findOptimalPath(
       const inBounds =
         next.x >= 0 && next.x < width && next.y >= 0 && next.y < height;
 
-      if (inBounds && maze[next.y]) {
-        const cell = maze[next.y][next.x];
+      const row = maze[next.y];
+      if (inBounds && row) {
+        const cell = row[next.x];
         const notWall = cell !== "#";
 
         if (notWall && !visited.has(key)) {
@@ -115,7 +116,13 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
     }
 
     for (const result of content.results) {
-      if (result.seed && result.config && result.maze && result.startPos && result.goalPos) {
+      if (
+        result.seed &&
+        result.config &&
+        result.maze &&
+        result.startPos &&
+        result.goalPos
+      ) {
         const mazeKey = `${result.seed}_${result.config.complexity}_${result.config.vision}_${result.config.width}x${result.config.height}`;
 
         if (!mazes.has(mazeKey)) {
@@ -128,7 +135,9 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
           });
         }
       } else {
-        console.warn(`Incomplete result in ${filePath}: missing required fields`);
+        console.warn(
+          `Incomplete result in ${filePath}: missing required fields`
+        );
       }
     }
   }
@@ -136,9 +145,7 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
   return mazes;
 }
 
-function processMazes(
-  mazes: Map<string, MazeData>
-): OptimalPathData[] {
+function processMazes(mazes: Map<string, MazeData>): OptimalPathData[] {
   const results: OptimalPathData[] = [];
   const processedSeeds = new Set<number>();
 

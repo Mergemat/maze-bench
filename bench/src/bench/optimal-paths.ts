@@ -51,7 +51,7 @@ function parseCLIArgs(): CLIOptions {
       case "--seeds":
         if (i + 1 < args.length) {
           const seedsStr = args[i + 1]!;
-          options.seeds = seedsStr.split(",").map(s => {
+          options.seeds = seedsStr.split(",").map((s) => {
             const num = Number.parseInt(s.trim(), 10);
             if (Number.isNaN(num)) {
               console.error(`Invalid seed: ${s}`);
@@ -83,7 +83,9 @@ function parseCLIArgs(): CLIOptions {
           if (output === "json" || output === "enhance" || output === "stats") {
             options.output = output;
           } else {
-            console.error(`Invalid output format: ${output}. Must be json, enhance, or stats.`);
+            console.error(
+              `Invalid output format: ${output}. Must be json, enhance, or stats.`
+            );
             process.exit(1);
           }
           i += 1;
@@ -155,8 +157,9 @@ export function findOptimalPath(
       const inBounds =
         next.x >= 0 && next.x < width && next.y >= 0 && next.y < height;
 
-      if (inBounds && maze[next.y]) {
-        const cell = maze[next.y][next.x];
+      const row = maze[next.y];
+      if (inBounds && row) {
+        const cell = row[next.x];
         const notWall = cell !== "#";
 
         if (notWall && !visited.has(key)) {
@@ -183,16 +186,16 @@ function loadResultFiles(options: CLIOptions): string[] {
 
   let files: string[];
   try {
-    files = fs
-      .readdirSync(RESULT_DIR)
-      .filter((file) => file.endsWith(".json"));
+    files = fs.readdirSync(RESULT_DIR).filter((file) => file.endsWith(".json"));
   } catch (error) {
     console.error(`Failed to read results directory: ${error}`);
     process.exit(1);
   }
 
   if (options.model) {
-    const filtered = files.filter((file) => file.includes(options.model as string));
+    const filtered = files.filter((file) =>
+      file.includes(options.model as string)
+    );
     if (filtered.length === 0) {
       console.error(`No result files found for model: ${options.model}`);
       process.exit(1);
@@ -228,7 +231,13 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
     }
 
     for (const result of content.results) {
-      if (result.seed && result.config && result.maze && result.startPos && result.goalPos) {
+      if (
+        result.seed &&
+        result.config &&
+        result.maze &&
+        result.startPos &&
+        result.goalPos
+      ) {
         const mazeKey = `${result.seed}_${result.config.complexity}_${result.config.vision}_${result.config.width}x${result.config.height}`;
 
         if (!mazes.has(mazeKey)) {
@@ -241,15 +250,15 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
           });
         }
       } else {
-        console.warn(`Incomplete result in ${filePath}: missing required fields`);
+        console.warn(
+          `Incomplete result in ${filePath}: missing required fields`
+        );
       }
     }
   }
 
   return mazes;
 }
-
-
 
 function processMazes(
   mazes: Map<string, MazeData>,
@@ -359,7 +368,7 @@ function enhanceSingleFile(
   optimalPathMap: Map<number, OptimalPathResult>
 ): void {
   const fullPath = path.join(RESULT_DIR, filePath);
-  
+
   try {
     const content = JSON.parse(fs.readFileSync(fullPath, "utf-8"));
 
@@ -461,7 +470,10 @@ function handleStatsOutput(optimalPaths: OptimalPathData[]) {
   }
 }
 
-function loadAndProcessData(options: CLIOptions): { mazes: Map<string, MazeData>; optimalPaths: OptimalPathData[] } {
+function loadAndProcessData(options: CLIOptions): {
+  mazes: Map<string, MazeData>;
+  optimalPaths: OptimalPathData[];
+} {
   console.log("Loading result files...");
   const loadedResultFiles = loadResultFiles(options);
   console.log(`Found ${loadedResultFiles.length} result files`);
@@ -477,7 +489,10 @@ function loadAndProcessData(options: CLIOptions): { mazes: Map<string, MazeData>
   return { mazes, optimalPaths };
 }
 
-function handleOutput(optimalPaths: OptimalPathData[], options: CLIOptions): void {
+function handleOutput(
+  optimalPaths: OptimalPathData[],
+  options: CLIOptions
+): void {
   const outputFormat = options.output || "json";
 
   switch (outputFormat) {
