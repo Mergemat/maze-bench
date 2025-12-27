@@ -1,8 +1,5 @@
-import { computeStats } from "../stats";
-import type { BenchmarkStats, MazeData, RunResult } from "../types";
-import type { ModelKey } from "../models";
-import { saveRunResult } from "../save";
-import type { ModelStats, SuiteChoice } from "./types";
+import type { RunResult } from "../types";
+import type { ModelStats } from "./types";
 
 export async function runWithConcurrency<T>(
   items: T[],
@@ -66,30 +63,4 @@ export function updateErrorStats(
     costSum: prev.costSum + (result.cost ?? 0),
     completionTokensSum: prev.completionTokensSum + completionTokens,
   };
-}
-
-export function saveModelResults(params: {
-  model: ModelKey;
-  version: string;
-  suite: SuiteChoice;
-  mazes: MazeData[];
-  results: RunResult[];
-}): void {
-  const { model, version, suite, mazes, results } = params;
-  const modelStats = computeStats(results);
-  const filename = `${model}_${version}_${new Date()
-    .toISOString()
-    .replace(/[:.]/g, "-")}.json`;
-
-  saveRunResult(filename, {
-    metadata: {
-      model,
-      date: new Date().toISOString(),
-      version,
-      suite: suite.id,
-      seeds: mazes.map((m) => m.seed),
-    },
-    stats: modelStats,
-    results,
-  });
 }

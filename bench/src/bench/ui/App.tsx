@@ -1,21 +1,29 @@
-import { Box, render, Text } from "ink";
-import React from "react";
+import { Box, render } from "ink";
+import type { FC } from "react";
 import {
+  DoneBanner,
+  Header,
+  ModelSelector,
   ProgressBar,
+  RecentErrors,
   ResultsTable,
+  StatsSummary,
   SuiteSelector,
   VersionInput,
 } from "./components";
 import { useBenchmarkRunner } from "./useBenchmarkRunner";
-import { pctColor } from "./utils";
 
-const App: React.FC = () => {
+const App: FC = () => {
   const {
     phase,
     setPhase,
     suites,
     selectedSuiteId,
     setSelectedSuiteId,
+    allModels,
+    selectedModels,
+    toggleModel,
+    confirmModels,
     version,
     setVersion,
     modelOrder,
@@ -25,31 +33,47 @@ const App: React.FC = () => {
     errors,
     runningCount,
     totalCost,
+    recentErrors,
     finalStats,
   } = useBenchmarkRunner();
 
+  // Suite selection phase
   if (phase === "pickSuite") {
     return (
       <SuiteSelector
-        suites={suites}
         onSelect={(id) => {
           setSelectedSuiteId(id);
-          setPhase("version");
+          setPhase("pickModels");
         }}
+        suites={suites}
       />
     );
   }
 
+  // Model selection phase
+  if (phase === "pickModels") {
+    return (
+      <ModelSelector
+        models={allModels}
+        onConfirm={confirmModels}
+        onToggle={toggleModel}
+        selectedModels={selectedModels}
+      />
+    );
+  }
+
+  // Version input phase
   if (phase === "version") {
     return (
       <VersionInput
-        version={version}
         onChange={setVersion}
         onSubmit={() => setPhase("running")}
+        version={version}
       />
     );
   }
 
+  // Calculate overall stats
   const overallAnswered = modelOrder.reduce((acc, m) => {
     const s = stats[m];
     return acc + (s ? s.correctCount + s.incorrectCount : 0);
@@ -80,13 +104,15 @@ const App: React.FC = () => {
     return denom > 0 ? sum / denom / 1000 : null;
   })();
 
+  // Running or Done phase
   return (
     <Box flexDirection="column">
-      <Text>
-        {phase === "running" ? "Running" : "Done"} suite{" "}
-        <Text color="magentaBright">{selectedSuiteId}</Text> @ version{" "}
-        <Text color="cyan">{version}</Text>
-      </Text>
+      <Header
+        subtitle={`Suite: ${selectedSuiteId} | Version: ${version}`}
+        title={
+          phase === "running" ? "Running Benchmark..." : "Benchmark Complete"
+        }
+      />
 
       <ResultsTable modelOrder={modelOrder} stats={stats} />
 
@@ -94,30 +120,24 @@ const App: React.FC = () => {
         <ProgressBar completed={completed} total={total} />
       </Box>
 
-      <Box marginTop={1}>
-        <Text>
-          Overall: <Text color="green">{completed}</Text>/
-          <Text color="white">{total}</Text> done •{" "}
-          <Text color={overallPct === null ? "gray" : pctColor(overallPct)}>
-            {overallPct === null ? "-" : `${overallPct}%`}
-          </Text>{" "}
-          correct • <Text color="red">{errors || "-"}</Text> errors •{" "}
-          <Text color="yellow">{runningCount || "-"}</Text> running •{" "}
-          <Text color={overallAvgSec === null ? "gray" : "cyan"}>
-            {overallAvgSec === null ? "-" : `${overallAvgSec.toFixed(2)}s`}
-          </Text>{" "}
-          avg duration • <Text color="green">${totalCost.toFixed(4)}</Text>{" "}
-          total cost
-        </Text>
-      </Box>
+      <StatsSummary
+        completed={completed}
+        errors={errors}
+        overallAvgSec={overallAvgSec}
+        overallPct={overallPct}
+        runningCount={runningCount}
+        total={total}
+        totalCost={totalCost}
+      />
+
+      <RecentErrors errors={recentErrors} />
 
       {phase === "done" && finalStats && (
-        <Box flexDirection="column" marginTop={1}>
-          <Text color="gray">
-            Final stats computed (hook your StatsDisplay here).
-          </Text>
-          {/* If you want, render your existing <StatsDisplay stats={finalStats} /> */}
-        </Box>
+        <DoneBanner
+          suiteId={selectedSuiteId ?? ""}
+          successRate={finalStats.overall.successRate * 100}
+          version={version}
+        />
       )}
     </Box>
   );

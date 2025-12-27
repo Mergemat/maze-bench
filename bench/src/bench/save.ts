@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { BenchmarkReport } from "./types";
+import type { BenchmarkReport, RunResult } from "./types";
+import type { ModelKey } from "./models";
 
 const RESULT_DIR = path.resolve(import.meta.dir, "results");
 
@@ -15,4 +16,122 @@ export function saveRunResult(filename: string, data: BenchmarkReport): string {
   const filePath = path.join(RESULT_DIR, filename);
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
   return filePath;
+}
+
+/**
+ * Manages incremental saving of benchmark results as they come in.
+ * Each model gets its own file that is updated after each maze result.
+ */
+export class IncrementalResultSaver {
+  private readonly filePath: string;
+  private readonly report: BenchmarkReport;
+
+  constructor(params: {
+    model: ModelKey;
+    version: string;
+    suiteId: string;
+    seeds: number[];
+  }) {
+    ensureResultDir();
+    const { model, version, suiteId, seeds } = params;
+    const filename = `${model}_${version}_${new Date()
+      .toISOString()
+      .replace(/[:.]/g, "-")}.json`;
+    this.filePath = path.join(RESULT_DIR, filename);
+
+    this.report = {
+      metadata: {
+        model,
+        date: new Date().toISOString(),
+        version,
+        suite: suiteId,
+        seeds,
+      },
+      stats: {
+        overall: {
+          successRate: 0,
+          avgSteps: 0,
+          avgTimeMs: 0,
+          totalCost: 0,
+        },
+        byConfig: {},
+      },
+      results: [],
+    };
+
+    // Write initial empty file
+    this.save();
+  }
+
+  addResult(result: RunResult): void {
+    this.report.results.push(result);
+    this.updateStats();
+    this.save();
+  }
+
+  private updateStats(): void {
+    const results = this.report.results;
+    if (results.length === 0) {
+      return;
+    }
+
+    const successCount = results.filter((r) => r.success).length;
+    const totalSteps = results.reduce((sum, r) => sum + r.totalSteps, 0);
+    const totalTime = results.reduce((sum, r) => sum + r.totalDurationMs, 0);
+    const totalCost = results.reduce((sum, r) => sum + (r.cost ?? 0), 0);
+
+    this.report.stats.overall = {
+      successRate: successCount / results.length,
+      avgSteps: totalSteps / results.length,
+      avgTimeMs: totalTime / results.length,
+      totalCost,
+    };
+
+    // Update byConfig stats
+    const byConfig: Record<string, RunResult[]> = {};
+    for (const r of results) {
+      const key = `${r.config.width}x${r.config.height}_${r.config.complexity}_${r.config.vision}`;
+      if (!byConfig[key]) {
+        byConfig[key] = [];
+      }
+      byConfig[key].push(r);
+    }
+
+    this.report.stats.byConfig = {};
+    for (const [key, configResults] of Object.entries(byConfig)) {
+      const configSuccessCount = configResults.filter((r) => r.success).length;
+      const configTotalSteps = configResults.reduce(
+        (sum, r) => sum + r.totalSteps,
+        0
+      );
+      const configTotalTime = configResults.reduce(
+        (sum, r) => sum + r.totalDurationMs,
+        0
+      );
+      const configTotalCost = configResults.reduce(
+        (sum, r) => sum + (r.cost ?? 0),
+        0
+      );
+
+      this.report.stats.byConfig[key] = {
+        successRate: configSuccessCount / configResults.length,
+        avgSteps: configTotalSteps / configResults.length,
+        avgTimeMs: configTotalTime / configResults.length,
+        totalCost: configTotalCost,
+        n: configResults.length,
+      };
+    }
+  }
+
+  private save(): void {
+    fs.writeFileSync(
+      this.filePath,
+      JSON.stringify(this.report, null, 2),
+      "utf-8"
+    );
+  }
+
+  getFilePath(): string {
+    return this.filePath;
+  }
 }

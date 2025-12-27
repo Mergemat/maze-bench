@@ -1,14 +1,12 @@
-export type Phase = "pickSuite" | "version" | "running" | "done";
+export type Phase = "pickSuite" | "pickModels" | "version" | "running" | "done";
 
-export type SuiteChoice = {
+export interface SuiteChoice {
   id: string;
   name: string;
   description?: string;
-  // Put whatever you need here to generate mazes/config
-  // e.g. mazeCount, difficulty, seedSet, etc.
-};
+}
 
-export type ModelStats = {
+export interface ModelStats {
   total: number;
 
   executedStarted: number;
@@ -23,4 +21,14 @@ export type ModelStats = {
 
   costSum: number;
   completionTokensSum: number;
-};
+
+  // Error tracking
+  lastError?: string;
+  errorCategories: Record<string, number>;
+}
+
+export interface RecentError {
+  model: string;
+  error: string;
+  timestamp: number;
+}
