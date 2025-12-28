@@ -94,6 +94,8 @@ export interface BenchmarkStats {
 export interface BenchmarkReport {
   metadata: {
     model: ModelKey;
+    displayName: string;
+    creator: string;
     date: string;
     seeds: number[];
     version: string;

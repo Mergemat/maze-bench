@@ -4,7 +4,6 @@ import { useAtomValue } from "jotai";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
-import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
@@ -16,13 +15,15 @@ type ModelComparisonProps = {
   reports: Map<string, BenchmarkReport>;
 };
 
-function filterResults(
-  results: RunResult[],
-  complexity: string | null,
-  size: string | null,
-  vision: string | null,
-  successfulOnly?: boolean | null
-): RunResult[] {
+type FilterOptions = {
+  complexity: string | null;
+  size: string | null;
+  vision: string | null;
+  successfulOnly?: boolean | null;
+};
+
+function filterResults(results: RunResult[], options: FilterOptions): RunResult[] {
+  const { complexity, size, vision, successfulOnly } = options;
   return results.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
       return false;
@@ -65,33 +66,33 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
 
   const models = Array.from(reports.entries());
 
+  const filterOptions: FilterOptions = {
+    complexity: complexityFilter,
+    size: sizeFilter,
+    vision: visionFilter,
+  };
+
   const sortedModels = models.sort((a, b) => {
-    const aStats = computeStats(
-      filterResults(a[1].results, complexityFilter, sizeFilter, visionFilter)
-    );
-    const bStats = computeStats(
-      filterResults(b[1].results, complexityFilter, sizeFilter, visionFilter)
-    );
+    const aStats = computeStats(filterResults(a[1].results, filterOptions));
+    const bStats = computeStats(filterResults(b[1].results, filterOptions));
     return bStats.successRate - aStats.successRate;
   });
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {sortedModels.map(([model, report]) => {
-        const filtered = filterResults(
-          report.results,
-          complexityFilter,
-          sizeFilter,
-          visionFilter,
-          successfulOnly
-        );
+        const filtered = filterResults(report.results, {
+          ...filterOptions,
+          successfulOnly,
+        });
         const stats = computeStats(filtered);
 
+        const displayName = report.metadata.displayName ?? model;
         return (
           <Card key={model}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span>{formatModelName(model)}</span>
+                <span>{displayName}</span>
                 {successfulOnly ? null : (
                   <Badge
                     variant={stats.successRate > 50 ? "default" : "destructive"}
@@ -102,7 +103,7 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap justify-between text-xs gap-2">
+              <div className="flex flex-wrap justify-between gap-2 text-xs">
                 <div>
                   <span className="text-muted-foreground">Avg Steps:</span>
                   <span className="ml-2 font-mono">

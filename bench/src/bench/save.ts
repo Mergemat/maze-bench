@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { getModelDefinition, type ModelKey } from "./models";
 import type { BenchmarkReport, RunResult } from "./types";
-import type { ModelKey } from "./models";
 
 const RESULT_DIR = path.resolve(import.meta.dir, "results");
 
@@ -39,9 +39,12 @@ export class IncrementalResultSaver {
       .replace(/[:.]/g, "-")}.json`;
     this.filePath = path.join(RESULT_DIR, filename);
 
+    const modelDef = getModelDefinition(model);
     this.report = {
       metadata: {
         model,
+        displayName: modelDef?.displayName ?? model,
+        creator: modelDef?.provider ?? "unknown",
         date: new Date().toISOString(),
         version,
         suite: suiteId,

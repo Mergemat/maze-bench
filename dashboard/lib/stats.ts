@@ -2,6 +2,8 @@ import type { BenchmarkReport, RunResult } from "./types";
 
 export type ModelMetricsPoint = {
   model: string;
+  displayName: string;
+  creator: string;
   nRuns: number;
   nSuccesses: number;
   successRatePct: number;
@@ -59,6 +61,8 @@ export function computeModelMetricsPoints(
 
     points.push({
       model,
+      displayName: report.metadata.displayName ?? model,
+      creator: report.metadata.creator ?? "unknown",
       nRuns,
       nSuccesses,
       successRatePct: nRuns === 0 ? 0 : (nSuccesses / nRuns) * 100,

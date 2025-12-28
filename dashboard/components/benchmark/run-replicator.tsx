@@ -12,7 +12,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Pos, RunResult } from "@/lib/types";
-import { cn, formatModelName } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+const PROVIDER_PREFIX_REGEX = /^\[.*?\]/;
+
+/**
+ * Formats a model key by removing the provider prefix.
+ * e.g., "[openai]gpt-5-default" -> "gpt-5-default"
+ */
+function formatModelKey(model: string): string {
+  return model.replace(PROVIDER_PREFIX_REGEX, "");
+}
 
 const runAtom = atom<RunResult | null>(null);
 const currentStepAtom = atom(0);
@@ -193,7 +203,7 @@ function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
         }
         return s + 1;
       });
-    }, 100);
+    }, 20);
     return () => clearInterval(interval);
   }, [isPlaying, totalSteps, setCurrentStep, setIsPlaying]);
 
@@ -288,7 +298,7 @@ const RunHeader = function RunHeader({ run }: { run: RunResult }) {
     <DialogHeader className="flex-row items-center justify-between">
       <div className="flex flex-col gap-1">
         <DialogTitle className="text-sm">
-          {formatModelName(run.model)}
+          {formatModelKey(run.model)}
         </DialogTitle>
         <div className="flex gap-2">
           <Badge variant="outline">{run.config.complexity}</Badge>
