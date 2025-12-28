@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/chart";
 import { computeModelMetricsPoints, type ModelMetricsPoint } from "@/lib/stats";
 import type { BenchmarkReport } from "@/lib/types";
-import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
@@ -56,26 +55,24 @@ const CHART_COLORS = [
   "#84cc16",
 ];
 
-function getCreator(model: string): string {
-  const match = model.match(/^\[(.*?)\]/);
-  if (match?.[1]) {
-    return match[1].toLowerCase();
-  }
-  return "unknown";
-}
-
-function getModelColor(model: string): string {
-  const creator = getCreator(model);
-  if (CREATOR_COLORS[creator]) {
-    return CREATOR_COLORS[creator];
+function getCreatorColor(creator: string): string {
+  const creatorLower = creator.toLowerCase();
+  console.log(creatorLower);
+  if (CREATOR_COLORS[creatorLower]) {
+    return CREATOR_COLORS[creatorLower];
   }
 
   let hash = 0;
-  for (let i = 0; i < creator.length; i++) {
-    hash = creator.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < creatorLower.length; i++) {
+    const charCode = creatorLower.charCodeAt(i);
+    hash = charCode + (hash * 31);
   }
   const index = Math.abs(hash) % CHART_COLORS.length;
   return CHART_COLORS[index];
+}
+
+function getModelColor(creator: string): string {
+  return getCreatorColor(creator);
 }
 
 function EmptyState() {
@@ -93,10 +90,10 @@ function ModelLegend({ data }: { data: ModelMetricsPoint[] }) {
         <div className="flex items-center gap-1.5" key={entry.model}>
           <div
             className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3"
-            style={{ backgroundColor: getModelColor(entry.model) }}
+            style={{ backgroundColor: getModelColor(entry.creator) }}
           />
           <span className="max-w-35 truncate sm:max-w-none">
-            {formatModelName(entry.model)}
+            {entry.displayName}
           </span>
         </div>
       ))}
@@ -124,7 +121,7 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
         <h2 className="font-medium text-base sm:text-lg">Charts</h2>
       </div>
 
-      {hasAnyRuns && <ModelLegend data={data} />}
+      {hasAnyRuns ? <ModelLegend data={data} /> : null}
 
       <SuccessRateBarCard data={data} showEmpty={!hasAnyRuns} />
 
@@ -179,12 +176,11 @@ function SuccessRateBarCard({
               <CartesianGrid vertical={false} />
               <XAxis
                 angle={-30}
-                dataKey="model"
+                dataKey="displayName"
                 height={50}
                 interval={0}
                 textAnchor="end"
                 tick={{ fontSize: 10 }}
-                tickFormatter={(v) => formatModelName(v)}
               />
               <YAxis
                 domain={[0, 100]}
@@ -193,14 +189,19 @@ function SuccessRateBarCard({
               />
               <ChartTooltip
                 content={
-                  <ChartTooltipContent labelFormatter={formatModelName} />
+                  <ChartTooltipContent
+                    labelFormatter={(_, payload) => {
+                      const entry = payload?.[0]?.payload as ModelMetricsPoint;
+                      return entry?.displayName ?? "";
+                    }}
+                  />
                 }
                 cursor={false}
                 formatter={(v) => `${Number(v).toFixed(1)}%`}
               />
               <Bar dataKey="successRatePct" radius={[4, 4, 0, 0]}>
                 {data.map((entry) => (
-                  <Cell fill={getModelColor(entry.model)} key={entry.model} />
+                  <Cell fill={getModelColor(entry.creator)} key={entry.model} />
                 ))}
                 <LabelList
                   dataKey="nRuns"
@@ -286,13 +287,13 @@ function BaseScatterCard({
               />
               <ChartTooltip
                 content={({ active, payload }) => {
-                  if (!(active && payload?.length)) return null;
+                  if (!active || payload?.length === 0) {
+                    return null;
+                  }
                   const entry = payload[0]?.payload as ModelMetricsPoint;
                   return (
                     <div className="rounded-md border bg-background p-2 text-xs shadow-md">
-                      <p className="mb-1 font-medium">
-                        {formatModelName(entry.model)}
-                      </p>
+                      <p className="mb-1 font-medium">{entry.displayName}</p>
                       <p>
                         {xLabel}:{" "}
                         {xFormatter
@@ -307,12 +308,11 @@ function BaseScatterCard({
               />
               <Scatter data={filteredData} isAnimationActive={false}>
                 {filteredData.map((entry) => (
-                  <Cell fill={getModelColor(entry.model)} key={entry.model} />
+                  <Cell fill={getModelColor(entry.creator)} key={entry.model} />
                 ))}
                 <LabelList
                   className="hidden sm:block"
-                  dataKey="model"
-                  formatter={(v: string) => formatModelName(v)}
+                  dataKey="displayName"
                   position="insideBottomLeft"
                   style={{
                     fontSize: 10,
@@ -329,11 +329,17 @@ function BaseScatterCard({
   );
 }
 
-function StepsVsSuccessCard(props: any) {
+type ScatterCardProps = {
+  data: ModelMetricsPoint[];
+  showEmpty: boolean;
+};
+
+function StepsVsSuccessCard(props: ScatterCardProps) {
   return (
     <BaseScatterCard
       {...props}
       chartColor={CHART_COLORS[1]}
+      subtitle="How average steps relate to success rate"
       title="Avg Steps vs Success Rate"
       xFormatter={(v) => `${Number(v).toFixed(2)}`}
       xKey="avgSteps"
@@ -342,11 +348,12 @@ function StepsVsSuccessCard(props: any) {
   );
 }
 
-function TimeVsSuccessCard(props: any) {
+function TimeVsSuccessCard(props: ScatterCardProps) {
   return (
     <BaseScatterCard
       {...props}
       chartColor={CHART_COLORS[2]}
+      subtitle="How average time relates to success rate"
       title="Avg Time vs Success Rate"
       xFormatter={(v) => `${Number(v).toFixed(0)}s`}
       xKey="avgTimeSec"
@@ -355,11 +362,12 @@ function TimeVsSuccessCard(props: any) {
   );
 }
 
-function CostVsSuccessCard(props: any) {
+function CostVsSuccessCard(props: ScatterCardProps) {
   return (
     <BaseScatterCard
       {...props}
       chartColor={CHART_COLORS[3]}
+      subtitle="How total cost relates to success rate"
       title="Total cost vs Success Rate"
       xFormatter={(v) => `$${Number(v).toFixed(3)}`}
       xKey="totalCost"

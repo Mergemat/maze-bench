@@ -60,7 +60,11 @@ export type BenchmarkStats = {
 export type BenchmarkReport = {
   metadata: {
     model: string;
+    displayName?: string;
+    creator?: string;
     date: string;
+    version?: string;
+    suite?: string;
     seeds: number[];
   };
   stats: BenchmarkStats;

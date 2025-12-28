@@ -1,6 +1,8 @@
 {
   "metadata": {
     "model": "[openai]gpt-5.2-none",
+    "displayName": "GPT-5.2 (none)",
+    "creator": "openai",
     "date": "2025-12-25T15:40:52.871Z",
     "version": "2025-12-25",
     "suite": "default",

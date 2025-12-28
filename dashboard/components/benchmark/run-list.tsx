@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
-import { formatModelName } from "@/lib/utils";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
@@ -25,13 +24,15 @@ type RunListProps = {
   reports: Map<string, BenchmarkReport>;
 };
 
-function filterResults(
-  results: RunResult[],
-  complexity: string | null,
-  size: string | null,
-  vision: string | null,
-  successfulOnly?: boolean | null
-): RunResult[] {
+type FilterOptions = {
+  complexity: string | null;
+  size: string | null;
+  vision: string | null;
+  successfulOnly?: boolean | null;
+};
+
+function filterResults(results: RunResult[], options: FilterOptions): RunResult[] {
+  const { complexity, size, vision, successfulOnly } = options;
   return results.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
       return false;
@@ -49,6 +50,14 @@ function filterResults(
   });
 }
 
+function getDisplayName(reports: Map<string, BenchmarkReport>, model: string | null): string {
+  if (!model) {
+    return "";
+  }
+  const report = reports.get(model);
+  return report?.metadata.displayName ?? model;
+}
+
 export function RunList({ reports }: RunListProps) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
@@ -61,13 +70,12 @@ export function RunList({ reports }: RunListProps) {
   const activeModel = selectedModel ?? models[0] ?? null;
   const report = activeModel ? reports.get(activeModel) : null;
   const filtered = report
-    ? filterResults(
-        report.results,
-        complexityFilter,
-        sizeFilter,
-        visionFilter,
-        successfulOnly
-      )
+    ? filterResults(report.results, {
+        complexity: complexityFilter,
+        size: sizeFilter,
+        vision: visionFilter,
+        successfulOnly,
+      })
     : [];
 
   return (
@@ -77,12 +85,12 @@ export function RunList({ reports }: RunListProps) {
         value={activeModel ?? ""}
       >
         <SelectTrigger className="w-48">
-          <SelectValue>{formatModelName(activeModel)}</SelectValue>
+          <SelectValue>{getDisplayName(reports, activeModel)}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {models.map((m) => (
             <SelectItem key={m} value={m}>
-              {formatModelName(m)}
+              {getDisplayName(reports, m)}
             </SelectItem>
           ))}
         </SelectContent>
