@@ -15,7 +15,7 @@ import type {
   BenchmarkReport,
   MazeComplexity,
   RunResult,
-  VisionMode,
+  ObservationMode,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { successfulOnlyAtom } from "@/store/filters";
@@ -43,7 +43,7 @@ const COMPLEXITY_ORDER: MazeComplexity[] = [
   "complex",
   "extreme",
 ];
-const VISION_ORDER: VisionMode[] = ["local", "global"];
+const OBSERVATION_MODE_ORDER: ObservationMode[] = ["continuous", "initial"];
 
 function getDisplayName(
   reports: Map<string, BenchmarkReport>,
@@ -82,19 +82,19 @@ function groupBySize(results: RunResult[]): SizeGroup[] {
 function RunGrid({
   runs,
   complexity,
-  vision,
+  observationMode,
   successfulOnly,
 }: {
   runs: RunResult[];
   complexity: MazeComplexity | null;
-  vision: VisionMode | null;
+  observationMode: ObservationMode | null;
   successfulOnly: boolean;
 }) {
   const filtered = runs.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
       return false;
     }
-    if (vision && r.config.vision !== vision) {
+    if (observationMode && r.config.observationMode !== observationMode) {
       return false;
     }
     if (successfulOnly && !r.success) {
@@ -121,7 +121,7 @@ function RunGrid({
           >
             {run.error
               ? `ERROR (${run.totalSteps})`
-              : `${run.config.complexity} | ${run.config.vision} (${run.totalSteps})`}
+              : `${run.config.complexity} | ${run.config.observationMode} (${run.totalSteps})`}
           </Button>
         </RunReplicator>
       ))}
@@ -133,7 +133,7 @@ export function RunList({ reports }: RunListProps) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [selectedComplexity, setSelectedComplexity] =
     useState<MazeComplexity | null>(null);
-  const [selectedVision, setSelectedVision] = useState<VisionMode | null>(null);
+  const [selectedObservationMode, setSelectedObservationMode] = useState<ObservationMode | null>(null);
 
   const successfulOnly = useAtomValue(successfulOnlyAtom);
 
@@ -157,15 +157,15 @@ export function RunList({ reports }: RunListProps) {
     return COMPLEXITY_ORDER.filter((c) => set.has(c));
   }, [report]);
 
-  const visions = useMemo(() => {
+  const observationModes = useMemo(() => {
     if (!report) {
       return [];
     }
-    const set = new Set<VisionMode>();
+    const set = new Set<ObservationMode>();
     for (const r of report.results) {
-      set.add(r.config.vision);
+      set.add(r.config.observationMode);
     }
-    return VISION_ORDER.filter((v) => set.has(v));
+    return OBSERVATION_MODE_ORDER.filter((v) => set.has(v));
   }, [report]);
 
   return (
@@ -214,22 +214,22 @@ export function RunList({ reports }: RunListProps) {
 
         <div className="space-y-1">
           <div className="font-medium text-muted-foreground text-xs">
-            Vision
+            Observation
           </div>
           <div className="flex flex-wrap gap-1">
             <Button
-              onClick={() => setSelectedVision(null)}
+              onClick={() => setSelectedObservationMode(null)}
               size="sm"
-              variant={selectedVision === null ? "default" : "outline"}
+              variant={selectedObservationMode === null ? "default" : "outline"}
             >
               all
             </Button>
-            {visions.map((v) => (
+            {observationModes.map((v) => (
               <Button
                 key={v}
-                onClick={() => setSelectedVision(v)}
+                onClick={() => setSelectedObservationMode(v)}
                 size="sm"
-                variant={selectedVision === v ? "default" : "outline"}
+                variant={selectedObservationMode === v ? "default" : "outline"}
               >
                 {v}
               </Button>
@@ -253,7 +253,7 @@ export function RunList({ reports }: RunListProps) {
                 complexity={selectedComplexity}
                 runs={runs}
                 successfulOnly={successfulOnly}
-                vision={selectedVision}
+                observationMode={selectedObservationMode}
               />
             </div>
           ))}

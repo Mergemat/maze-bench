@@ -14,21 +14,22 @@ I think spatial reasoning and tool use.
 
 The model receives a maze representation and must use a tool call to output movement commands (`up`, `down`, `left`, `right`) to navigate from start to goal. Performance is measured by success rate, steps taken, time, and API cost.
 
-### Vision modes
-
-- **Local**: Model sees only a 5x5 area around its position (marked as `A`)
-- **Global**: Model sees the entire maze with its current position marked
-
 ### Complexity levels
 
 - **Simple**: Long corridors, few decision points
 - **Complex**: More branches and dead ends
 
+### Observation modes
+
+- **Continuous**: Model receives an updated view of the maze after every move, showing its new position. This tests the model's ability to iteratively navigate using feedback.
+- **Initial**: Model sees the maze only once at the start and must output all moves from memory. This tests the model's ability to plan a complete path upfront.
+
 ### Maze sizes
 
 - 5x5 (trivial)
+- 11x11 (small)
 - 21x21 (medium)
-- 41x41 (challenging)
+- 31x31 (challenging)
 
 ## Project structure
 

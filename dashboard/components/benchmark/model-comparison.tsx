@@ -8,7 +8,7 @@ import {
   complexityFilterAtom,
   sizeFilterAtom,
   successfulOnlyAtom,
-  visionFilterAtom,
+  observationModeFilterAtom,
 } from "@/store/filters";
 
 type ModelComparisonProps = {
@@ -18,7 +18,7 @@ type ModelComparisonProps = {
 type FilterOptions = {
   complexity: string | null;
   size: string | null;
-  vision: string | null;
+  observationMode: string | null;
   successfulOnly?: boolean | null;
 };
 
@@ -26,7 +26,7 @@ function filterResults(
   results: RunResult[],
   options: FilterOptions
 ): RunResult[] {
-  const { complexity, size, vision, successfulOnly } = options;
+  const { complexity, size, observationMode, successfulOnly } = options;
   return results.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
       return false;
@@ -34,7 +34,7 @@ function filterResults(
     if (size && `${r.config.width}x${r.config.height}` !== size) {
       return false;
     }
-    if (vision && r.config.vision !== vision) {
+    if (observationMode && r.config.observationMode !== observationMode) {
       return false;
     }
     if (successfulOnly && !r.success) {
@@ -79,7 +79,7 @@ function computeStats(results: RunResult[]) {
 export function ModelComparison({ reports }: ModelComparisonProps) {
   const complexityFilter = useAtomValue(complexityFilterAtom);
   const sizeFilter = useAtomValue(sizeFilterAtom);
-  const visionFilter = useAtomValue(visionFilterAtom);
+  const observationModeFilter = useAtomValue(observationModeFilterAtom);
   const successfulOnly = useAtomValue(successfulOnlyAtom);
 
   const models = Array.from(reports.entries());
@@ -87,7 +87,7 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
   const filterOptions: FilterOptions = {
     complexity: complexityFilter,
     size: sizeFilter,
-    vision: visionFilter,
+    observationMode: observationModeFilter,
   };
 
   const sortedModels = models.sort((a, b) => {

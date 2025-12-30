@@ -243,7 +243,7 @@ function createMoveTool(
   onMove: (
     direction: Direction,
     posBefore: { x: number; y: number },
-    observation: string
+    observation: string | undefined
   ) => void
 ) {
   return tool({
@@ -257,8 +257,12 @@ function createMoveTool(
       // Perform the move logic
       const result = moveInMaze(env, direction);
 
+      // Only include observation in continuous mode
+      const observation =
+        env.observationMode === "continuous" ? result.view : undefined;
+
       // Log for the trace
-      onMove(direction, posBefore, result.view);
+      onMove(direction, posBefore, observation);
 
       // Determine message based on result
       let moveMessage: string;
@@ -270,11 +274,20 @@ function createMoveTool(
         moveMessage = `Moved ${direction} to (${env.pos.x}, ${env.pos.y})`;
       }
 
-      // Return rich data to the model state
+      // Return data to the model
+      // In continuous mode: include full observation
+      // In initial mode: only position feedback, no maze view
+      if (env.observationMode === "continuous") {
+        return {
+          success: result.success,
+          newPosition: { x: env.pos.x, y: env.pos.y },
+          observation: result.view,
+          message: moveMessage,
+        };
+      }
       return {
         success: result.success,
         newPosition: { x: env.pos.x, y: env.pos.y },
-        observation: result.view,
         message: moveMessage,
       };
     },
@@ -315,7 +328,7 @@ export async function runSingleMaze(
   const onMove = (
     direction: Direction,
     posBefore: { x: number; y: number },
-    observation: string
+    observation: string | undefined
   ) => {
     stepTrace.push({
       step: env.steps,

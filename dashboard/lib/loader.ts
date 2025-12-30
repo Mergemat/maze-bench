@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { BenchmarkReport, MazeComplexity, VisionMode } from "./types";
+import type { BenchmarkReport, MazeComplexity, ObservationMode } from "./types";
 
 const RESULTS_DIR = path.join(process.cwd(), "../bench/src/bench/results");
 
@@ -25,9 +25,9 @@ export async function loadBenchmarkReports(): Promise<BenchmarkReport[]> {
       extreme: 3,
     };
 
-    const visionOrder: Record<VisionMode, number> = {
-      local: 0,
-      global: 1,
+    const observationModeOrder: Record<ObservationMode, number> = {
+      continuous: 0,
+      initial: 1,
     };
 
     function getSizeIndex(width: number, height: number): number {
@@ -49,9 +49,9 @@ export async function loadBenchmarkReports(): Promise<BenchmarkReport[]> {
         return sizeDiff;
       }
 
-      const visionDiff = visionOrder[aCfg.vision] - visionOrder[bCfg.vision];
-      if (visionDiff !== 0) {
-        return visionDiff;
+      const observationModeDiff = observationModeOrder[aCfg.observationMode] - observationModeOrder[bCfg.observationMode];
+      if (observationModeDiff !== 0) {
+        return observationModeDiff;
       }
 
       const complexityDiff =

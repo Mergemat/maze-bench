@@ -39,12 +39,12 @@ export function getUniqueSizes(reports: BenchmarkReport[]): string[] {
   });
 }
 
-export function getUniqueVisions(reports: BenchmarkReport[]): string[] {
-  const visions = new Set<string>();
+export function getUniqueObservationModes(reports: BenchmarkReport[]): string[] {
+  const modes = new Set<string>();
   for (const report of reports) {
     for (const result of report.results) {
-      visions.add(result.config.vision);
+      modes.add(result.config.observationMode);
     }
   }
-  return Array.from(visions);
+  return Array.from(modes);
 }

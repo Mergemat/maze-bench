@@ -170,33 +170,13 @@ export function generateMaze(
 }
 
 export function getObservation(env: MazeEnv): string {
-  if (env.visionMode === "global") {
-    const width = env.maze[0]!.length;
-    const mazeStr = env.maze.join("\n");
-    const playerIdx = env.pos.y * (width + 1) + env.pos.x;
-    return (
-      mazeStr.substring(0, playerIdx) + "A" + mazeStr.substring(playerIdx + 1)
-    );
-  }
-
-  const r = 2;
-  const out: string[] = [];
-
-  for (let dy = -r; dy <= r; dy++) {
-    let row = "";
-    for (let dx = -r; dx <= r; dx++) {
-      const x = env.pos.x + dx;
-      const y = env.pos.y + dy;
-      if (x === env.pos.x && y === env.pos.y) {
-        row += "A";
-      } else {
-        row += env.maze[y]?.[x] ?? "#";
-      }
-    }
-    out.push(row);
-  }
-
-  return out.join("\n");
+  // Always return global view with player position marked
+  const width = env.maze[0]!.length;
+  const mazeStr = env.maze.join("\n");
+  const playerIdx = env.pos.y * (width + 1) + env.pos.x;
+  return (
+    mazeStr.substring(0, playerIdx) + "A" + mazeStr.substring(playerIdx + 1)
+  );
 }
 
 export function createMazeEnv(mazeData: MazeData): MazeEnv {
@@ -207,7 +187,7 @@ export function createMazeEnv(mazeData: MazeData): MazeEnv {
     steps: 0,
     done: false,
     success: false,
-    visionMode: mazeData.cfg.vision,
+    observationMode: mazeData.cfg.observationMode,
   };
 }
 
@@ -218,7 +198,7 @@ export function generateSharedMazes(): MazeData[] {
   for (const cfg of BENCHMARK_CONFIGS) {
     for (let i = 0; i < RUNS_PER_CONFIG; i++) {
       const seed = idCounter + 12_345;
-      const id = `maze_${idCounter}_${cfg.width}x${cfg.height}_${cfg.complexity}_${cfg.vision}_seed${seed}`;
+      const id = `maze_${idCounter}_${cfg.width}x${cfg.height}_${cfg.complexity}_${cfg.observationMode}_seed${seed}`;
       const maze = generateMaze(cfg.width, cfg.height, cfg.complexity, seed);
 
       // Pre-compute optimal path at maze generation time

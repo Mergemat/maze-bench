@@ -21,7 +21,7 @@ function filterRuns(
   runs: RunResult[],
   complexity: string | null,
   size: string | null,
-  vision: string | null
+  observationMode: string | null
 ): RunResult[] {
   return runs.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
@@ -30,7 +30,7 @@ function filterRuns(
     if (size && `${r.config.width}x${r.config.height}` !== size) {
       return false;
     }
-    if (vision && r.config.vision !== vision) {
+    if (observationMode && r.config.observationMode !== observationMode) {
       return false;
     }
     return true;
@@ -41,7 +41,7 @@ export function computeModelMetricsPoints(
   reports: Map<string, BenchmarkReport>,
   complexityFilter: string | null,
   sizeFilter: string | null,
-  visionFilter: string | null
+  observationModeFilter: string | null
 ): ModelMetricsPoint[] {
   const points: ModelMetricsPoint[] = [];
 
@@ -50,7 +50,7 @@ export function computeModelMetricsPoints(
       report.results,
       complexityFilter,
       sizeFilter,
-      visionFilter
+      observationModeFilter
     );
 
     const nRuns = filtered.length;

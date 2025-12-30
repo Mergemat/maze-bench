@@ -18,7 +18,7 @@ export function computeStats(records: RunResult[]): BenchmarkStats {
 
   const grouped: Record<string, RunResult[]> = {};
   for (const rec of records) {
-    const key = `${rec.config.complexity}_${rec.config.vision}`;
+    const key = `${rec.config.complexity}_${rec.config.observationMode}`;
     if (!grouped[key]) {
       grouped[key] = [];
     }

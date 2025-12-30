@@ -1,0 +1,629 @@
+{
+  "metadata": {
+    "model": "[google]gemini-3-flash-preview-none",
+    "displayName": "Gemini 3 Flash (none)",
+    "creator": "google",
+    "date": "2025-12-30T12:03:52.160Z",
+    "suite": "default",
+    "seeds": [
+      12345,
+      12346,
+      12347,
+      12348,
+      12349,
+      12350,
+      12351,
+      12352,
+      12353,
+      12354,
+      12355,
+      12356,
+      12357,
+      12358,
+      12359,
+      12360,
+      12361,
+      12362,
+      12363,
+      12364,
+      12365,
+      12366,
+      12367,
+      12368
+    ]
+  },
+  "stats": {
+    "overall": {
+      "successRate": 1,
+      "avgSteps": 4,
+      "avgTimeMs": 13166.876291833332,
+      "totalCost": 0.019899
+    },
+    "byConfig": {
+      "5x5_extreme_initial": {
+        "successRate": 1,
+        "avgSteps": 4,
+        "avgTimeMs": 10795.628166999999,
+        "totalCost": 0.002184,
+        "n": 1
+      },
+      "5x5_extreme_continuous": {
+        "successRate": 1,
+        "avgSteps": 4,
+        "avgTimeMs": 12298.501,
+        "totalCost": 0.002397,
+        "n": 1
+      },
+      "5x5_simple_continuous": {
+        "successRate": 1,
+        "avgSteps": 4,
+        "avgTimeMs": 12323.340958,
+        "totalCost": 0.0024285,
+        "n": 1
+      },
+      "5x5_simple_initial": {
+        "successRate": 1,
+        "avgSteps": 4,
+        "avgTimeMs": 13065.472249999999,
+        "totalCost": 0.0026795,
+        "n": 1
+      },
+      "5x5_complex_initial": {
+        "successRate": 1,
+        "avgSteps": 4,
+        "avgTimeMs": 14706.499834,
+        "totalCost": 0.0058235000000000006,
+        "n": 1
+      },
+      "5x5_complex_continuous": {
+        "successRate": 1,
+        "avgSteps": 4,
+        "avgTimeMs": 15811.815542,
+        "totalCost": 0.0043865,
+        "n": 1
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "[google]gemini-3-flash-preview-none_maze_5_5x5_extreme_initial_seed12350_2025-12-30",
+      "timestamp": "2025-12-30T12:03:52.162Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "extreme",
+        "observationMode": "initial"
+      },
+      "model": "[google]gemini-3-flash-preview-none",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12350,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 10795.628166999999,
+      "cost": 0.002184,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ],
+      "lastObservation": "#####\n#S  #\n### #\n#  A#\n#####",
+      "optimalPathLength": 4,
+      "efficiencyScore": 1
+    },
+    {
+      "id": "[google]gemini-3-flash-preview-none_maze_2_5x5_extreme_continuous_seed12347_2025-12-30",
+      "timestamp": "2025-12-30T12:03:52.162Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "extreme",
+        "observationMode": "continuous"
+      },
+      "model": "[google]gemini-3-flash-preview-none",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12347,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 12298.501,
+      "cost": 0.002397,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#SA #\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#S A#\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#S  #\n###A#\n#  G#\n#####"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#####\n#S  #\n### #\n#  A#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#S  #\n### #\n#  A#\n#####",
+      "optimalPathLength": 4,
+      "efficiencyScore": 1
+    },
+    {
+      "id": "[google]gemini-3-flash-preview-none_maze_0_5x5_simple_continuous_seed12345_2025-12-30",
+      "timestamp": "2025-12-30T12:03:52.160Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "observationMode": "continuous"
+      },
+      "model": "[google]gemini-3-flash-preview-none",
+      "maze": [
+        "#####",
+        "#S  #",
+        "### #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12345,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 12323.340958,
+      "cost": 0.0024285,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#SA #\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 2,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 1
+          },
+          "success": false,
+          "observation": "#####\n#S A#\n### #\n#  G#\n#####"
+        },
+        {
+          "step": 3,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#S  #\n###A#\n#  G#\n#####"
+        },
+        {
+          "step": 4,
+          "action": "down",
+          "posBefore": {
+            "x": 3,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#####\n#S  #\n### #\n#  A#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#S  #\n### #\n#  A#\n#####",
+      "optimalPathLength": 4,
+      "efficiencyScore": 1
+    },
+    {
+      "id": "[google]gemini-3-flash-preview-none_maze_3_5x5_simple_initial_seed12348_2025-12-30",
+      "timestamp": "2025-12-30T12:03:52.162Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "simple",
+        "observationMode": "initial"
+      },
+      "model": "[google]gemini-3-flash-preview-none",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12348,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 13065.472249999999,
+      "cost": 0.0026795,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ],
+      "lastObservation": "#####\n#S# #\n# # #\n#  A#\n#####",
+      "optimalPathLength": 4,
+      "efficiencyScore": 1
+    },
+    {
+      "id": "[google]gemini-3-flash-preview-none_maze_4_5x5_complex_initial_seed12349_2025-12-30",
+      "timestamp": "2025-12-30T12:03:52.162Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "observationMode": "initial"
+      },
+      "model": "[google]gemini-3-flash-preview-none",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12349,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 14706.499834,
+      "cost": 0.0058235000000000006,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true
+        }
+      ],
+      "lastObservation": "#####\n#S# #\n# # #\n#  A#\n#####",
+      "optimalPathLength": 4,
+      "efficiencyScore": 1
+    },
+    {
+      "id": "[google]gemini-3-flash-preview-none_maze_1_5x5_complex_continuous_seed12346_2025-12-30",
+      "timestamp": "2025-12-30T12:03:52.162Z",
+      "config": {
+        "width": 5,
+        "height": 5,
+        "complexity": "complex",
+        "observationMode": "continuous"
+      },
+      "model": "[google]gemini-3-flash-preview-none",
+      "maze": [
+        "#####",
+        "#S# #",
+        "# # #",
+        "#  G#",
+        "#####"
+      ],
+      "startPos": {
+        "x": 1,
+        "y": 1
+      },
+      "goalPos": {
+        "x": 3,
+        "y": 3
+      },
+      "seed": 12346,
+      "success": true,
+      "totalSteps": 4,
+      "totalDurationMs": 15811.815542,
+      "cost": 0.0043865,
+      "stepsTrace": [
+        {
+          "step": 1,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 1
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 2
+          },
+          "success": false,
+          "observation": "#####\n#S# #\n#A# #\n#  G#\n#####"
+        },
+        {
+          "step": 2,
+          "action": "down",
+          "posBefore": {
+            "x": 1,
+            "y": 2
+          },
+          "posAfter": {
+            "x": 1,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n#S# #\n# # #\n#A G#\n#####"
+        },
+        {
+          "step": 3,
+          "action": "right",
+          "posBefore": {
+            "x": 1,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 2,
+            "y": 3
+          },
+          "success": false,
+          "observation": "#####\n#S# #\n# # #\n# AG#\n#####"
+        },
+        {
+          "step": 4,
+          "action": "right",
+          "posBefore": {
+            "x": 2,
+            "y": 3
+          },
+          "posAfter": {
+            "x": 3,
+            "y": 3
+          },
+          "success": true,
+          "observation": "#####\n#S# #\n# # #\n#  A#\n#####"
+        }
+      ],
+      "lastObservation": "#####\n#S# #\n# # #\n#  A#\n#####",
+      "optimalPathLength": 4,
+      "efficiencyScore": 1
+    }
+  ]
+}
