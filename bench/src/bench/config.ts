@@ -18,6 +18,5 @@ export const BENCHMARK_CONFIGS: BenchmarkConfig[] = [
   { width: 41, height: 41, complexity: "complex", vision: "global" },
 ];
 
-export const MAX_STEPS = 200;
-export const RUNS_PER_CONFIG = 2;
+export const RUNS_PER_CONFIG = 1;
 export const CONCURRENCY_LIMIT = 40;

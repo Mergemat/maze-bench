@@ -1,38 +1,21 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import type { LanguageModel } from "ai";
-
-// Provider configurations
-const opencodeZen = createOpenAICompatible({
-  name: "opencode-zen",
-  apiKey: process.env.OPENCODEZEN_API_KEY,
-  baseURL: "https://opencode.ai/zen/v1",
-  includeUsage: true,
-});
-
-const lmStudio = createOpenAICompatible({
-  name: "lmstudio",
-  baseURL: "http://localhost:1234/v1",
-  includeUsage: true,
-});
 
 // Reasoning effort levels
 export type ReasoningEffort = "none" | "low" | "medium" | "high" | "xhigh";
 
-// Provider types
-export type Provider =
+// Creator types (the company that created the model)
+export type Creator =
   | "anthropic"
   | "deepseek"
   | "google"
   | "moonshotai"
   | "openai"
-  | "x-ai"
-  | "opencode-zen"
-  | "lmstudio";
+  | "x-ai";
 
 // Model definition interface
 export interface ModelDefinition {
-  provider: Provider;
+  creator: Creator;
   model: string;
   reasoning?: ReasoningEffort;
   displayName: string;
@@ -49,10 +32,16 @@ function createOpenRouterModel(
   model: string,
   effort?: ReasoningEffort
 ): LanguageModel {
-  //@ts-expect-error -- waiting for reasoning options fix in openrouter sdk
+  //@ts-expect-error -- landed a [pr](https://github.com/OpenRouterTeam/ai-sdk-provider/pull/305)
   return openrouter(model, {
     ...defaultProviderOptions,
-    ...(effort && effort !== "none" && { reasoning: { effort } }),
+    ...(effort
+      ? {
+          reasoning: {
+            effort,
+          },
+        }
+      : {}),
   });
 }
 
@@ -60,13 +49,13 @@ function createOpenRouterModel(
 export const MODEL_DEFINITIONS: ModelDefinition[] = [
   // Anthropic
   {
-    provider: "anthropic",
+    creator: "anthropic",
     model: "anthropic/claude-sonnet-4",
     displayName: "Claude Sonnet 4",
     enabled: false,
   },
   {
-    provider: "anthropic",
+    creator: "anthropic",
     model: "anthropic/claude-sonnet-4.5",
     displayName: "Claude Sonnet 4.5",
     enabled: false,
@@ -74,7 +63,7 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
 
   // DeepSeek
   {
-    provider: "deepseek",
+    creator: "deepseek",
     model: "deepseek/deepseek-chat-v3.1",
     displayName: "DeepSeek V3.1",
     enabled: false,
@@ -82,34 +71,34 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
 
   // Google
   {
-    provider: "google",
+    creator: "google",
     model: "google/gemini-2.5-flash",
     displayName: "Gemini 2.5 Flash",
     enabled: false,
   },
   {
-    provider: "google",
+    creator: "google",
     model: "google/gemini-3-flash-preview",
     reasoning: "low",
     displayName: "Gemini 3 Flash (low)",
     enabled: true,
   },
   {
-    provider: "google",
+    creator: "google",
     model: "google/gemini-3-flash-preview",
     reasoning: "high",
     displayName: "Gemini 3 Flash (high)",
     enabled: true,
   },
   {
-    provider: "google",
+    creator: "google",
     model: "google/gemini-3-pro-preview",
     reasoning: "low",
     displayName: "Gemini 3 Pro (low)",
     enabled: false,
   },
   {
-    provider: "google",
+    creator: "google",
     model: "google/gemini-3-pro-preview",
     reasoning: "high",
     displayName: "Gemini 3 Pro (high)",
@@ -118,7 +107,7 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
 
   // Moonshotai
   {
-    provider: "moonshotai",
+    creator: "moonshotai",
     model: "moonshotai/kimi-k2-thinking",
     displayName: "Kimi K2 Thinking",
     enabled: false,
@@ -126,53 +115,53 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
 
   // OpenAI
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5-mini",
     displayName: "GPT-5 Mini",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5",
     displayName: "GPT-5",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5",
     reasoning: "high",
     displayName: "GPT-5 (high)",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5.2",
     reasoning: "none",
     displayName: "GPT-5.2 (none)",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5.2",
     displayName: "GPT-5.2",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5.2",
     reasoning: "high",
     displayName: "GPT-5.2 (high)",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-5.2",
     reasoning: "xhigh",
     displayName: "GPT-5.2 (xhigh)",
     enabled: false,
   },
   {
-    provider: "openai",
+    creator: "openai",
     model: "openai/gpt-oss-120b",
     displayName: "GPT OSS 120B",
     enabled: false,
@@ -180,17 +169,9 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
 
   // X-AI
   {
-    provider: "x-ai",
+    creator: "x-ai",
     model: "x-ai/grok-4.1-fast",
     displayName: "Grok 4.1 Fast",
-    enabled: false,
-  },
-
-  // OpenCode Zen
-  {
-    provider: "opencode-zen",
-    model: "glm-4.7-free",
-    displayName: "GLM 4.7 Free",
     enabled: false,
   },
 ];
@@ -198,19 +179,12 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
 // Generate model key from definition
 export function getModelKey(def: ModelDefinition): string {
   const reasoningSuffix = def.reasoning ? `-${def.reasoning}` : "";
-  return `[${def.provider}]${def.model.split("/").pop()}${reasoningSuffix}`;
+  return `[${def.creator}]${def.model.split("/").pop()}${reasoningSuffix}`;
 }
 
 // Create language model instance from definition
 export function createModelInstance(def: ModelDefinition): LanguageModel {
-  switch (def.provider) {
-    case "opencode-zen":
-      return opencodeZen(def.model) as LanguageModel;
-    case "lmstudio":
-      return lmStudio(def.model) as LanguageModel;
-    default:
-      return createOpenRouterModel(def.model, def.reasoning);
-  }
+  return createOpenRouterModel(def.model, def.reasoning);
 }
 
 // Build MODELS object from enabled definitions

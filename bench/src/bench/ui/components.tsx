@@ -89,11 +89,11 @@ export function ModelSelector({
 }) {
   const items = [
     ...models.map((m) => {
-      const key = `[${m.provider}]${m.model.split("/").pop()}${m.reasoning ? `-${m.reasoning}` : ""}`;
+      const key = `[${m.creator}]${m.model.split("/").pop()}${m.reasoning ? `-${m.reasoning}` : ""}`;
       const isSelected = selectedModels.has(key);
       return {
         key,
-        label: `${isSelected ? "[x]" : "[ ]"} ${m.displayName} (${m.provider})`,
+        label: `${isSelected ? "[x]" : "[ ]"} ${m.displayName} (${m.creator})`,
         value: key,
       };
     }),

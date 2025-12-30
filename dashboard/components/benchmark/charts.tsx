@@ -57,7 +57,6 @@ const CHART_COLORS = [
 
 function getCreatorColor(creator: string): string {
   const creatorLower = creator.toLowerCase();
-  console.log(creatorLower);
   if (CREATOR_COLORS[creatorLower]) {
     return CREATOR_COLORS[creatorLower];
   }
@@ -65,7 +64,7 @@ function getCreatorColor(creator: string): string {
   let hash = 0;
   for (let i = 0; i < creatorLower.length; i++) {
     const charCode = creatorLower.charCodeAt(i);
-    hash = charCode + (hash * 31);
+    hash = charCode + hash * 31;
   }
   const index = Math.abs(hash) % CHART_COLORS.length;
   return CHART_COLORS[index];
