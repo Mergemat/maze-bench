@@ -60,18 +60,18 @@ export function computeModelMetricsPoints(
     const totalTimeMs = filtered.reduce((acc, r) => acc + r.totalDurationMs, 0);
     const totalCost = filtered.reduce((acc, r) => acc + (r.cost ?? 0), 0);
 
-    // Compute average efficiency score (only for runs that have efficiency data)
-    const runsWithEfficiency = filtered.filter(
-      (r) => r.efficiencyScore !== undefined
+    // Compute average efficiency score (only for successful runs)
+    const successfulRunsWithEfficiency = successfulRuns.filter(
+      (r) => r.efficiencyScore !== undefined && r.efficiencyScore > 0
     );
-    const totalEfficiency = runsWithEfficiency.reduce(
+    const totalEfficiency = successfulRunsWithEfficiency.reduce(
       (acc, r) => acc + (r.efficiencyScore ?? 0),
       0
     );
     const avgEfficiencyScore =
-      runsWithEfficiency.length === 0
+      successfulRunsWithEfficiency.length === 0
         ? 0
-        : totalEfficiency / runsWithEfficiency.length;
+        : totalEfficiency / successfulRunsWithEfficiency.length;
 
     points.push({
       model,
