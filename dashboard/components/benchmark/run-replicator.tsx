@@ -163,7 +163,7 @@ const MazeRenderer = function MazeRenderer({
                   "flex items-center justify-center",
                   bg,
                   text,
-                  size === 7 && "h-7 w-7 sm:h-12 sm:w-12",
+                  size === 10 && "h-6 w-6 sm:h-9 sm:w-9",
                   size === 21 && "h-3 w-3 sm:h-5 sm:w-5",
                   size === 41 && "h-1.5 w-1.5 text-xs sm:h-2 sm:w-2"
                 )}

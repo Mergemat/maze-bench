@@ -306,7 +306,9 @@ export async function runSingleMaze(
   onStep?: StepCallback,
   onRetry?: RetryCallback
 ): Promise<RunResult> {
-  const runId = `${model}_${mazeData.id}`;
+  const timestamp = new Date().toISOString();
+  const dateOnly = timestamp.split("T")[0];
+  const runId = `${model}_${mazeData.id}_${dateOnly}`;
   const env = createMazeEnv(mazeData);
   const stepTrace: StepTrace[] = [];
 
@@ -372,7 +374,7 @@ export async function runSingleMaze(
     }
     const cost = totalCost > 0 ? totalCost : undefined;
 
-    return createResult(runId, env, mazeData, model, stepTrace, start, cost);
+    return createResult(runId, timestamp, env, mazeData, model, stepTrace, start, cost);
   } catch (error) {
     const benchError =
       error instanceof Error && "category" in error
@@ -381,6 +383,7 @@ export async function runSingleMaze(
 
     return createResult(
       runId,
+      timestamp,
       env,
       mazeData,
       model,
@@ -419,6 +422,7 @@ function calculateEfficiencyScore(
 
 function createResult(
   runId: string,
+  timestamp: string,
   env: MazeEnv,
   mazeData: MazeData,
   model: ModelKey,
@@ -440,7 +444,7 @@ function createResult(
 
   return {
     id: runId,
-    timestamp: new Date().toISOString(),
+    timestamp,
     config: mazeData.cfg,
     model,
     maze: mazeData.maze,
