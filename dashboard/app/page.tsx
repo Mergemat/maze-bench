@@ -77,12 +77,7 @@ export default async function Page() {
           </section>
 
           <section>
-            <h2 className="mb-3 font-medium text-lg">
-              Individual Runs{" "}
-              <span className="font-normal text-muted-foreground text-sm">
-                (click to replay)
-              </span>
-            </h2>
+            <h2 className="mb-3 font-medium text-lg">Individual Runs </h2>
             <RunList reports={latestReports} />
           </section>
         </div>

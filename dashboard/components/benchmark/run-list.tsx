@@ -1,8 +1,8 @@
 "use client";
 
 import { useAtomValue } from "jotai";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -10,34 +10,88 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { BenchmarkReport, RunResult } from "@/lib/types";
-import {
-  complexityFilterAtom,
-  sizeFilterAtom,
-  successfulOnlyAtom,
-  visionFilterAtom,
-} from "@/store/filters";
-import { Button } from "../ui/button";
+
+import type {
+  BenchmarkReport,
+  MazeComplexity,
+  RunResult,
+  VisionMode,
+} from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { successfulOnlyAtom } from "@/store/filters";
 import { RunReplicator } from "./run-replicator";
 
-type RunListProps = {
+interface RunListProps {
   reports: Map<string, BenchmarkReport>;
+}
+
+interface SizeGroup {
+  size: string;
+  runs: RunResult[];
+}
+
+const SIZE_LABELS: Record<string, string> = {
+  "5x5": "Tiny",
+  "11x11": "Small",
+  "21x21": "Medium",
+  "35x35": "Large",
 };
 
-type FilterOptions = {
-  complexity: string | null;
-  size: string | null;
-  vision: string | null;
-  successfulOnly?: boolean | null;
-};
+const COMPLEXITY_ORDER: MazeComplexity[] = [
+  "simple",
+  "normal",
+  "complex",
+  "extreme",
+];
+const VISION_ORDER: VisionMode[] = ["local", "global"];
 
-function filterResults(results: RunResult[], options: FilterOptions): RunResult[] {
-  const { complexity, size, vision, successfulOnly } = options;
-  return results.filter((r) => {
-    if (complexity && r.config.complexity !== complexity) {
-      return false;
+function getDisplayName(
+  reports: Map<string, BenchmarkReport>,
+  model: string | null
+): string {
+  if (!model) {
+    return "";
+  }
+  const report = reports.get(model);
+  return report?.metadata.displayName ?? model;
+}
+
+function groupBySize(results: RunResult[]): SizeGroup[] {
+  const groups = new Map<string, RunResult[]>();
+
+  for (const r of results) {
+    const size = `${r.config.width}x${r.config.height}`;
+    if (!groups.has(size)) {
+      groups.set(size, []);
     }
-    if (size && `${r.config.width}x${r.config.height}` !== size) {
+    const group = groups.get(size);
+    if (group) {
+      group.push(r);
+    }
+  }
+
+  return Array.from(groups.entries())
+    .sort(([a], [b]) => {
+      const [aw] = a.split("x").map(Number);
+      const [bw] = b.split("x").map(Number);
+      return aw - bw;
+    })
+    .map(([size, runs]) => ({ size, runs }));
+}
+
+function RunGrid({
+  runs,
+  complexity,
+  vision,
+  successfulOnly,
+}: {
+  runs: RunResult[];
+  complexity: MazeComplexity | null;
+  vision: VisionMode | null;
+  successfulOnly: boolean;
+}) {
+  const filtered = runs.filter((r) => {
+    if (complexity && r.config.complexity !== complexity) {
       return false;
     }
     if (vision && r.config.vision !== vision) {
@@ -48,38 +102,74 @@ function filterResults(results: RunResult[], options: FilterOptions): RunResult[
     }
     return true;
   });
-}
 
-function getDisplayName(reports: Map<string, BenchmarkReport>, model: string | null): string {
-  if (!model) {
-    return "";
+  if (filtered.length === 0) {
+    return <div className="text-muted-foreground text-xs">No runs</div>;
   }
-  const report = reports.get(model);
-  return report?.metadata.displayName ?? model;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {filtered.map((run) => (
+        <RunReplicator key={run.id} run={run}>
+          <Button
+            className={cn(
+              run.error ? "" : "border-destructive/50",
+              run.success ? "border-primary/50" : ""
+            )}
+            title={run.error ?? `${run.totalSteps} steps`}
+            variant={"outline"}
+          >
+            {run.error
+              ? `ERROR (${run.totalSteps})`
+              : `${run.config.complexity} | ${run.config.vision} (${run.totalSteps})`}
+          </Button>
+        </RunReplicator>
+      ))}
+    </div>
+  );
 }
 
 export function RunList({ reports }: RunListProps) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [selectedComplexity, setSelectedComplexity] =
+    useState<MazeComplexity | null>(null);
+  const [selectedVision, setSelectedVision] = useState<VisionMode | null>(null);
 
-  const complexityFilter = useAtomValue(complexityFilterAtom);
-  const sizeFilter = useAtomValue(sizeFilterAtom);
-  const visionFilter = useAtomValue(visionFilterAtom);
   const successfulOnly = useAtomValue(successfulOnlyAtom);
 
   const models = Array.from(reports.keys());
   const activeModel = selectedModel ?? models[0] ?? null;
   const report = activeModel ? reports.get(activeModel) : null;
-  const filtered = report
-    ? filterResults(report.results, {
-        complexity: complexityFilter,
-        size: sizeFilter,
-        vision: visionFilter,
-        successfulOnly,
-      })
-    : [];
+
+  const sizeGroups = useMemo(
+    () => (report ? groupBySize(report.results) : []),
+    [report]
+  );
+
+  const complexities = useMemo(() => {
+    if (!report) {
+      return [];
+    }
+    const set = new Set<MazeComplexity>();
+    for (const r of report.results) {
+      set.add(r.config.complexity);
+    }
+    return COMPLEXITY_ORDER.filter((c) => set.has(c));
+  }, [report]);
+
+  const visions = useMemo(() => {
+    if (!report) {
+      return [];
+    }
+    const set = new Set<VisionMode>();
+    for (const r of report.results) {
+      set.add(r.config.vision);
+    }
+    return VISION_ORDER.filter((v) => set.has(v));
+  }, [report]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <Select
         onValueChange={(v) => setSelectedModel(v)}
         value={activeModel ?? ""}
@@ -96,38 +186,78 @@ export function RunList({ reports }: RunListProps) {
         </SelectContent>
       </Select>
 
-      <div className="flex flex-wrap gap-2 xl:h-60 2xl:h-52">
-        {filtered.map((run) => (
-          <RunReplicator key={run.id} run={run}>
-            <Button key={run.id} type="button" variant="outline" title={run.error ?? undefined}>
-              <span className="text-muted-foreground">
-                {run.config.complexity}
-              </span>
-              <span className="text-muted-foreground">
-                {run.config.width}x{run.config.height}
-              </span>
-              <span className="text-muted-foreground">{run.config.vision}</span>
-              <span className="text-muted-foreground">
-                | {run.totalSteps} steps
-              </span>
-              {run.error ? (
-                <Badge
-                  className="h-4 px-1 text-[9px]"
-                  variant="destructive"
-                >
-                  ERROR
-                </Badge>
-              ) : (
-                <Badge
-                  className="h-4 px-1 text-[9px]"
-                  variant={run.success ? "default" : "destructive"}
-                >
-                  {run.success ? "✓" : "✗"}
-                </Badge>
-              )}
+      <div className="flex gap-4">
+        <div className="space-y-1">
+          <div className="font-medium text-muted-foreground text-xs">
+            Complexity
+          </div>
+          <div className="flex flex-wrap gap-1">
+            <Button
+              onClick={() => setSelectedComplexity(null)}
+              size="sm"
+              variant={selectedComplexity === null ? "default" : "outline"}
+            >
+              all
             </Button>
-          </RunReplicator>
-        ))}
+            {complexities.map((c) => (
+              <Button
+                key={c}
+                onClick={() => setSelectedComplexity(c)}
+                size="sm"
+                variant={selectedComplexity === c ? "default" : "outline"}
+              >
+                {c}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <div className="font-medium text-muted-foreground text-xs">
+            Vision
+          </div>
+          <div className="flex flex-wrap gap-1">
+            <Button
+              onClick={() => setSelectedVision(null)}
+              size="sm"
+              variant={selectedVision === null ? "default" : "outline"}
+            >
+              all
+            </Button>
+            {visions.map((v) => (
+              <Button
+                key={v}
+                onClick={() => setSelectedVision(v)}
+                size="sm"
+                variant={selectedVision === v ? "default" : "outline"}
+              >
+                {v}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-1">
+        <div className="font-medium text-muted-foreground text-xs">
+          Runs (click to replay)
+        </div>
+        <div className="space-y-4">
+          {sizeGroups.map(({ size, runs }) => (
+            <div className="space-y-2" key={size}>
+              <div className="font-medium text-sm">
+                {SIZE_LABELS[size] ?? size}{" "}
+                <span className="text-muted-foreground">({size})</span>
+              </div>
+              <RunGrid
+                complexity={selectedComplexity}
+                runs={runs}
+                successfulOnly={successfulOnly}
+                vision={selectedVision}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -243,7 +243,7 @@ function BaseScatterCard({
   data: ModelMetricsPoint[];
   showEmpty: boolean;
 }) {
-  const filteredData = data.filter((d) => d.nSuccesses > 0);
+  const filteredData = data.filter((d) => d.nRuns > 0);
 
   const chartConfig = {
     [xKey]: { label: xLabel, color: chartColor },
@@ -418,11 +418,11 @@ function CostVsSuccessCard(props: ScatterCardProps) {
     <BaseScatterCard
       {...props}
       chartColor={CHART_COLORS[3]}
-      subtitle="How total cost relates to success rate"
-      title="Total cost vs Success Rate"
-      xFormatter={(v) => `$${Number(v).toFixed(3)}`}
-      xKey="totalCost"
-      xLabel="Total Cost ($)"
+      subtitle="Lower avg cost with high success rate is better (bottom-right)"
+      title="Avg Cost per Run vs Success Rate"
+      xFormatter={(v) => `$${Number(v).toFixed(4)}`}
+      xKey="avgCostPerRun"
+      xLabel="Avg Cost per Run ($)"
     />
   );
 }
