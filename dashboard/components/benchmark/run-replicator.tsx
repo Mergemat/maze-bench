@@ -113,14 +113,29 @@ const MazeRenderer = function MazeRenderer({
   );
 };
 
-function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
+function ReplicatorControls({
+  totalSteps,
+  size,
+}: {
+  totalSteps: number;
+
+  size: number;
+}) {
   const [currentStep, setCurrentStep] = useAtom(currentStepAtom);
   const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom);
+
+  const playerSpeedMap = {
+    5: 100,
+    11: 70,
+    21: 30,
+    31: 20,
+  };
 
   useEffect(() => {
     if (!isPlaying) {
       return;
     }
+    const playerSpeed = playerSpeedMap[size as keyof typeof playerSpeedMap];
     const interval = setInterval(() => {
       setCurrentStep((s) => {
         if (s >= totalSteps) {
@@ -129,9 +144,9 @@ function ReplicatorControls({ totalSteps }: { totalSteps: number }) {
         }
         return s + 1;
       });
-    }, 20);
+    }, playerSpeed);
     return () => clearInterval(interval);
-  }, [isPlaying, totalSteps, setCurrentStep, setIsPlaying]);
+  }, [isPlaying, totalSteps, setCurrentStep, setIsPlaying, size]);
 
   const reset = () => {
     setCurrentStep(0);
@@ -234,7 +249,8 @@ const RunHeader = function RunHeader({ run }: { run: RunResult }) {
           </Badge>
           <Badge variant="outline">{run.config.observationMode}</Badge>
           <Badge variant={run.success ? "default" : "destructive"}>
-            {run.success ? "Success" : "Failed"}
+            {run.success ? "Success" : "Failed"}{" "}
+            {run.error ? "with error" : null}
           </Badge>
         </div>
       </div>
@@ -272,10 +288,12 @@ export function RunReplicator({ run, children }: RunReplicatorProps) {
                 size={run.config.width}
               />
             </div>
-
           </div>
           <div className="flex flex-col gap-4">
-            <ReplicatorControls totalSteps={run.stepsTrace.length} />
+            <ReplicatorControls
+              size={run.config.width}
+              totalSteps={run.stepsTrace.length}
+            />
             <StepInfo totalSteps={run.stepsTrace.length} />
             <RunInfo run={run} />
           </div>
