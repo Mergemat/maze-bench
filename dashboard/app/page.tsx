@@ -10,7 +10,7 @@ import {
   getLatestReportByModel,
   getUniqueComplexities,
   getUniqueSizes,
-  getUniqueVisions,
+  getUniqueObservationModes,
 } from "@/lib/data";
 import { loadBenchmarkReports } from "@/lib/loader";
 
@@ -20,7 +20,7 @@ export default async function Page() {
   const latestReports = getLatestReportByModel(reports);
   const complexities = getUniqueComplexities(reports);
   const sizes = getUniqueSizes(reports);
-  const visions = getUniqueVisions(reports);
+  const observationModes = getUniqueObservationModes(reports);
 
   return (
     <main className="container relative mx-auto px-4 py-8">
@@ -58,7 +58,7 @@ export default async function Page() {
             <Filters
               complexities={complexities}
               sizes={sizes}
-              visions={visions}
+              observationModes={observationModes}
             />
           </div>
         </header>

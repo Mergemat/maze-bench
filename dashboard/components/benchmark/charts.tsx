@@ -24,7 +24,7 @@ import type { BenchmarkReport } from "@/lib/types";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
-  visionFilterAtom,
+  observationModeFilterAtom,
 } from "@/store/filters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
@@ -103,13 +103,13 @@ function ModelLegend({ data }: { data: ModelMetricsPoint[] }) {
 export function PerformanceCharts({ reports }: PerformanceChartsProps) {
   const complexityFilter = useAtomValue(complexityFilterAtom);
   const sizeFilter = useAtomValue(sizeFilterAtom);
-  const visionFilter = useAtomValue(visionFilterAtom);
+  const observationModeFilter = useAtomValue(observationModeFilterAtom);
 
   const data = computeModelMetricsPoints(
     reports,
     complexityFilter,
     sizeFilter,
-    visionFilter
+    observationModeFilter
   );
 
   const hasAnyRuns = data.some((d) => d.nRuns > 0);

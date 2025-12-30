@@ -42,7 +42,7 @@ export async function testSharedMazes() {
   for (const { id, cfg, seed, maze } of mazes) {
     console.log(`${ANSI.title}${id}${ANSI.reset}`);
     console.log(
-      `Config: ${cfg.width}x${cfg.height}, complexity=${cfg.complexity}, vision=${cfg.vision}, seed=${seed}`
+      `Config: ${cfg.width}x${cfg.height}, complexity=${cfg.complexity}, observationMode=${cfg.observationMode}, seed=${seed}`
     );
     console.log(renderMaze(maze));
     console.log();

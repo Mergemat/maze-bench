@@ -123,7 +123,7 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
         result.startPos &&
         result.goalPos
       ) {
-        const mazeKey = `${result.seed}_${result.config.complexity}_${result.config.vision}_${result.config.width}x${result.config.height}`;
+        const mazeKey = `${result.seed}_${result.config.complexity}_${result.config.observationMode}_${result.config.width}x${result.config.height}`;
 
         if (!mazes.has(mazeKey)) {
           mazes.set(mazeKey, {

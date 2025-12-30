@@ -1,5 +1,7 @@
 export type MazeComplexity = "simple" | "normal" | "complex" | "extreme";
-export type VisionMode = "local" | "global";
+// continuous: model receives observation after every move
+// initial: model only sees the maze once at the start
+export type ObservationMode = "continuous" | "initial";
 
 export type Pos = { x: number; y: number };
 
@@ -7,7 +9,7 @@ export type BenchmarkConfig = {
   width: number;
   height: number;
   complexity: MazeComplexity;
-  vision: VisionMode;
+  observationMode: ObservationMode;
 };
 
 export type StepTrace = {

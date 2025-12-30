@@ -91,7 +91,7 @@ export class IncrementalResultSaver {
     // Update byConfig stats
     const byConfig: Record<string, RunResult[]> = {};
     for (const r of results) {
-      const key = `${r.config.width}x${r.config.height}_${r.config.complexity}_${r.config.vision}`;
+      const key = `${r.config.width}x${r.config.height}_${r.config.complexity}_${r.config.observationMode}`;
       if (!byConfig[key]) {
         byConfig[key] = [];
       }

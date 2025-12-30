@@ -48,82 +48,6 @@ const currentTraceStepAtom = atom((get) => {
   return run.stepsTrace[currentStep - 1] ?? null;
 });
 
-function getLocalVision(maze: string[], pos: Pos, radius = 2): string[][] {
-  const out: string[][] = [];
-  for (let dy = -radius; dy <= radius; dy++) {
-    const row: string[] = [];
-    for (let dx = -radius; dx <= radius; dx++) {
-      const x = pos.x + dx;
-      const y = pos.y + dy;
-      if (dx === 0 && dy === 0) {
-        row.push("A");
-      } else {
-        row.push(maze[y]?.[x] ?? "#");
-      }
-    }
-    out.push(row);
-  }
-  return out;
-}
-
-const LocalVisionRenderer = function LocalVisionRenderer({
-  maze,
-  goalPos,
-}: {
-  maze: string[];
-  goalPos: Pos;
-}) {
-  const currentPos = useAtomValue(currentPosAtom);
-  const localView = getLocalVision(maze, currentPos);
-  const radius = 2;
-
-  return (
-    <div className="select-none font-mono text-xs leading-none">
-      {localView.map((row, dy) => (
-        <div className="flex" key={dy}>
-          {row.map((cell, dx) => {
-            const isCenter = dx === radius && dy === radius;
-            const worldX = currentPos.x + dx - radius;
-            const worldY = currentPos.y + dy - radius;
-            const isGoal = goalPos.x === worldX && goalPos.y === worldY;
-
-            let bg = "bg-transparent";
-            let text = "text-muted-foreground";
-
-            if (cell === "#") {
-              bg = "bg-foreground";
-              text = "text-foreground";
-            } else if (isCenter) {
-              bg = "bg-primary";
-              text = "text-primary-foreground";
-            } else if (isGoal) {
-              bg = "bg-green-500";
-              text = "text-white";
-            }
-
-            return (
-              <span
-                className={`flex h-5 w-5 items-center justify-center ${bg} ${text}`}
-                key={dx}
-              >
-                {isCenter
-                  ? "●"
-                  : isGoal && cell === "G"
-                    ? "G"
-                    : cell === "#"
-                      ? ""
-                      : cell === " "
-                        ? ""
-                        : cell}
-              </span>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const MazeRenderer = function MazeRenderer({
   maze,
   goalPos,
@@ -308,7 +232,7 @@ const RunHeader = function RunHeader({ run }: { run: RunResult }) {
           <Badge variant="outline">
             {run.config.width}x{run.config.height}
           </Badge>
-          <Badge variant="outline">{run.config.vision}</Badge>
+          <Badge variant="outline">{run.config.observationMode}</Badge>
           <Badge variant={run.success ? "default" : "destructive"}>
             {run.success ? "Success" : "Failed"}
           </Badge>
@@ -348,14 +272,7 @@ export function RunReplicator({ run, children }: RunReplicatorProps) {
                 size={run.config.width}
               />
             </div>
-            {run.config.vision === "local" && (
-              <div className="w-fit border p-2">
-                <div className="mb-1 text-muted-foreground text-xs">
-                  Model View (5x5)
-                </div>
-                <LocalVisionRenderer goalPos={run.goalPos} maze={run.maze} />
-              </div>
-            )}
+
           </div>
           <div className="flex flex-col gap-4">
             <ReplicatorControls totalSteps={run.stepsTrace.length} />

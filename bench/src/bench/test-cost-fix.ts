@@ -11,7 +11,7 @@ async function testCostFix() {
     width: 5,
     height: 5,
     complexity: "simple",
-    vision: "local",
+    observationMode: "continuous",
   };
 
   const seed = 12_345;

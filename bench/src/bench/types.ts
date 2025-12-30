@@ -1,7 +1,9 @@
 import type { ModelKey } from "./models";
 
 export type MazeComplexity = "simple" | "normal" | "complex" | "extreme";
-export type VisionMode = "local" | "global";
+// continuous: model receives observation after every move
+// initial: model only sees the maze once at the start
+export type ObservationMode = "continuous" | "initial";
 
 export interface Pos {
   x: number;
@@ -12,7 +14,7 @@ export interface BenchmarkConfig {
   width: number;
   height: number;
   complexity: MazeComplexity;
-  vision: VisionMode;
+  observationMode: ObservationMode;
 }
 
 export interface MazeEnv {
@@ -22,7 +24,7 @@ export interface MazeEnv {
   steps: number;
   done: boolean;
   success: boolean;
-  visionMode: VisionMode;
+  observationMode: ObservationMode;
 }
 
 export interface MazeData {

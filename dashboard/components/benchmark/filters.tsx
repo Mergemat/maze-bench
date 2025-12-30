@@ -8,24 +8,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { MazeComplexity, VisionMode } from "@/lib/types";
+import type { MazeComplexity, ObservationMode } from "@/lib/types";
 import {
   complexityFilterAtom,
   sizeFilterAtom,
-  visionFilterAtom,
+  observationModeFilterAtom,
 } from "@/store/filters";
 
 type FiltersProps = {
   complexities: string[];
   sizes: string[];
-  visions: string[];
+  observationModes: string[];
 };
 
-export function Filters({ complexities, sizes, visions }: FiltersProps) {
+export function Filters({ complexities, sizes, observationModes }: FiltersProps) {
   const [selectedComplexity, setComplexityFilter] =
     useAtom(complexityFilterAtom);
   const [selectedSize, setSizeFilter] = useAtom(sizeFilterAtom);
-  const [selectedVision, setVisionFilter] = useAtom(visionFilterAtom);
+  const [selectedObservationMode, setObservationModeFilter] = useAtom(observationModeFilterAtom);
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="flex flex-col gap-1">
@@ -71,19 +71,19 @@ export function Filters({ complexities, sizes, visions }: FiltersProps) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <span className="text-muted-foreground text-xs">Vision</span>
+        <span className="text-muted-foreground text-xs">Observation</span>
         <Select
           onValueChange={(v) =>
-            setVisionFilter(v === "all" ? null : (v as VisionMode))
+            setObservationModeFilter(v === "all" ? null : (v as ObservationMode))
           }
-          value={selectedVision ?? "all"}
+          value={selectedObservationMode ?? "all"}
         >
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">all</SelectItem>
-            {visions.map((v) => (
+            {observationModes.map((v) => (
               <SelectItem key={v} value={v}>
                 {v}
               </SelectItem>

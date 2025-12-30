@@ -238,7 +238,7 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
         result.startPos &&
         result.goalPos
       ) {
-        const mazeKey = `${result.seed}_${result.config.complexity}_${result.config.vision}_${result.config.width}x${result.config.height}`;
+        const mazeKey = `${result.seed}_${result.config.complexity}_${result.config.observationMode}_${result.config.width}x${result.config.height}`;
 
         if (!mazes.has(mazeKey)) {
           mazes.set(mazeKey, {
@@ -321,7 +321,7 @@ export function generateStats(optimalPaths: OptimalPathData[]): {
   let totalMazes = 0;
 
   for (const data of optimalPaths) {
-    const configKey = `${data.config.complexity}_${data.config.vision}_${data.config.width}x${data.config.height}`;
+    const configKey = `${data.config.complexity}_${data.config.observationMode}_${data.config.width}x${data.config.height}`;
 
     if (!byConfig[configKey]) {
       byConfig[configKey] = { avgOptimalLength: 0, reachable: 0, total: 0 };
