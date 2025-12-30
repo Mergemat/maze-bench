@@ -21,6 +21,7 @@ const App: FC = () => {
     setSelectedSuiteId,
     allModels,
     selectedModels,
+    existingResults,
     toggleModel,
     confirmModels,
     modelOrder,
@@ -52,6 +53,7 @@ const App: FC = () => {
     return (
       <ModelSelector
         models={allModels}
+        existingResults={existingResults}
         onConfirm={confirmModels}
         onToggle={toggleModel}
         selectedModels={selectedModels}

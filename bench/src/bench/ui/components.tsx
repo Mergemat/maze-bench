@@ -1,6 +1,7 @@
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
 import type { ModelDefinition } from "../models";
+import type { ExistingResult } from "../save";
 import type { ModelStats, RecentError, SuiteChoice } from "./types";
 import { formatRowData, pad, padLeft, pctColor } from "./utils";
 
@@ -61,7 +62,7 @@ export function SuiteSelector({
 }) {
   return (
     <Box flexDirection="column">
-      <Header title="MazeBench" subtitle="Select a benchmark suite to run" />
+      <Header subtitle="Select a benchmark suite to run" title="MazeBench" />
       <SelectInput
         items={suites.map((s) => ({
           key: s.id,
@@ -78,11 +79,13 @@ export function SuiteSelector({
 export function ModelSelector({
   models,
   selectedModels,
+  existingResults,
   onToggle,
   onConfirm,
 }: {
   models: ModelDefinition[];
   selectedModels: Set<string>;
+  existingResults: Map<string, ExistingResult>;
   onToggle: (modelKey: string) => void;
   onConfirm: () => void;
 }) {
@@ -90,9 +93,17 @@ export function ModelSelector({
     ...models.map((m) => {
       const key = `[${m.creator}]${m.model.split("/").pop()}${m.reasoning ? `-${m.reasoning}` : ""}`;
       const isSelected = selectedModels.has(key);
+      const existing = existingResults.get(key);
+
+      let resultIndicator = "";
+      if (existing) {
+        const successPct = (existing.successRate * 100).toFixed(0);
+        resultIndicator = ` ✅ ${successPct}% on ${existing.totalRuns} runs`;
+      }
+
       return {
         key,
-        label: `${isSelected ? "[x]" : "[ ]"} ${m.displayName} (${m.creator})`,
+        label: `${isSelected ? "[x]" : "[ ]"} ${m.displayName} (${m.creator})${resultIndicator}`,
         value: key,
       };
     }),
@@ -106,8 +117,8 @@ export function ModelSelector({
   return (
     <Box flexDirection="column">
       <Header
-        title="Select Models"
         subtitle={`${selectedModels.size} model(s) selected - Space to toggle, Enter to confirm`}
+        title="Select Models"
       />
       <SelectInput
         items={items}
@@ -140,6 +151,7 @@ export function ResultsTable({
     "Errors",
     "Running",
     "Avg Cost",
+    "Total Cost",
     "Avg Tokens",
     "Avg Duration",
     "Slowest",
@@ -154,12 +166,16 @@ export function ResultsTable({
     err: Math.max(header[3].length, ...rows.map((r) => r.err.length)),
     running: Math.max(header[4].length, ...rows.map((r) => r.running.length)),
     avgCost: Math.max(header[5].length, ...rows.map((r) => r.avgCost.length)),
-    avgTokens: Math.max(
+    totalCost: Math.max(
       header[6].length,
+      ...rows.map((r) => r.totalCost.length)
+    ),
+    avgTokens: Math.max(
+      header[7].length,
       ...rows.map((r) => r.avgTokens.length)
     ),
-    avg: Math.max(header[7].length, ...rows.map((r) => r.avg.length)),
-    slow: Math.max(header[8].length, ...rows.map((r) => r.slow.length)),
+    avg: Math.max(header[8].length, ...rows.map((r) => r.avg.length)),
+    slow: Math.max(header[9].length, ...rows.map((r) => r.slow.length)),
   };
 
   return (
@@ -190,20 +206,24 @@ export function ResultsTable({
         </Text>
         {"  "}
         <Text bold color="whiteBright">
-          {pad(header[6], widths.avgTokens)}
+          {pad(header[6], widths.totalCost)}
         </Text>
         {"  "}
         <Text bold color="whiteBright">
-          {pad(header[7], widths.avg)}
+          {pad(header[7], widths.avgTokens)}
         </Text>
         {"  "}
         <Text bold color="whiteBright">
-          {pad(header[8], widths.slow)}
+          {pad(header[8], widths.avg)}
+        </Text>
+        {"  "}
+        <Text bold color="whiteBright">
+          {pad(header[9], widths.slow)}
         </Text>
       </Text>
 
       <Text color="gray">
-        {"─".repeat(Object.values(widths).reduce((a, b) => a + b, 0) + 16)}
+        {"─".repeat(Object.values(widths).reduce((a, b) => a + b, 0) + 18)}
       </Text>
 
       {rows.map((r) => (
@@ -226,6 +246,10 @@ export function ResultsTable({
           {"  "}
           <Text color={r.avgCost === "-" ? "gray" : "green"}>
             {padLeft(r.avgCost, widths.avgCost)}
+          </Text>
+          {"  "}
+          <Text color={r.totalCost === "-" ? "gray" : "green"}>
+            {padLeft(r.totalCost, widths.totalCost)}
           </Text>
           {"  "}
           <Text color={r.avgTokens === "-" ? "gray" : "blue"}>
@@ -264,7 +288,7 @@ export function StatsSummary({
   totalCost: number;
 }) {
   return (
-    <Box marginTop={1} flexDirection="column">
+    <Box flexDirection="column" marginTop={1}>
       <Text color="gray">{"─".repeat(80)}</Text>
       <Box>
         <Text>
@@ -312,7 +336,7 @@ export function RecentErrors({ errors }: { errors: RecentError[] }) {
         Recent Errors:
       </Text>
       {errors.slice(-3).map((e, i) => (
-        <Text key={`${e.model}-${e.timestamp}-${i}`} color="redBright" dimColor>
+        <Text color="redBright" dimColor key={`${e.model}-${e.timestamp}-${i}`}>
           [{e.model}] {e.error.slice(0, 80)}
           {e.error.length > 80 ? "..." : ""}
         </Text>
@@ -331,10 +355,10 @@ export function DoneBanner({
 }) {
   return (
     <Box
+      borderColor="green"
+      borderStyle="round"
       flexDirection="column"
       marginTop={1}
-      borderStyle="round"
-      borderColor="green"
       paddingX={2}
       paddingY={1}
     >

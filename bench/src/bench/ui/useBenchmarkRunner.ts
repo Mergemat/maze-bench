@@ -11,7 +11,7 @@ import {
 } from "../models";
 
 import { runSingleMaze, type BenchError } from "../runner";
-import { IncrementalResultSaver } from "../save";
+import { getExistingResults, IncrementalResultSaver } from "../save";
 import { computeStats } from "../stats";
 import { generateMazesForSuite, getSuites } from "../suites";
 import type { BenchmarkStats, MazeData, RunResult } from "../types";
@@ -46,6 +46,7 @@ export function useBenchmarkRunner() {
 
   const suites = useMemo(() => getSuites(), []);
   const allModels = useMemo(() => getAllModels(), []);
+  const existingResults = useMemo(() => getExistingResults(), []);
 
   const [phase, setPhase] = useState<Phase>("pickSuite");
   const [selectedSuiteId, setSelectedSuiteId] = useState<string | null>(null);
@@ -314,6 +315,7 @@ export function useBenchmarkRunner() {
     setSelectedSuiteId,
     allModels,
     selectedModels,
+    existingResults,
     toggleModel,
     confirmModels,
     modelOrder,
