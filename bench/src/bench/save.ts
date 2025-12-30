@@ -5,6 +5,54 @@ import type { BenchmarkReport, RunResult } from "./types";
 
 const RESULT_DIR = path.resolve(import.meta.dir, "results");
 
+export interface ExistingResult {
+  modelKey: string;
+  filePath: string;
+  date: string;
+  successRate: number;
+  totalRuns: number;
+}
+
+/**
+ * Get existing results for all models that have been benchmarked.
+ * Returns a map of model key to the most recent result info.
+ */
+export function getExistingResults(): Map<string, ExistingResult> {
+  const results = new Map<string, ExistingResult>();
+  
+  if (!fs.existsSync(RESULT_DIR)) {
+    return results;
+  }
+
+  const files = fs.readdirSync(RESULT_DIR).filter((f) => f.endsWith(".json"));
+  
+  for (const file of files) {
+    try {
+      const filePath = path.join(RESULT_DIR, file);
+      const content = fs.readFileSync(filePath, "utf-8");
+      const report = JSON.parse(content) as BenchmarkReport;
+      
+      const modelKey = report.metadata.model;
+      const existing = results.get(modelKey);
+      
+      // Keep the most recent result for each model
+      if (!existing || new Date(report.metadata.date) > new Date(existing.date)) {
+        results.set(modelKey, {
+          modelKey,
+          filePath,
+          date: report.metadata.date,
+          successRate: report.stats.overall.successRate,
+          totalRuns: report.results.length,
+        });
+      }
+    } catch {
+      // Skip malformed files
+    }
+  }
+
+  return results;
+}
+
 function ensureResultDir() {
   if (!fs.existsSync(RESULT_DIR)) {
     fs.mkdirSync(RESULT_DIR, { recursive: true });

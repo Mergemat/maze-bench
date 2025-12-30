@@ -50,6 +50,7 @@ export function formatRowData(
   err: string;
   running: string;
   avgCost: string;
+  totalCost: string;
   avgTokens: string;
   avg: string;
   slow: string;
@@ -63,6 +64,7 @@ export function formatRowData(
       err: "-",
       running: "-",
       avgCost: "-",
+      totalCost: "-",
       avgTokens: "-",
       avg: "-",
       slow: "-",
@@ -85,6 +87,10 @@ export function formatRowData(
     running: running === 0 ? "-" : String(running),
     avgCost: formatValue(
       done > 0 ? s.costSum / done : null,
+      (v) => `$${v.toFixed(4)}`
+    ),
+    totalCost: formatValue(
+      s.costSum > 0 ? s.costSum : null,
       (v) => `$${v.toFixed(4)}`
     ),
     avgTokens: formatValue(

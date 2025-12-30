@@ -60,20 +60,16 @@ function computeStats(results: RunResult[]) {
   const totalTime = results.reduce((acc, r) => acc + r.totalDurationMs, 0);
   const totalCost = results.reduce((acc, r) => acc + (r.cost ?? 0), 0);
 
-  // Compute efficiency only for successful runs
-  const successfulRunsWithEfficiency = successfulRuns.filter(
-    (r) => r.efficiencyScore !== undefined && r.efficiencyScore > 0
-  );
-  const totalEfficiencyScore = successfulRunsWithEfficiency.reduce(
+  const totalEfficiencyScore = results.reduce(
     (acc, r) => acc + (r.efficiencyScore ?? 0),
     0
   );
+
   const efficiencyScore =
-    successfulRunsWithEfficiency.length === 0
-      ? 0
-      : totalEfficiencyScore / successfulRunsWithEfficiency.length;
+    results.length === 0 ? 0 : totalEfficiencyScore / results.length;
 
   return {
+    successfulRuns: results.filter((r) => r.success),
     successRate: (successes / results.length) * 100,
     avgSteps: totalSteps / results.length,
     avgTime: totalTime / results.length,
@@ -127,7 +123,14 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap justify-between gap-2 text-xs">
+              <div className="grid grid-cols-2 gap-2 text-xs xl:grid-cols-3">
+                <div>
+                  <span className="text-muted-foreground">Escapes:</span>
+                  <span className="ml-2 font-mono">
+                    {stats.successfulRuns?.length}
+                  </span>
+                </div>
+
                 <div>
                   <span className="text-muted-foreground">Avg Steps:</span>
                   <span className="ml-2 font-mono">
@@ -147,9 +150,7 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
                   </span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">
-                    Efficiency (successful runs):
-                  </span>
+                  <span className="text-muted-foreground">Efficiency:</span>
                   <span className="ml-2 font-mono">
                     {(stats.efficiencyScore * 100).toFixed(2)}%
                   </span>
