@@ -6,6 +6,7 @@ import {
   getAllModels,
   getModelKey,
   MODELS,
+  rebuildModels,
   setModelEnabled,
 } from "../models";
 
@@ -91,6 +92,8 @@ export function useBenchmarkRunner() {
       const key = getModelKey(def);
       setModelEnabled(key, selectedModels.has(key));
     }
+    // Rebuild MODELS object with updated enabled states
+    rebuildModels();
     // Skip version input phase - use auto-generated timestamp
     setPhase("running");
   };

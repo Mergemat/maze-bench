@@ -230,6 +230,7 @@ const RunInfo = function RunInfo({ run }: { run: RunResult }) {
       <div>Total Time: {(run.totalDurationMs / 1000).toFixed(2)}s</div>
       <div>Cost: ${run.cost?.toFixed(6) ?? "N/A"}</div>
       <div>Seed: {run.seed}</div>
+      <div>Optimal Path Length: {run.optimalPathLength}</div>
       <div>Efficiency: {((run.efficiencyScore ?? 0) * 100).toFixed(2)}%</div>
     </div>
   );
