@@ -306,6 +306,7 @@ export async function runSingleMaze(
   onStep?: StepCallback,
   onRetry?: RetryCallback
 ): Promise<RunResult> {
+  const runId = `${model}_${mazeData.id}`;
   const env = createMazeEnv(mazeData);
   const stepTrace: StepTrace[] = [];
 
@@ -347,6 +348,11 @@ export async function runSingleMaze(
           system: SYSTEM_PROMPT,
           prompt: `Start Position: (1, 1). Initial view:\n${getObservation(env)}`,
           temperature: 0, // Deterministic logic is better for navigation
+          providerOptions: {
+            openrouter: {
+              user: runId, // Tag request for cost tracking in OpenRouter
+            },
+          },
           onStepFinish: () => {
             onStep?.(env.steps, env.success);
           },
@@ -366,7 +372,7 @@ export async function runSingleMaze(
     }
     const cost = totalCost > 0 ? totalCost : undefined;
 
-    return createResult(env, mazeData, model, stepTrace, start, cost);
+    return createResult(runId, env, mazeData, model, stepTrace, start, cost);
   } catch (error) {
     const benchError =
       error instanceof Error && "category" in error
@@ -374,6 +380,7 @@ export async function runSingleMaze(
         : categorizeError(error);
 
     return createResult(
+      runId,
       env,
       mazeData,
       model,
@@ -411,6 +418,7 @@ function calculateEfficiencyScore(
 }
 
 function createResult(
+  runId: string,
   env: MazeEnv,
   mazeData: MazeData,
   model: ModelKey,
@@ -431,7 +439,7 @@ function createResult(
   );
 
   return {
-    id: `${model}_${mazeData.id}`,
+    id: runId,
     timestamp: new Date().toISOString(),
     config: mazeData.cfg,
     model,
