@@ -9,7 +9,6 @@ import {
   ResultsTable,
   StatsSummary,
   SuiteSelector,
-  VersionInput,
 } from "./components";
 import { useBenchmarkRunner } from "./useBenchmarkRunner";
 
@@ -24,8 +23,6 @@ const App: FC = () => {
     selectedModels,
     toggleModel,
     confirmModels,
-    version,
-    setVersion,
     modelOrder,
     stats,
     total,
@@ -58,17 +55,6 @@ const App: FC = () => {
         onConfirm={confirmModels}
         onToggle={toggleModel}
         selectedModels={selectedModels}
-      />
-    );
-  }
-
-  // Version input phase
-  if (phase === "version") {
-    return (
-      <VersionInput
-        onChange={setVersion}
-        onSubmit={() => setPhase("running")}
-        version={version}
       />
     );
   }
@@ -108,7 +94,7 @@ const App: FC = () => {
   return (
     <Box flexDirection="column">
       <Header
-        subtitle={`Suite: ${selectedSuiteId} | Version: ${version}`}
+        subtitle={`Suite: ${selectedSuiteId}`}
         title={
           phase === "running" ? "Running Benchmark..." : "Benchmark Complete"
         }
@@ -136,7 +122,6 @@ const App: FC = () => {
         <DoneBanner
           suiteId={selectedSuiteId ?? ""}
           successRate={finalStats.overall.successRate * 100}
-          version={version}
         />
       )}
     </Box>

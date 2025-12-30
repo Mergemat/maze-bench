@@ -1,6 +1,5 @@
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
-import TextInput from "ink-text-input";
 import type { ModelDefinition } from "../models";
 import type { ModelStats, RecentError, SuiteChoice } from "./types";
 import { formatRowData, pad, padLeft, pctColor } from "./utils";
@@ -122,30 +121,6 @@ export function ModelSelector({
           }
         }}
       />
-    </Box>
-  );
-}
-
-// Version input component
-export function VersionInput({
-  version,
-  onChange,
-  onSubmit,
-}: {
-  version: string;
-  onChange: (v: string) => void;
-  onSubmit: () => void;
-}) {
-  return (
-    <Box flexDirection="column">
-      <Header
-        title="Benchmark Version"
-        subtitle="Enter a version label for this run (press Enter to start)"
-      />
-      <Box marginTop={1}>
-        <Text color="cyan">Version: </Text>
-        <TextInput onChange={onChange} onSubmit={onSubmit} value={version} />
-      </Box>
     </Box>
   );
 }
@@ -349,11 +324,9 @@ export function RecentErrors({ errors }: { errors: RecentError[] }) {
 // Done banner component
 export function DoneBanner({
   suiteId,
-  version,
   successRate,
 }: {
   suiteId: string;
-  version: string;
   successRate: number | null;
 }) {
   return (
@@ -369,8 +342,7 @@ export function DoneBanner({
         Benchmark Complete!
       </Text>
       <Text>
-        Suite: <Text color="magentaBright">{suiteId}</Text> | Version:{" "}
-        <Text color="cyan">{version}</Text>
+        Suite: <Text color="magentaBright">{suiteId}</Text>
       </Text>
       {successRate !== null && (
         <Text>

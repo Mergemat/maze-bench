@@ -1,4 +1,4 @@
-export type Phase = "pickSuite" | "pickModels" | "version" | "running" | "done";
+export type Phase = "pickSuite" | "pickModels" | "running" | "done";
 
 export interface SuiteChoice {
   id: string;

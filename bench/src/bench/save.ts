@@ -28,13 +28,12 @@ export class IncrementalResultSaver {
 
   constructor(params: {
     model: ModelKey;
-    version: string;
     suiteId: string;
     seeds: number[];
   }) {
     ensureResultDir();
-    const { model, version, suiteId, seeds } = params;
-    const filename = `${model}_${version}_${new Date()
+    const { model, suiteId, seeds } = params;
+    const filename = `${model}_${new Date()
       .toISOString()
       .replace(/[:.]/g, "-")}.json`;
     this.filePath = path.join(RESULT_DIR, filename);
@@ -46,7 +45,6 @@ export class IncrementalResultSaver {
         displayName: modelDef?.displayName ?? model,
         creator: modelDef?.creator ?? "unknown",
         date: new Date().toISOString(),
-        version,
         suite: suiteId,
         seeds,
       },

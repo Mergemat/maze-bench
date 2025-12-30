@@ -101,7 +101,6 @@ export interface BenchmarkReport {
     creator: string;
     date: string;
     seeds: number[];
-    version: string;
     suite: string;
   };
   stats: BenchmarkStats;
