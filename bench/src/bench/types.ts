@@ -30,6 +30,7 @@ export interface MazeData {
   cfg: BenchmarkConfig;
   maze: string[];
   seed: number;
+  optimalPathLength: number; // Pre-computed optimal path length for efficiency scoring
 }
 
 export interface StepTrace {
@@ -58,6 +59,8 @@ export interface RunResult {
   stepsTrace: StepTrace[];
   lastObservation?: string;
   error?: string;
+  optimalPathLength: number;
+  efficiencyScore: number; // optimalPathLength / totalSteps (0 if failed or unreachable)
 }
 
 export type RunStatus = "pending" | "running" | "success" | "failed";

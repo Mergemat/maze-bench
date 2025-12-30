@@ -13,6 +13,7 @@ export type ModelMetricsPoint = {
   totalSteps: number;
   totalTimeMs: number;
   totalCost: number;
+  avgEfficiencyScore: number;
 };
 
 function filterRuns(
@@ -59,6 +60,19 @@ export function computeModelMetricsPoints(
     const totalTimeMs = filtered.reduce((acc, r) => acc + r.totalDurationMs, 0);
     const totalCost = filtered.reduce((acc, r) => acc + (r.cost ?? 0), 0);
 
+    // Compute average efficiency score (only for runs that have efficiency data)
+    const runsWithEfficiency = filtered.filter(
+      (r) => r.efficiencyScore !== undefined
+    );
+    const totalEfficiency = runsWithEfficiency.reduce(
+      (acc, r) => acc + (r.efficiencyScore ?? 0),
+      0
+    );
+    const avgEfficiencyScore =
+      runsWithEfficiency.length === 0
+        ? 0
+        : totalEfficiency / runsWithEfficiency.length;
+
     points.push({
       model,
       displayName: report.metadata.displayName ?? model,
@@ -72,6 +86,7 @@ export function computeModelMetricsPoints(
       totalSteps,
       totalTimeMs,
       totalCost,
+      avgEfficiencyScore,
     });
   }
 

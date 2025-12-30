@@ -8,7 +8,7 @@ import {
   MODELS,
   setModelEnabled,
 } from "../models";
-import { enhanceResultsWithOptimalPaths } from "../optimal-paths-utils";
+
 import { runSingleMaze, type BenchError } from "../runner";
 import { IncrementalResultSaver } from "../save";
 import { computeStats } from "../stats";
@@ -295,10 +295,6 @@ export function useBenchmarkRunner() {
 
       setFinalStats(computeStats(allResults));
       setPhase("done");
-
-      // Enhance results with optimal paths
-      console.log("\nEnhancing results with optimal paths...");
-      enhanceResultsWithOptimalPaths();
 
       // Exit after completion
       exit();
