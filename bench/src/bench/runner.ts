@@ -392,6 +392,18 @@ function findGoalPos(maze: string[]): { x: number; y: number } {
   return { x: (maze[0]?.length ?? 2) - 2, y: maze.length - 2 };
 }
 
+function calculateEfficiencyScore(
+  success: boolean,
+  optimalPathLength: number,
+  totalSteps: number
+): number {
+  // Only successful runs with reachable goals get efficiency scores
+  if (!success || !Number.isFinite(optimalPathLength) || totalSteps === 0) {
+    return 0;
+  }
+  return optimalPathLength / totalSteps;
+}
+
 function createResult(
   env: MazeEnv,
   mazeData: MazeData,
@@ -405,6 +417,12 @@ function createResult(
   if (error) {
     errorMessage = `[${error.category}] ${error.message}`;
   }
+
+  const efficiencyScore = calculateEfficiencyScore(
+    env.success,
+    mazeData.optimalPathLength,
+    env.steps
+  );
 
   return {
     id: `${model}_${mazeData.id}`,
@@ -422,5 +440,7 @@ function createResult(
     stepsTrace: stepTrace,
     lastObservation: getObservation(env),
     error: errorMessage,
+    optimalPathLength: mazeData.optimalPathLength,
+    efficiencyScore,
   };
 }

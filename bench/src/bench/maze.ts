@@ -1,4 +1,5 @@
 import { BENCHMARK_CONFIGS, RUNS_PER_CONFIG } from "./config";
+import { findOptimalPath } from "./optimal-paths-utils";
 import type { MazeComplexity, MazeData, MazeEnv, Pos } from "./types";
 
 type Cell = "#" | " " | "S" | "G";
@@ -186,7 +187,16 @@ export function generateSharedMazes(): MazeData[] {
       const seed = idCounter + 12_345;
       const id = `maze_${idCounter}_${cfg.width}x${cfg.height}_${cfg.complexity}_${cfg.vision}_seed${seed}`;
       const maze = generateMaze(cfg.width, cfg.height, cfg.complexity, seed);
-      mazes.push({ id, cfg, maze, seed });
+
+      // Pre-compute optimal path at maze generation time
+      const startPos = { x: 1, y: 1 };
+      const goalPos = { x: cfg.width - 2, y: cfg.height - 2 };
+      const optimalResult = findOptimalPath(maze, startPos, goalPos);
+      const optimalPathLength = optimalResult.reachable
+        ? optimalResult.length
+        : Number.POSITIVE_INFINITY;
+
+      mazes.push({ id, cfg, maze, seed, optimalPathLength });
       idCounter++;
     }
   }

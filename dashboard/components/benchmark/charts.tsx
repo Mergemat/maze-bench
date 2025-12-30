@@ -124,6 +124,8 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
 
       <SuccessRateBarCard data={data} showEmpty={!hasAnyRuns} />
 
+      <EfficiencyScoreBarCard data={data} showEmpty={!hasAnyRuns} />
+
       <Tabs defaultValue="steps">
         <TabsList>
           <TabsTrigger value="steps">Steps</TabsTrigger>
@@ -205,6 +207,91 @@ function SuccessRateBarCard({
                 <LabelList
                   dataKey="nRuns"
                   formatter={(v: number) => `n=${v}`}
+                  position="top"
+                  style={{
+                    fontSize: 9,
+                    fill: "var(--muted-foreground)",
+                  }}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function EfficiencyScoreBarCard({
+  data,
+  showEmpty,
+}: {
+  data: ModelMetricsPoint[];
+  showEmpty: boolean;
+}) {
+  const chartConfig = {
+    avgEfficiencyScore: { label: "Efficiency Score", color: CHART_COLORS[4] },
+  } satisfies ChartConfig;
+
+  // Filter to only models with efficiency data
+  const filteredData = data.filter((d) => d.avgEfficiencyScore > 0);
+  // Sort by efficiency score descending
+  const sortedData = [...filteredData].sort(
+    (a, b) => b.avgEfficiencyScore - a.avgEfficiencyScore
+  );
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm sm:text-base">
+          Efficiency Score by Model
+        </CardTitle>
+        <p className="text-[11px] text-muted-foreground sm:text-xs">
+          Ratio of optimal path length to actual steps (1.0 = perfect)
+        </p>
+      </CardHeader>
+      <CardContent>
+        {showEmpty || sortedData.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <ChartContainer className="h-48 w-full sm:h-56" config={chartConfig}>
+            <BarChart
+              data={sortedData}
+              margin={{ left: 4, right: 4, top: 12, bottom: 24 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                angle={-30}
+                dataKey="displayName"
+                height={50}
+                interval={0}
+                textAnchor="end"
+                tick={{ fontSize: 10 }}
+              />
+              <YAxis
+                domain={[0, "auto"]}
+                tick={{ fontSize: 10 }}
+                tickFormatter={(v) => v.toFixed(2)}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(_, payload) => {
+                      const entry = payload?.[0]?.payload as ModelMetricsPoint;
+                      return entry?.displayName ?? "";
+                    }}
+                  />
+                }
+                cursor={false}
+                formatter={(v) => Number(v).toFixed(3)}
+              />
+              <Bar dataKey="avgEfficiencyScore" radius={[4, 4, 0, 0]}>
+                {sortedData.map((entry) => (
+                  <Cell fill={getModelColor(entry.creator)} key={entry.model} />
+                ))}
+                <LabelList
+                  dataKey="avgEfficiencyScore"
+                  formatter={(v: number) => v.toFixed(2)}
                   position="top"
                   style={{
                     fontSize: 9,

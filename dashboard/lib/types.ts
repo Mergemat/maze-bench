@@ -36,6 +36,8 @@ export type RunResult = {
   stepsTrace: StepTrace[];
   lastObservation?: string;
   error?: string;
+  optimalPathLength?: number;
+  efficiencyScore?: number;
 };
 
 export type BenchmarkStats = {
