@@ -20,7 +20,6 @@ import {
   updateSuccessStats,
 } from "./runnerUtils";
 import type { ModelStats, Phase, RecentError } from "./types";
-import { formatDefaultVersion } from "./utils";
 
 // Regex for extracting error category - defined at module level for performance
 const ERROR_CATEGORY_REGEX = /^\[(\w+)\]/;
@@ -59,7 +58,6 @@ export function useBenchmarkRunner() {
     }
     return enabled;
   });
-  const [version, setVersion] = useState(formatDefaultVersion());
 
   const [modelOrder, setModelOrder] = useState<string[]>([]);
   const [stats, setStats] = useState<Record<string, ModelStats>>({});
@@ -93,7 +91,8 @@ export function useBenchmarkRunner() {
       const key = getModelKey(def);
       setModelEnabled(key, selectedModels.has(key));
     }
-    setPhase("version");
+    // Skip version input phase - use auto-generated timestamp
+    setPhase("running");
   };
 
   useEffect(() => {
@@ -158,7 +157,6 @@ export function useBenchmarkRunner() {
           model,
           new IncrementalResultSaver({
             model,
-            version,
             suiteId: suite.id,
             seeds: mazes.map((m) => m.seed),
           })
@@ -303,7 +301,7 @@ export function useBenchmarkRunner() {
     return () => {
       cancelled = true;
     };
-  }, [phase, selectedSuiteId, version, suites, exit]);
+  }, [phase, selectedSuiteId, suites, exit]);
 
   return {
     phase,
@@ -315,8 +313,6 @@ export function useBenchmarkRunner() {
     selectedModels,
     toggleModel,
     confirmModels,
-    version,
-    setVersion,
     modelOrder,
     stats,
     total,
