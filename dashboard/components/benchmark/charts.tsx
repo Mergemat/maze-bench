@@ -28,9 +28,9 @@ import {
 } from "@/store/filters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
-type PerformanceChartsProps = {
+interface PerformanceChartsProps {
   reports: Map<string, BenchmarkReport>;
-};
+}
 
 const CREATOR_COLORS: Record<string, string> = {
   google: "#4285F4",
@@ -171,10 +171,10 @@ function SuccessRateBarCard({
         {showEmpty ? (
           <EmptyState />
         ) : (
-          <ChartContainer className="h-48 w-full sm:h-56" config={chartConfig}>
+          <ChartContainer className="h-72 w-full sm:h-80" config={chartConfig}>
             <BarChart
               data={data}
-              margin={{ left: 4, right: 4, top: 12, bottom: 24 }}
+              margin={{ left: 4, right: 4, top: 12, bottom: 30 }}
             >
               <CartesianGrid vertical={false} />
               <XAxis
@@ -261,8 +261,8 @@ function BaseScatterCard({
         {showEmpty || filteredData.length === 0 ? (
           <EmptyState />
         ) : (
-          <ChartContainer className="h-48 w-full sm:h-56" config={chartConfig}>
-            <ScatterChart margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
+          <ChartContainer className="h-72 w-full sm:h-80" config={chartConfig}>
+            <ScatterChart margin={{ left: 8, right: 16, top: 30, bottom: 8 }}>
               <CartesianGrid />
               <XAxis
                 dataKey={xKey}
@@ -315,13 +315,47 @@ function BaseScatterCard({
                 ))}
                 <LabelList
                   className="hidden sm:block"
-                  dataKey="displayName"
-                  position="insideBottomLeft"
-                  style={{
-                    fontSize: 10,
-                    fill: "var(--foreground)",
-                    pointerEvents: "none",
+                  content={({ x, y, value }) => {
+                    const text = String(value);
+                    const maxWidth = 80;
+                    // Simple wrap: split into chunks that fit
+                    const words = text.split(/[-\s]/);
+                    const lines: string[] = [];
+                    let currentLine = "";
+                    for (const word of words) {
+                      const test = currentLine
+                        ? `${currentLine} ${word}`
+                        : word;
+                      // Rough estimate: ~6px per char at fontSize 10
+                      if (test.length * 6 > maxWidth && currentLine) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                      } else {
+                        currentLine = test;
+                      }
+                    }
+                    if (currentLine) {
+                      lines.push(currentLine);
+                    }
+
+                    return (
+                      <text
+                        fill="var(--foreground)"
+                        fontSize={10}
+                        textAnchor="start"
+                        x={Number(x)}
+                        y={Number(y) - 8 - (lines.length - 1) * 12}
+                      >
+                        {lines.map((line, i) => (
+                          <tspan dy={i === 0 ? 0 : 12} key={i} x={Number(x)}>
+                            {line}
+                          </tspan>
+                        ))}
+                      </text>
+                    );
                   }}
+                  dataKey="displayName"
+                  position="top"
                 />
               </Scatter>
             </ScatterChart>
@@ -332,10 +366,10 @@ function BaseScatterCard({
   );
 }
 
-type ScatterCardProps = {
+interface ScatterCardProps {
   data: ModelMetricsPoint[];
   showEmpty: boolean;
-};
+}
 
 function EfficiencyVsSuccessCard(props: ScatterCardProps) {
   return (
