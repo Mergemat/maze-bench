@@ -205,8 +205,13 @@ function buildModels(): Record<string, LanguageModel> {
   return models;
 }
 
-export const MODELS = buildModels();
+export let MODELS = buildModels();
 export type ModelKey = keyof typeof MODELS;
+
+// Rebuild MODELS object based on current enabled states in MODEL_DEFINITIONS
+export function rebuildModels(): void {
+  MODELS = buildModels();
+}
 
 // Get enabled model definitions
 export function getEnabledModels(): ModelDefinition[] {

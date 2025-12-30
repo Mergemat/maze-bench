@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BenchmarkReport, RunResult } from "@/lib/types";
 import {
   complexityFilterAtom,
+  observationModeFilterAtom,
   sizeFilterAtom,
   successfulOnlyAtom,
-  observationModeFilterAtom,
 } from "@/store/filters";
 
 type ModelComparisonProps = {
@@ -46,7 +46,13 @@ function filterResults(
 
 function computeStats(results: RunResult[]) {
   if (results.length === 0) {
-    return { successRate: 0, avgSteps: 0, avgTime: 0, totalCost: 0, efficiencyScore: 0 };
+    return {
+      successRate: 0,
+      avgSteps: 0,
+      avgTime: 0,
+      totalCost: 0,
+      efficiencyScore: 0,
+    };
   }
   const successfulRuns = results.filter((r) => r.success);
   const successes = successfulRuns.length;
@@ -141,7 +147,9 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
                   </span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Efficiency:</span>
+                  <span className="text-muted-foreground">
+                    Efficiency (successful runs):
+                  </span>
                   <span className="ml-2 font-mono">
                     {(stats.efficiencyScore * 100).toFixed(2)}%
                   </span>
