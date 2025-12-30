@@ -6,7 +6,6 @@ import {
   tool,
 } from "ai";
 import z from "zod";
-import { MAX_STEPS } from "./config";
 import { createMazeEnv, getObservation, moveInMaze } from "./maze";
 import type { ModelKey } from "./models";
 import { MODELS } from "./models";
@@ -47,9 +46,63 @@ function createBenchError(
   return error;
 }
 
+// Extract detailed error information from various error shapes
+function extractErrorDetails(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return String(error);
+  }
+
+  const parts: string[] = [error.message];
+
+  // Check for common error properties that might contain more details
+  const errorObj = error as Record<string, unknown>;
+
+  // AI SDK errors often have a 'cause' property
+  if (errorObj.cause) {
+    const causeStr =
+      errorObj.cause instanceof Error
+        ? errorObj.cause.message
+        : String(errorObj.cause);
+    if (causeStr && !parts.includes(causeStr)) {
+      parts.push(`Cause: ${causeStr}`);
+    }
+  }
+
+  // Check for response body or data
+  if (errorObj.responseBody) {
+    parts.push(`Response: ${JSON.stringify(errorObj.responseBody)}`);
+  }
+  if (errorObj.data) {
+    parts.push(`Data: ${JSON.stringify(errorObj.data)}`);
+  }
+
+  // Check for status code
+  if (errorObj.status || errorObj.statusCode) {
+    parts.push(`Status: ${errorObj.status || errorObj.statusCode}`);
+  }
+
+  // Check for error code
+  if (errorObj.code) {
+    parts.push(`Code: ${errorObj.code}`);
+  }
+
+  // Check for API error details (common in provider responses)
+  if (errorObj.error && typeof errorObj.error === "object") {
+    const apiError = errorObj.error as Record<string, unknown>;
+    if (apiError.message) {
+      parts.push(`API Error: ${apiError.message}`);
+    }
+    if (apiError.type) {
+      parts.push(`Type: ${apiError.type}`);
+    }
+  }
+
+  return parts.join(" | ");
+}
+
 // Categorize errors for better handling
 function categorizeError(error: unknown): BenchError {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = extractErrorDetails(error);
   const lowerMessage = message.toLowerCase();
 
   // Network errors - retryable
@@ -202,7 +255,7 @@ function createMoveTool(
       const posBefore = { ...env.pos };
 
       // Perform the move logic
-      const result = moveInMaze(env, direction, MAX_STEPS);
+      const result = moveInMaze(env, direction);
 
       // Log for the trace
       onMove(direction, posBefore, result.view);

@@ -203,8 +203,7 @@ const d: Record<string, Pos> = {
 
 export function moveInMaze(
   env: MazeEnv,
-  direction: "up" | "down" | "left" | "right",
-  _maxSteps: number
+  direction: "up" | "down" | "left" | "right"
 ): { view: string; success: boolean } {
   if (env.done) {
     return { view: getObservation(env), success: false };

@@ -44,7 +44,7 @@ export class IncrementalResultSaver {
       metadata: {
         model,
         displayName: modelDef?.displayName ?? model,
-        creator: modelDef?.provider ?? "unknown",
+        creator: modelDef?.creator ?? "unknown",
         date: new Date().toISOString(),
         version,
         suite: suiteId,
