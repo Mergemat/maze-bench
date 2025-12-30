@@ -14,8 +14,8 @@ import {
 import type {
   BenchmarkReport,
   MazeComplexity,
-  RunResult,
   ObservationMode,
+  RunResult,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { successfulOnlyAtom } from "@/store/filters";
@@ -113,14 +113,14 @@ function RunGrid({
         <RunReplicator key={run.id} run={run}>
           <Button
             className={cn(
-              run.error ? "" : "border-destructive/50",
+              run.error ? "border-destructive/50" : "",
               run.success ? "border-primary/50" : ""
             )}
             title={run.error ?? `${run.totalSteps} steps`}
             variant={"outline"}
           >
             {run.error
-              ? `ERROR (${run.totalSteps})`
+              ? `${run.config.complexity} | ${run.config.observationMode} ERROR`
               : `${run.config.complexity} | ${run.config.observationMode} (${run.totalSteps})`}
           </Button>
         </RunReplicator>
@@ -133,7 +133,8 @@ export function RunList({ reports }: RunListProps) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [selectedComplexity, setSelectedComplexity] =
     useState<MazeComplexity | null>(null);
-  const [selectedObservationMode, setSelectedObservationMode] = useState<ObservationMode | null>(null);
+  const [selectedObservationMode, setSelectedObservationMode] =
+    useState<ObservationMode | null>(null);
 
   const successfulOnly = useAtomValue(successfulOnlyAtom);
 
@@ -251,9 +252,9 @@ export function RunList({ reports }: RunListProps) {
               </div>
               <RunGrid
                 complexity={selectedComplexity}
+                observationMode={selectedObservationMode}
                 runs={runs}
                 successfulOnly={successfulOnly}
-                observationMode={selectedObservationMode}
               />
             </div>
           ))}
