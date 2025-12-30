@@ -129,7 +129,8 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
           <TabsTrigger value="efficiency">Efficiency</TabsTrigger>
           {/* <TabsTrigger value="steps">Steps</TabsTrigger> */}
           <TabsTrigger value="time">Time</TabsTrigger>
-          <TabsTrigger value="cost">Cost</TabsTrigger>
+          <TabsTrigger value="avg-cost">Avg Cost</TabsTrigger>
+          <TabsTrigger value="total-cost">Total Cost</TabsTrigger>
         </TabsList>
 
         <TabsContent value="efficiency">
@@ -141,8 +142,11 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
         <TabsContent value="time">
           <TimeVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
         </TabsContent>
-        <TabsContent value="cost">
-          <CostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
+        <TabsContent value="avg-cost">
+          <AvgCostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
+        </TabsContent>
+        <TabsContent value="total-cost">
+          <TotalCostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
         </TabsContent>
       </Tabs>
     </div>
@@ -413,7 +417,7 @@ function TimeVsSuccessCard(props: ScatterCardProps) {
   );
 }
 
-function CostVsSuccessCard(props: ScatterCardProps) {
+function AvgCostVsSuccessCard(props: ScatterCardProps) {
   return (
     <BaseScatterCard
       {...props}
@@ -423,6 +427,20 @@ function CostVsSuccessCard(props: ScatterCardProps) {
       xFormatter={(v) => `$${Number(v).toFixed(4)}`}
       xKey="avgCostPerRun"
       xLabel="Avg Cost per Run ($)"
+    />
+  );
+}
+
+function TotalCostVsSuccessCard(props: ScatterCardProps) {
+  return (
+    <BaseScatterCard
+      {...props}
+      chartColor={CHART_COLORS[5]}
+      subtitle="Total spend across all runs vs success rate"
+      title="Total Cost vs Success Rate"
+      xFormatter={(v) => `$${Number(v).toFixed(2)}`}
+      xKey="totalCost"
+      xLabel="Total Cost ($)"
     />
   );
 }
