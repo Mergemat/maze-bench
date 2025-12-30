@@ -19,24 +19,27 @@ export interface ExistingResult {
  */
 export function getExistingResults(): Map<string, ExistingResult> {
   const results = new Map<string, ExistingResult>();
-  
+
   if (!fs.existsSync(RESULT_DIR)) {
     return results;
   }
 
   const files = fs.readdirSync(RESULT_DIR).filter((f) => f.endsWith(".json"));
-  
+
   for (const file of files) {
     try {
       const filePath = path.join(RESULT_DIR, file);
       const content = fs.readFileSync(filePath, "utf-8");
       const report = JSON.parse(content) as BenchmarkReport;
-      
+
       const modelKey = report.metadata.model;
       const existing = results.get(modelKey);
-      
+
       // Keep the most recent result for each model
-      if (!existing || new Date(report.metadata.date) > new Date(existing.date)) {
+      if (
+        !existing ||
+        new Date(report.metadata.date) > new Date(existing.date)
+      ) {
         results.set(modelKey, {
           modelKey,
           filePath,

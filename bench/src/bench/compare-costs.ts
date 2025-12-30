@@ -5,8 +5,7 @@ const RESULTS_FILE = new URL(
   "./results/[google]gemini-3-flash-preview-none_2025-12-30T09-59-00-050Z.json",
   import.meta.url
 ).pathname;
-const CSV_FILE =
-  "/Users/b.omarov/Downloads/openrouter_activity_2025-12-30.csv";
+const CSV_FILE = "/Users/b.omarov/Downloads/openrouter_activity_2025-12-30.csv";
 
 // Load results JSON
 const results = JSON.parse(readFileSync(RESULTS_FILE, "utf-8"));

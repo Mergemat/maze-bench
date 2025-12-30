@@ -74,7 +74,7 @@ export function generateMaze(
     grid[startY]![startX] = " ";
 
     while (stack.length > 0) {
-      const { x, y } = stack[stack.length - 1]!;
+      const { x, y } = stack.at(-1)!;
 
       const unvisitedNeighbors = shuffle([...dirs]).filter((d) => {
         const nx = x + d.dx;
@@ -102,7 +102,9 @@ export function generateMaze(
 
   // Fill in dead ends to make the maze easier (removes traps)
   function fillDeadEnds() {
-    if (deadEndFillRatio <= 0) return;
+    if (deadEndFillRatio <= 0) {
+      return;
+    }
 
     let changed = true;
     let fillCount = 0;
@@ -113,9 +115,15 @@ export function generateMaze(
 
       for (let y = 1; y < height - 1; y++) {
         for (let x = 1; x < width - 1; x++) {
-          if (grid[y]![x] !== " ") continue;
-          if (x === 1 && y === 1) continue; // Don't fill start
-          if (x === width - 2 && y === height - 2) continue; // Don't fill goal
+          if (grid[y]?.[x] !== " ") {
+            continue;
+          }
+          if (x === 1 && y === 1) {
+            continue; // Don't fill start
+          }
+          if (x === width - 2 && y === height - 2) {
+            continue; // Don't fill goal
+          }
 
           // Count open neighbors
           let openNeighbors = 0;
@@ -125,7 +133,9 @@ export function generateMaze(
             [-1, 0],
             [1, 0],
           ] as const) {
-            if (grid[y + dy]?.[x + dx] === " ") openNeighbors++;
+            if (grid[y + dy]?.[x + dx] === " ") {
+              openNeighbors++;
+            }
           }
 
           // Dead end - fill it with some probability
@@ -171,12 +181,10 @@ export function generateMaze(
 
 export function getObservation(env: MazeEnv): string {
   // Always return global view with player position marked
-  const width = env.maze[0]!.length;
+  const width = env.maze[0]?.length;
   const mazeStr = env.maze.join("\n");
   const playerIdx = env.pos.y * (width + 1) + env.pos.x;
-  return (
-    mazeStr.substring(0, playerIdx) + "A" + mazeStr.substring(playerIdx + 1)
-  );
+  return `${mazeStr.substring(0, playerIdx)}A${mazeStr.substring(playerIdx + 1)}`;
 }
 
 export function createMazeEnv(mazeData: MazeData): MazeEnv {

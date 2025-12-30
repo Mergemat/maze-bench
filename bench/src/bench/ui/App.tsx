@@ -52,8 +52,8 @@ const App: FC = () => {
   if (phase === "pickModels") {
     return (
       <ModelSelector
-        models={allModels}
         existingResults={existingResults}
+        models={allModels}
         onConfirm={confirmModels}
         onToggle={toggleModel}
         selectedModels={selectedModels}
@@ -122,8 +122,8 @@ const App: FC = () => {
 
       {phase === "done" && finalStats && (
         <DoneBanner
-          suiteId={selectedSuiteId ?? ""}
           successRate={finalStats.overall.successRate * 100}
+          suiteId={selectedSuiteId ?? ""}
         />
       )}
     </Box>

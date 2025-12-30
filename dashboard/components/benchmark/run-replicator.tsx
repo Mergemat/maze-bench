@@ -259,10 +259,10 @@ const RunHeader = function RunHeader({ run }: { run: RunResult }) {
   );
 };
 
-type RunReplicatorProps = {
+interface RunReplicatorProps {
   run: RunResult;
   children: ReactElement;
-};
+}
 
 export function RunReplicator({ run, children }: RunReplicatorProps) {
   const setRun = useSetAtom(runAtom);

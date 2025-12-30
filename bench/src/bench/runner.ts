@@ -387,7 +387,16 @@ export async function runSingleMaze(
     }
     const cost = totalCost > 0 ? totalCost : undefined;
 
-    return createResult(runId, timestamp, env, mazeData, model, stepTrace, start, cost);
+    return createResult(
+      runId,
+      timestamp,
+      env,
+      mazeData,
+      model,
+      stepTrace,
+      start,
+      cost
+    );
   } catch (error) {
     const benchError =
       error instanceof Error && "category" in error

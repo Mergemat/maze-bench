@@ -13,33 +13,33 @@ const DIRECTION_VECTORS = [
   { dx: -1, dy: 0 }, // left
 ] as const;
 
-type OptimalPathResult = {
+interface OptimalPathResult {
   length: number;
   path: Pos[];
   reachable: boolean;
-};
+}
 
-type OptimalPathData = {
+interface OptimalPathData {
   seed: number;
   config: BenchmarkConfig;
   result: OptimalPathResult;
-};
+}
 
-type CLIOptions = {
+interface CLIOptions {
   seeds?: number[];
   model?: string;
   all?: boolean;
   output?: "json" | "enhance" | "stats";
   outputFile?: string;
-};
+}
 
-type MazeData = {
+interface MazeData {
   config: BenchmarkConfig;
   maze: string[];
   startPos: Pos;
   goalPos: Pos;
   seed: number;
-};
+}
 
 function parseCLIArgs(): CLIOptions {
   const args = process.argv.slice(2);
@@ -225,7 +225,7 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
       continue;
     }
 
-    if (!content.results || !Array.isArray(content.results)) {
+    if (!(content.results && Array.isArray(content.results))) {
       console.warn(`Invalid results in ${filePath}: expected array of results`);
       continue;
     }
