@@ -355,10 +355,16 @@ export async function runSingleMaze(
       onRetry
     );
 
-    const providerMeta = result.providerMetadata?.openrouter as
-      | { usage?: { cost?: number } }
-      | undefined;
-    const cost = providerMeta?.usage?.cost;
+    let totalCost = 0;
+    for (const step of result.steps) {
+      const stepMeta = (step as unknown as Record<string, unknown>)
+        .providerMetadata as Record<string, unknown> | undefined;
+      const openrouterMeta = stepMeta?.openrouter as
+        | { usage?: { cost?: number } }
+        | undefined;
+      totalCost += openrouterMeta?.usage?.cost ?? 0;
+    }
+    const cost = totalCost > 0 ? totalCost : undefined;
 
     return createResult(env, mazeData, model, stepTrace, start, cost);
   } catch (error) {
@@ -398,7 +404,7 @@ function calculateEfficiencyScore(
   totalSteps: number
 ): number {
   // Only successful runs with reachable goals get efficiency scores
-  if (!success || !Number.isFinite(optimalPathLength) || totalSteps === 0) {
+  if (!(success && Number.isFinite(optimalPathLength)) || totalSteps === 0) {
     return 0;
   }
   return optimalPathLength / totalSteps;

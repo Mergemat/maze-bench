@@ -1,4 +1,4 @@
-import { openrouter } from "@openrouter/ai-sdk-provider";
+import { openrouter, type OpenRouterCompletionSettings } from "@openrouter/ai-sdk-provider";
 import type { LanguageModel } from "ai";
 
 // Reasoning effort levels
@@ -22,7 +22,7 @@ export interface ModelDefinition {
   enabled: boolean;
 }
 
-const defaultProviderOptions = {
+const defaultProviderOptions: OpenRouterCompletionSettings = {
   usage: {
     include: true,
   },
@@ -76,19 +76,27 @@ export const MODEL_DEFINITIONS: ModelDefinition[] = [
     displayName: "Gemini 2.5 Flash",
     enabled: false,
   },
+    {
+    creator: "google",
+    model: "google/gemini-3-flash-preview",
+    reasoning: "none",
+    displayName: "Gemini 3 Flash (none)",
+    enabled: true,
+  },
+
   {
     creator: "google",
     model: "google/gemini-3-flash-preview",
     reasoning: "low",
     displayName: "Gemini 3 Flash (low)",
-    enabled: true,
+    enabled: false,
   },
   {
     creator: "google",
     model: "google/gemini-3-flash-preview",
     reasoning: "high",
     displayName: "Gemini 3 Flash (high)",
-    enabled: true,
+    enabled: false,
   },
   {
     creator: "google",
