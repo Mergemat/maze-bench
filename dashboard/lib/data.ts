@@ -39,7 +39,9 @@ export function getUniqueSizes(reports: BenchmarkReport[]): string[] {
   });
 }
 
-export function getUniqueObservationModes(reports: BenchmarkReport[]): string[] {
+export function getUniqueObservationModes(
+  reports: BenchmarkReport[]
+): string[] {
   const modes = new Set<string>();
   for (const report of reports) {
     for (const result of report.results) {

@@ -11,25 +11,25 @@ const DIRECTION_VECTORS = [
   { dx: -1, dy: 0 }, // left
 ] as const;
 
-export type OptimalPathResult = {
+export interface OptimalPathResult {
   length: number;
   path: Pos[];
   reachable: boolean;
-};
+}
 
-type OptimalPathData = {
+interface OptimalPathData {
   seed: number;
   config: BenchmarkConfig;
   result: OptimalPathResult;
-};
+}
 
-type MazeData = {
+interface MazeData {
   config: BenchmarkConfig;
   maze: string[];
   startPos: Pos;
   goalPos: Pos;
   seed: number;
-};
+}
 
 export function findOptimalPath(
   maze: string[],
@@ -110,7 +110,7 @@ function extractMazesFromResults(filePaths: string[]): Map<string, MazeData> {
       continue;
     }
 
-    if (!content.results || !Array.isArray(content.results)) {
+    if (!(content.results && Array.isArray(content.results))) {
       console.warn(`Invalid results in ${filePath}: expected array of results`);
       continue;
     }

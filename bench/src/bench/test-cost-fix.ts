@@ -1,8 +1,8 @@
-import { runSingleMaze } from "./runner";
 import { generateMaze } from "./maze";
+import { getModelKey, MODEL_DEFINITIONS, type ModelKey } from "./models";
 import { findOptimalPath } from "./optimal-paths-utils";
-import { MODEL_DEFINITIONS, getModelKey, type ModelKey } from "./models";
-import type { MazeData, BenchmarkConfig } from "./types";
+import { runSingleMaze } from "./runner";
+import type { BenchmarkConfig, MazeData } from "./types";
 
 // Test the cost fix with a real maze run
 async function testCostFix() {

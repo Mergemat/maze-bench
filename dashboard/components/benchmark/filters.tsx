@@ -11,21 +11,27 @@ import {
 import type { MazeComplexity, ObservationMode } from "@/lib/types";
 import {
   complexityFilterAtom,
-  sizeFilterAtom,
   observationModeFilterAtom,
+  sizeFilterAtom,
 } from "@/store/filters";
 
-type FiltersProps = {
+interface FiltersProps {
   complexities: string[];
   sizes: string[];
   observationModes: string[];
-};
+}
 
-export function Filters({ complexities, sizes, observationModes }: FiltersProps) {
+export function Filters({
+  complexities,
+  sizes,
+  observationModes,
+}: FiltersProps) {
   const [selectedComplexity, setComplexityFilter] =
     useAtom(complexityFilterAtom);
   const [selectedSize, setSizeFilter] = useAtom(sizeFilterAtom);
-  const [selectedObservationMode, setObservationModeFilter] = useAtom(observationModeFilterAtom);
+  const [selectedObservationMode, setObservationModeFilter] = useAtom(
+    observationModeFilterAtom
+  );
   return (
     <div className="flex flex-wrap gap-4 sm:justify-end">
       <div className="flex flex-col gap-1">
@@ -74,7 +80,9 @@ export function Filters({ complexities, sizes, observationModes }: FiltersProps)
         <span className="text-muted-foreground text-xs">Observation</span>
         <Select
           onValueChange={(v) =>
-            setObservationModeFilter(v === "all" ? null : (v as ObservationMode))
+            setObservationModeFilter(
+              v === "all" ? null : (v as ObservationMode)
+            )
           }
           value={selectedObservationMode ?? "all"}
         >

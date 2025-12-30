@@ -1,11 +1,11 @@
+import { openrouter } from "@openrouter/ai-sdk-provider";
 import {
   generateText,
-  tool,
   type LanguageModel,
   type StopCondition,
   type ToolSet,
+  tool,
 } from "ai";
-import { openrouter } from "@openrouter/ai-sdk-provider";
 import z from "zod";
 
 // Simple test to check usage/cost reporting with tool calls

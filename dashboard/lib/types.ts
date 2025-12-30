@@ -3,16 +3,19 @@ export type MazeComplexity = "simple" | "normal" | "complex" | "extreme";
 // initial: model only sees the maze once at the start
 export type ObservationMode = "continuous" | "initial";
 
-export type Pos = { x: number; y: number };
+export interface Pos {
+  x: number;
+  y: number;
+}
 
-export type BenchmarkConfig = {
+export interface BenchmarkConfig {
   width: number;
   height: number;
   complexity: MazeComplexity;
   observationMode: ObservationMode;
-};
+}
 
-export type StepTrace = {
+export interface StepTrace {
   step: number;
   action: "up" | "down" | "left" | "right";
   posBefore: Pos;
@@ -20,9 +23,9 @@ export type StepTrace = {
   success: boolean;
   observation?: string;
   reasoning?: string;
-};
+}
 
-export type RunResult = {
+export interface RunResult {
   id: string;
   timestamp: string;
   config: BenchmarkConfig;
@@ -40,9 +43,9 @@ export type RunResult = {
   error?: string;
   optimalPathLength?: number;
   efficiencyScore?: number;
-};
+}
 
-export type BenchmarkStats = {
+export interface BenchmarkStats {
   overall: {
     successRate: number;
     avgSteps: number;
@@ -59,9 +62,9 @@ export type BenchmarkStats = {
       n: number;
     }
   >;
-};
+}
 
-export type BenchmarkReport = {
+export interface BenchmarkReport {
   metadata: {
     model: string;
     displayName?: string;
@@ -73,4 +76,4 @@ export type BenchmarkReport = {
   };
   stats: BenchmarkStats;
   results: RunResult[];
-};
+}

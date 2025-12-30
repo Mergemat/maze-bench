@@ -12,7 +12,7 @@ export async function loadBenchmarkReports(): Promise<BenchmarkReport[]> {
     const content = fs.readFileSync(path.join(RESULTS_DIR, file), "utf-8");
     const report = JSON.parse(content) as BenchmarkReport;
     const sizeOrder = [
-      { width: 5, height: 5 },   // Tiny
+      { width: 5, height: 5 }, // Tiny
       { width: 11, height: 11 }, // Small
       { width: 21, height: 21 }, // Medium
       { width: 35, height: 35 }, // Large
@@ -49,7 +49,9 @@ export async function loadBenchmarkReports(): Promise<BenchmarkReport[]> {
         return sizeDiff;
       }
 
-      const observationModeDiff = observationModeOrder[aCfg.observationMode] - observationModeOrder[bCfg.observationMode];
+      const observationModeDiff =
+        observationModeOrder[aCfg.observationMode] -
+        observationModeOrder[bCfg.observationMode];
       if (observationModeDiff !== 0) {
         return observationModeDiff;
       }

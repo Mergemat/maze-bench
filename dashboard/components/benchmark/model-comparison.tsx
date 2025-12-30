@@ -11,16 +11,16 @@ import {
   successfulOnlyAtom,
 } from "@/store/filters";
 
-type ModelComparisonProps = {
+interface ModelComparisonProps {
   reports: Map<string, BenchmarkReport>;
-};
+}
 
-type FilterOptions = {
+interface FilterOptions {
   complexity: string | null;
   size: string | null;
   observationMode: string | null;
   successfulOnly?: boolean | null;
-};
+}
 
 function filterResults(
   results: RunResult[],

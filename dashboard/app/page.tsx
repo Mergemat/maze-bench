@@ -9,8 +9,8 @@ import { SuccessfulOnlyToggle } from "@/components/benchmark/successful-only-tog
 import {
   getLatestReportByModel,
   getUniqueComplexities,
-  getUniqueSizes,
   getUniqueObservationModes,
+  getUniqueSizes,
 } from "@/lib/data";
 import { loadBenchmarkReports } from "@/lib/loader";
 
@@ -57,8 +57,8 @@ export default async function Page() {
           <div className="flex w-fit sm:items-center sm:justify-end">
             <Filters
               complexities={complexities}
-              sizes={sizes}
               observationModes={observationModes}
+              sizes={sizes}
             />
           </div>
         </header>

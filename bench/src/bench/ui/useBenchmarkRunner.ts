@@ -2,15 +2,15 @@ import { useApp } from "ink";
 import { useEffect, useMemo, useState } from "react";
 import { CONCURRENCY_LIMIT } from "../config";
 import {
-  type ModelKey,
   getAllModels,
   getModelKey,
   MODELS,
+  type ModelKey,
   rebuildModels,
   setModelEnabled,
 } from "../models";
 
-import { runSingleMaze, type BenchError } from "../runner";
+import { type BenchError, runSingleMaze } from "../runner";
 import { getExistingResults, IncrementalResultSaver } from "../save";
 import { computeStats } from "../stats";
 import { generateMazesForSuite, getSuites } from "../suites";
