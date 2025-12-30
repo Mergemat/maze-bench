@@ -22,7 +22,10 @@ type FilterOptions = {
   successfulOnly?: boolean | null;
 };
 
-function filterResults(results: RunResult[], options: FilterOptions): RunResult[] {
+function filterResults(
+  results: RunResult[],
+  options: FilterOptions
+): RunResult[] {
   const { complexity, size, vision, successfulOnly } = options;
   return results.filter((r) => {
     if (complexity && r.config.complexity !== complexity) {
@@ -43,18 +46,33 @@ function filterResults(results: RunResult[], options: FilterOptions): RunResult[
 
 function computeStats(results: RunResult[]) {
   if (results.length === 0) {
-    return { successRate: 0, avgSteps: 0, avgTime: 0, totalCost: 0 };
+    return { successRate: 0, avgSteps: 0, avgTime: 0, totalCost: 0, efficiencyScore: 0 };
   }
-  const successes = results.filter((r) => r.success).length;
+  const successfulRuns = results.filter((r) => r.success);
+  const successes = successfulRuns.length;
   const totalSteps = results.reduce((acc, r) => acc + r.totalSteps, 0);
   const totalTime = results.reduce((acc, r) => acc + r.totalDurationMs, 0);
   const totalCost = results.reduce((acc, r) => acc + (r.cost ?? 0), 0);
+
+  // Compute efficiency only for successful runs
+  const successfulRunsWithEfficiency = successfulRuns.filter(
+    (r) => r.efficiencyScore !== undefined && r.efficiencyScore > 0
+  );
+  const totalEfficiencyScore = successfulRunsWithEfficiency.reduce(
+    (acc, r) => acc + (r.efficiencyScore ?? 0),
+    0
+  );
+  const efficiencyScore =
+    successfulRunsWithEfficiency.length === 0
+      ? 0
+      : totalEfficiencyScore / successfulRunsWithEfficiency.length;
 
   return {
     successRate: (successes / results.length) * 100,
     avgSteps: totalSteps / results.length,
     avgTime: totalTime / results.length,
     totalCost,
+    efficiencyScore,
   };
 }
 
@@ -120,6 +138,12 @@ export function ModelComparison({ reports }: ModelComparisonProps) {
                   <span className="text-muted-foreground">Cost:</span>
                   <span className="ml-2 font-mono">
                     ${stats.totalCost.toFixed(4)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Efficiency:</span>
+                  <span className="ml-2 font-mono">
+                    {(stats.efficiencyScore * 100).toFixed(2)}%
                   </span>
                 </div>
               </div>
