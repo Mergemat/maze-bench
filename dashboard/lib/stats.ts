@@ -1,6 +1,6 @@
 import type { BenchmarkReport, RunResult } from "./types";
 
-export type ModelMetricsPoint = {
+export interface ModelMetricsPoint {
   model: string;
   displayName: string;
   creator: string;
@@ -15,7 +15,9 @@ export type ModelMetricsPoint = {
   totalTimeMs: number;
   totalCost: number;
   avgEfficiencyScore: number;
-};
+  /** Composite score = successRate * avgEfficiency (0-100 scale) */
+  compositeScore: number;
+}
 
 function filterRuns(
   runs: RunResult[],
@@ -74,6 +76,12 @@ export function computeModelMetricsPoints(
         ? 0
         : totalEfficiency / successfulRunsWithEfficiency.length;
 
+    // Composite score combines success rate and efficiency
+    // Formula: successRate (0-1) * avgEfficiency (0-1) * 100
+    // This penalizes models with few successful runs even if those runs were efficient
+    const successRate = nRuns === 0 ? 0 : nSuccesses / nRuns;
+    const compositeScore = successRate * avgEfficiencyScore * 100;
+
     points.push({
       model,
       displayName: report.metadata.displayName ?? model,
@@ -89,6 +97,7 @@ export function computeModelMetricsPoints(
       totalTimeMs,
       totalCost,
       avgEfficiencyScore,
+      compositeScore,
     });
   }
 
