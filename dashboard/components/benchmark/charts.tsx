@@ -127,7 +127,7 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
       <Tabs defaultValue="efficiency">
         <TabsList>
           <TabsTrigger value="efficiency">Efficiency</TabsTrigger>
-          <TabsTrigger value="steps">Steps</TabsTrigger>
+          {/* <TabsTrigger value="steps">Steps</TabsTrigger> */}
           <TabsTrigger value="time">Time</TabsTrigger>
           <TabsTrigger value="cost">Cost</TabsTrigger>
         </TabsList>
@@ -135,9 +135,9 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
         <TabsContent value="efficiency">
           <EfficiencyVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
         </TabsContent>
-        <TabsContent value="steps">
-          <StepsVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
-        </TabsContent>
+        {/* <TabsContent value="steps"> */}
+        {/*   <StepsVsSuccessCard data={data} showEmpty={!hasAnyRuns} /> */}
+        {/* </TabsContent> */}
         <TabsContent value="time">
           <TimeVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
         </TabsContent>
@@ -351,19 +351,19 @@ function EfficiencyVsSuccessCard(props: ScatterCardProps) {
   );
 }
 
-function StepsVsSuccessCard(props: ScatterCardProps) {
-  return (
-    <BaseScatterCard
-      {...props}
-      chartColor={CHART_COLORS[1]}
-      subtitle="How average steps relate to success rate"
-      title="Avg Steps vs Success Rate"
-      xFormatter={(v) => `${Number(v).toFixed(2)}`}
-      xKey="avgSteps"
-      xLabel="Avg Steps"
-    />
-  );
-}
+// function StepsVsSuccessCard(props: ScatterCardProps) {
+//   return (
+//     <BaseScatterCard
+//       {...props}
+//       chartColor={CHART_COLORS[1]}
+//       subtitle="How average steps relate to success rate"
+//       title="Avg Steps vs Success Rate"
+//       xFormatter={(v) => `${Number(v).toFixed(2)}`}
+//       xKey="avgSteps"
+//       xLabel="Avg Steps"
+//     />
+//   );
+// }
 
 function TimeVsSuccessCard(props: ScatterCardProps) {
   return (
