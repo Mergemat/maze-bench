@@ -23,8 +23,8 @@ import { computeModelMetricsPoints, type ModelMetricsPoint } from "@/lib/stats";
 import type { BenchmarkReport } from "@/lib/types";
 import {
   complexityFilterAtom,
-  sizeFilterAtom,
   observationModeFilterAtom,
+  sizeFilterAtom,
 } from "@/store/filters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
@@ -122,20 +122,28 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
 
       {hasAnyRuns ? <ModelLegend data={data} /> : null}
 
-      <SuccessRateBarCard data={data} showEmpty={!hasAnyRuns} />
-
-      <Tabs defaultValue="efficiency">
+      <Tabs defaultValue="srate">
         <TabsList>
-          <TabsTrigger value="efficiency">Efficiency</TabsTrigger>
+          <TabsTrigger value="srate">Success Rate</TabsTrigger>
+          <TabsTrigger value="composite">Composite Score</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="srate">
+          <SuccessRateBarCard data={data} showEmpty={!hasAnyRuns} />
+        </TabsContent>
+        <TabsContent value="composite">
+          <CompositeScoreBarCard data={data} showEmpty={!hasAnyRuns} />
+        </TabsContent>
+      </Tabs>
+
+      <Tabs defaultValue="time">
+        <TabsList>
           {/* <TabsTrigger value="steps">Steps</TabsTrigger> */}
           <TabsTrigger value="time">Time</TabsTrigger>
           <TabsTrigger value="avg-cost">Avg Cost</TabsTrigger>
           <TabsTrigger value="total-cost">Total Cost</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="efficiency">
-          <EfficiencyVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
-        </TabsContent>
         {/* <TabsContent value="steps"> */}
         {/*   <StepsVsSuccessCard data={data} showEmpty={!hasAnyRuns} /> */}
         {/* </TabsContent> */}
@@ -150,6 +158,97 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function CompositeScoreBarCard({
+  data,
+  showEmpty,
+}: {
+  data: ModelMetricsPoint[];
+  showEmpty: boolean;
+}) {
+  const chartConfig = {
+    compositeScore: { label: "Composite Score", color: CHART_COLORS[4] },
+  } satisfies ChartConfig;
+
+  // Sort by composite score for this chart
+  const sortedData = [...data].sort(
+    (a, b) => b.compositeScore - a.compositeScore
+  );
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm sm:text-base">
+          Composite Score by Model
+        </CardTitle>
+        <p className="text-[11px] text-muted-foreground sm:text-xs">
+          Success Rate x Efficiency
+        </p>
+      </CardHeader>
+      <CardContent>
+        {showEmpty ? (
+          <EmptyState />
+        ) : (
+          <ChartContainer className="h-72 w-full sm:h-80" config={chartConfig}>
+            <BarChart
+              data={sortedData}
+              margin={{ left: 4, right: 4, top: 12, bottom: 30 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                angle={-30}
+                dataKey="displayName"
+                height={50}
+                interval={0}
+                textAnchor="end"
+                tick={{ fontSize: 10 }}
+              />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(_, payload) => {
+                      const entry = payload?.[0]?.payload as ModelMetricsPoint;
+                      return entry?.displayName ?? "";
+                    }}
+                  />
+                }
+                cursor={false}
+                formatter={(v, _name, props) => {
+                  const entry = props?.payload as ModelMetricsPoint;
+                  return [
+                    <div className="space-y-1" key="composite">
+                      <div>Score: {Number(v).toFixed(1)}</div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {entry.successRatePct.toFixed(0)}% success x{" "}
+                        {entry.avgEfficiencyScore.toFixed(2)} efficiency
+                      </div>
+                    </div>,
+                    "",
+                  ];
+                }}
+              />
+              <Bar dataKey="compositeScore" radius={[4, 4, 0, 0]}>
+                {sortedData.map((entry) => (
+                  <Cell fill={getModelColor(entry.creator)} key={entry.model} />
+                ))}
+                <LabelList
+                  dataKey="nSuccesses"
+                  formatter={(v: number) => `n=${v}`}
+                  position="top"
+                  style={{
+                    fontSize: 9,
+                    fill: "var(--muted-foreground)",
+                  }}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -373,20 +472,6 @@ function BaseScatterCard({
 interface ScatterCardProps {
   data: ModelMetricsPoint[];
   showEmpty: boolean;
-}
-
-function EfficiencyVsSuccessCard(props: ScatterCardProps) {
-  return (
-    <BaseScatterCard
-      {...props}
-      chartColor={CHART_COLORS[4]}
-      subtitle="Top-right is best: high success rate with efficient paths (successful runs only)"
-      title="Efficiency vs Success Rate"
-      xFormatter={(v) => `${Number(v).toFixed(2)}`}
-      xKey="avgEfficiencyScore"
-      xLabel="Avg Efficiency"
-    />
-  );
 }
 
 // function StepsVsSuccessCard(props: ScatterCardProps) {
