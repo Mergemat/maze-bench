@@ -13,23 +13,23 @@ function mulberry32(seed: number) {
   };
 }
 
-// Define bias parameters and loop density depending on complexity
-function getComplexityConfig(
-  complexity: MazeComplexity,
-  width: number,
-  height: number
-) {
-  const _area = width * height;
-
+// Complexity affects how easy it is to get lost:
+// - loopDensity: MORE loops = EASIER (alternative paths, can recover from mistakes)
+// - deadEndFillRatio: how many dead ends to REMOVE (higher = easier, fewer traps)
+function getComplexityConfig(complexity: MazeComplexity) {
   switch (complexity) {
     case "simple":
-      return { loopDensity: 0.001, straightBias: 0.85 };
+      // Forgiving: many loops, remove most dead ends
+      return { loopDensity: 0.02, deadEndFillRatio: 0.7 };
     case "normal":
-      return { loopDensity: 0.003, straightBias: 0.65 };
+      // Moderate: some loops, remove some dead ends
+      return { loopDensity: 0.008, deadEndFillRatio: 0.3 };
     case "complex":
-      return { loopDensity: 0.006, straightBias: 0.45 };
+      // Challenging: few loops, keep most dead ends
+      return { loopDensity: 0.002, deadEndFillRatio: 0.1 };
     case "extreme":
-      return { loopDensity: 0.012, straightBias: 0.25 };
+      // Punishing: NO loops (perfect maze), keep ALL dead ends
+      return { loopDensity: 0, deadEndFillRatio: 0 };
   }
 }
 
@@ -47,11 +47,7 @@ export function generateMaze(
   }
 
   const rand = mulberry32(seed);
-  const { loopDensity, straightBias } = getComplexityConfig(
-    complexity,
-    width,
-    height
-  );
+  const { loopDensity, deadEndFillRatio } = getComplexityConfig(complexity);
 
   const grid: Cell[][] = Array.from({ length: height }, () =>
     new Array(width).fill("#")
@@ -72,24 +68,15 @@ export function generateMaze(
     return a;
   }
 
+  // Standard recursive backtracking to create a perfect maze
   function carve(startX: number, startY: number) {
-    const stack: {
-      x: number;
-      y: number;
-      prevDir?: { dx: number; dy: number };
-    }[] = [{ x: startX, y: startY }];
+    const stack: { x: number; y: number }[] = [{ x: startX, y: startY }];
     grid[startY]![startX] = " ";
 
     while (stack.length > 0) {
-      const { x, y, prevDir } = stack[stack.length - 1]!;
-      const possibleDirs = [...dirs];
+      const { x, y } = stack[stack.length - 1]!;
 
-      if (prevDir && rand() < straightBias) {
-        possibleDirs.unshift(prevDir);
-      }
-
-      // Find unvisited neighbors
-      const neighbors = shuffle(possibleDirs).filter((d) => {
+      const unvisitedNeighbors = shuffle([...dirs]).filter((d) => {
         const nx = x + d.dx;
         const ny = y + d.dy;
         return (
@@ -101,13 +88,53 @@ export function generateMaze(
         );
       });
 
-      if (neighbors.length > 0) {
-        const { dx, dy } = neighbors[0]!;
-        grid[y + dy / 2]![x + dx / 2] = " ";
-        grid[y + dy]![x + dx] = " ";
-        stack.push({ x: x + dx, y: y + dy, prevDir: { dx, dy } });
-      } else {
+      if (unvisitedNeighbors.length === 0) {
         stack.pop();
+        continue;
+      }
+
+      const { dx, dy } = unvisitedNeighbors[0]!;
+      grid[y + dy / 2]![x + dx / 2] = " ";
+      grid[y + dy]![x + dx] = " ";
+      stack.push({ x: x + dx, y: y + dy });
+    }
+  }
+
+  // Fill in dead ends to make the maze easier (removes traps)
+  function fillDeadEnds() {
+    if (deadEndFillRatio <= 0) return;
+
+    let changed = true;
+    let fillCount = 0;
+    const maxFills = Math.floor(width * height * deadEndFillRatio * 0.1);
+
+    while (changed && fillCount < maxFills) {
+      changed = false;
+
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          if (grid[y]![x] !== " ") continue;
+          if (x === 1 && y === 1) continue; // Don't fill start
+          if (x === width - 2 && y === height - 2) continue; // Don't fill goal
+
+          // Count open neighbors
+          let openNeighbors = 0;
+          for (const [dx, dy] of [
+            [0, -1],
+            [0, 1],
+            [-1, 0],
+            [1, 0],
+          ] as const) {
+            if (grid[y + dy]?.[x + dx] === " ") openNeighbors++;
+          }
+
+          // Dead end - fill it with some probability
+          if (openNeighbors === 1 && rand() < deadEndFillRatio) {
+            grid[y]![x] = "#";
+            changed = true;
+            fillCount++;
+          }
+        }
       }
     }
   }
@@ -121,6 +148,11 @@ export function generateMaze(
       const wx = x + dx / 2;
       const wy = y + dy / 2;
 
+      // Don't break outer boundary walls
+      if (wx <= 0 || wx >= width - 1 || wy <= 0 || wy >= height - 1) {
+        continue;
+      }
+
       if (grid[wy]?.[wx] === "#") {
         grid[wy][wx] = " ";
       }
@@ -128,6 +160,7 @@ export function generateMaze(
   }
 
   carve(1, 1);
+  fillDeadEnds();
   addLoops(Math.floor(width * height * loopDensity));
 
   grid[1]![1] = "S";

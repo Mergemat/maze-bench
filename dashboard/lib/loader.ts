@@ -12,9 +12,10 @@ export async function loadBenchmarkReports(): Promise<BenchmarkReport[]> {
     const content = fs.readFileSync(path.join(RESULTS_DIR, file), "utf-8");
     const report = JSON.parse(content) as BenchmarkReport;
     const sizeOrder = [
-      { width: 5, height: 5 },
-      { width: 21, height: 21 },
-      { width: 41, height: 41 },
+      { width: 5, height: 5 },   // Tiny
+      { width: 11, height: 11 }, // Small
+      { width: 21, height: 21 }, // Medium
+      { width: 35, height: 35 }, // Large
     ];
 
     const complexityOrder: Record<MazeComplexity, number> = {
@@ -30,9 +31,11 @@ export async function loadBenchmarkReports(): Promise<BenchmarkReport[]> {
     };
 
     function getSizeIndex(width: number, height: number): number {
-      return sizeOrder.findIndex(
+      const idx = sizeOrder.findIndex(
         (s) => s.width === width && s.height === height
       );
+      // If not in predefined order, sort by area (larger = later)
+      return idx >= 0 ? idx : sizeOrder.length + width * height;
     }
 
     const sortedResults = [...report.results].sort((a, b) => {

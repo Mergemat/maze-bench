@@ -10,6 +10,7 @@ export type ModelMetricsPoint = {
   avgSteps: number;
   avgTimeSec: number;
   avgCostPerRun: number;
+  costPerSuccess: number;
   totalSteps: number;
   totalTimeMs: number;
   totalCost: number;
@@ -83,6 +84,7 @@ export function computeModelMetricsPoints(
       avgSteps: nRuns === 0 ? 0 : totalSteps / nRuns,
       avgTimeSec: nRuns === 0 ? 0 : totalTimeMs / 1000 / nRuns,
       avgCostPerRun: nRuns === 0 ? 0 : totalCost / nRuns,
+      costPerSuccess: nSuccesses === 0 ? 0 : totalCost / nSuccesses,
       totalSteps,
       totalTimeMs,
       totalCost,
