@@ -140,8 +140,7 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
         <TabsList>
           {/* <TabsTrigger value="steps">Steps</TabsTrigger> */}
           <TabsTrigger value="time">Time</TabsTrigger>
-          <TabsTrigger value="avg-cost">Avg Cost</TabsTrigger>
-          <TabsTrigger value="total-cost">Total Cost</TabsTrigger>
+          <TabsTrigger value="cost">Total Cost</TabsTrigger>
         </TabsList>
 
         {/* <TabsContent value="steps"> */}
@@ -150,10 +149,10 @@ export function PerformanceCharts({ reports }: PerformanceChartsProps) {
         <TabsContent value="time">
           <TimeVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
         </TabsContent>
-        <TabsContent value="avg-cost">
-          <AvgCostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
-        </TabsContent>
-        <TabsContent value="total-cost">
+        {/* <TabsContent value="avg-cost"> */}
+        {/*   <AvgCostVsSuccessCard data={data} showEmpty={!hasAnyRuns} /> */}
+        {/* </TabsContent> */}
+        <TabsContent value="cost">
           <TotalCostVsSuccessCard data={data} showEmpty={!hasAnyRuns} />
         </TabsContent>
       </Tabs>
