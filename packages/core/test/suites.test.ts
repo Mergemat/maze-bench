@@ -15,9 +15,9 @@ import {
 describe("suites", () => {
   test("core has the documented size", () => {
     const refs = enumerateItems(CORE_SUITE);
-    expect(refs).toHaveLength(200);
-    expect(new Set(refs.map((r) => r.itemId)).size).toBe(200);
-    expect(new Set(refs.map((r) => r.seed)).size).toBe(200);
+    expect(refs).toHaveLength(81);
+    expect(new Set(refs.map((r) => r.itemId)).size).toBe(81);
+    expect(new Set(refs.map((r) => r.seed)).size).toBe(81);
   });
 
   test("held-out salt changes every seed", () => {
@@ -27,10 +27,9 @@ describe("suites", () => {
   });
 
   test("conditions share the same mazes at the same size and index", () => {
-    const full = findItem(CORE_SUITE, "full/L2/3");
-    const fog = findItem(CORE_SUITE, "fog/L2/3");
+    const full = findItem(CORE_SUITE, "full/L1/3");
+    const fog = findItem(CORE_SUITE, "fog/L1/3");
     expect(full?.seed).not.toBe(fog?.seed as number);
-    expect(sizeLabel(2)).toBe("11×11");
     expect(sizeLabel(full?.level as never)).toBe("11×11");
   });
 

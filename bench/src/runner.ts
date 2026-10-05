@@ -17,6 +17,7 @@ import {
 import type { LanguageModel } from "ai";
 import { aiSdkVersion, gitSha } from "./env.ts";
 import { runAgent } from "./harness/agent.ts";
+import type { SpendGuard } from "./harness/guard.ts";
 import type { CallOptions } from "./harness/types.ts";
 import { type Effort, type ModelEntry, subjectKey } from "./models.ts";
 import { createModel } from "./providers.ts";
@@ -37,6 +38,8 @@ export interface RunOptions {
   /** Skip (item, epoch) pairs that already have a scored result for this subject. */
   resume: boolean;
   holdoutSalt?: string;
+  /** Shared spending cap across runs. */
+  guard?: SpendGuard;
   /** Injected in tests. */
   model?: LanguageModel;
   log: (line: string) => void;
@@ -63,14 +66,18 @@ export function selectItems(
   );
 }
 
-/** Run worker functions over a queue with a fixed concurrency. */
+/**
+ * Run worker functions over a queue with a fixed concurrency. Lanes start 25 ms apart so hundreds
+ * of TLS connections are not opened in the same instant.
+ */
 export async function pool<T>(
   items: readonly T[],
   concurrency: number,
   worker: (item: T) => Promise<void>,
 ): Promise<void> {
   let next = 0;
-  const lanes = Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, async () => {
+  const lanes = Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, async (_, lane) => {
+    await new Promise((r) => setTimeout(r, lane * 25));
     while (next < items.length) {
       const item = items[next++] as T;
       await worker(item);
@@ -142,13 +149,19 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
   let cost = 0;
   let scoreSum = 0;
 
+  let skipped = 0;
   await pool(jobs, opts.concurrency, async ({ ref, epoch }) => {
+    if (opts.guard?.tripped) {
+      skipped++;
+      return;
+    }
     const task = getTask(ref.task);
     const item = buildItem(ref);
     const call: CallOptions = {
       maxOutputTokens: opts.maxOutputTokens,
       timeoutMs: opts.timeoutMs,
       onRetry: (msg) => log(`${key} ${ref.itemId} e${epoch}: ${msg}`),
+      ...(opts.guard ? { guard: opts.guard } : {}),
     };
     const attempt = await runAgent(model, task, item as MazeItem, call);
 
@@ -194,6 +207,9 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
     );
   });
 
+  if (skipped > 0) {
+    log(`${key}: spend limit reached, ${skipped} maze(s) not started. Rerun with --resume to finish.`);
+  }
   log(
     `${key}: done. scored ${scored}, errors ${errors}, mean score ${(scoreSum / Math.max(1, scored)).toFixed(3)}, cost $${cost.toFixed(4)}`,
   );

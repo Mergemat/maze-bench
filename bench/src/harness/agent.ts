@@ -45,16 +45,19 @@ export async function runAgent(
 
   const episodeOver: StopCondition<typeof tools> = () => env.done;
   const callCap: StopCondition<typeof tools> = () => meter.calls >= maxSteps;
+  const overBudget: StopCondition<typeof tools> = () => opts.guard?.tripped ?? false;
 
   const agent = new ToolLoopAgent({
     model,
     instructions: prompt.system,
     tools,
-    stopWhen: [episodeOver, callCap],
+    stopWhen: [episodeOver, callCap, overBudget],
     maxOutputTokens: opts.maxOutputTokens,
     maxRetries: opts.retry?.retries ?? 4,
     onStepFinish: (step) => {
-      meter.add(step);
+      // Record usage first: `guard?.add(meter.add(step))` would skip meter.add when there is no guard.
+      const cost = meter.add(step);
+      opts.guard?.add(cost);
       toolErrors += step.content.filter((p) => p.type === "tool-error").length;
     },
   });
@@ -78,8 +81,21 @@ export async function runAgent(
     };
   };
 
+  const stopped = (): Attempt => ({
+    status: "error",
+    scored: errorScored(),
+    usage: meter.toUsage(),
+    calls: meter.calls,
+    providers: [...meter.providers],
+    latencyMs: Math.round(performance.now() - started),
+    error: { category: "spend_limit", message: "Stopped by --max-cost before the episode finished." },
+  });
+
   try {
     while (true) {
+      if (opts.guard?.tripped) {
+        return stopped();
+      }
       const res = await agent.generate({ messages, timeout: { stepMs: opts.timeoutMs } });
       messages = [...messages, ...res.response.messages];
       finishReason = res.finishReason;
@@ -88,6 +104,9 @@ export async function runAgent(
       }
       if (env.reached) {
         return finish("goal");
+      }
+      if (opts.guard?.tripped) {
+        return stopped();
       }
       if (env.done || meter.calls >= maxSteps) {
         return finish("budget");

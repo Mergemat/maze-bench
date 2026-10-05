@@ -11,7 +11,9 @@ export type TaskId = "full" | "once" | "fog";
 export const TASK_IDS: readonly TaskId[] = ["full", "once", "fog"];
 
 export interface LevelSpec {
+  /** Size index within the suite; part of the item id. */
   level: number;
+  /** Cells per side; the tile grid is (2n+1) x (2n+1). */
   cells: number;
   braid: number;
   items: number;

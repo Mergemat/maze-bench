@@ -39,7 +39,7 @@ export function classify(error: unknown): InfraError {
   if (lower.includes("timeout") || lower.includes("timed out") || lower.includes("aborted")) {
     return new InfraError(message, "timeout", true);
   }
-  if (/econnreset|econnrefused|enotfound|socket|fetch failed|network/.test(lower)) {
+  if (/econnreset|econnrefused|enotfound|socket|fetch failed|network|certificate|tls|ssl/.test(lower)) {
     return new InfraError(message, "network", true);
   }
   // Providers sometimes return an empty or malformed body; one retry is cheap.

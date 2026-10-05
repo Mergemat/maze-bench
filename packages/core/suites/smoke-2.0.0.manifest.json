@@ -2,15 +2,14 @@
   "suite": "smoke@2.0.0",
   "promptVersion": "2.0.0",
   "items": {
-    "full/L1/0": "1d97c5bd3487ea",
-    "full/L2/0": "06b0ab09645d52",
-    "full/L3/0": "1d0bf735c0ecdb",
-    "full/L4/0": "0c47ee35e51f98",
-    "once/L1/0": "16492a23cb12dc",
-    "once/L2/0": "1da5ec7a364e72",
-    "once/L3/0": "03b4615ef498cb",
-    "once/L4/0": "18da8274d35dcf",
-    "fog/L1/0": "0c6d884cc3886a",
-    "fog/L2/0": "1b9a654fab4c74"
+    "full/L1/0": "1356b367e05044",
+    "full/L2/0": "02a2ba88a28acd",
+    "full/L3/0": "1e5e76a833b6d9",
+    "once/L1/0": "081dd4f9d04b59",
+    "once/L2/0": "11dfb6eb290f94",
+    "once/L3/0": "08beb4ed2d78c7",
+    "fog/L1/0": "064c253d838cd1",
+    "fog/L2/0": "18f06d00ddc529",
+    "fog/L3/0": "0a2f3c959825b8"
   }
 }

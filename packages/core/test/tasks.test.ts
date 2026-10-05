@@ -36,7 +36,7 @@ describe("baselines", () => {
   });
 
   test("random walk rarely finishes the larger mazes", () => {
-    const big = refs.filter((r) => r.task === "full" && r.level.level >= 3);
+    const big = refs.filter((r) => r.task === "full" && r.level.level >= 2);
     const rate = big.filter((r) => runBaseline(r, "random").score === 1).length / big.length;
     expect(rate).toBeLessThan(0.35);
   });
