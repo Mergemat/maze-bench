@@ -85,11 +85,22 @@ export type StepResult = {
   moves_left: number;
 };
 
+export type BatchResult = {
+  /** One entry per executed move, with the 3x3 view after it. */
+  steps: Array<{ move: Dir; result: "moved" | "blocked"; view: string }>;
+  /** Moves that were not run because the batch stopped early. */
+  skipped: number;
+  goal_reached: boolean;
+  moves_left: number;
+};
+
 export interface Env {
   readonly done: boolean;
   readonly reached: boolean;
   readonly movesLeft: number;
   move(dir: Dir): StepResult;
+  /** Run moves in order, stopping after the first blocked move, at the goal, or when the budget runs out. */
+  moveBatch(dirs: readonly Dir[]): BatchResult;
   currentView(): string;
 }
 

@@ -9,6 +9,8 @@ import { RESULTS_DIR } from "./storage.ts";
 interface TokenProfile {
   input: number;
   output: number;
+  /** Mean reported cost per attempt, after any prompt-cache discount. */
+  cost: number;
 }
 
 type Profiles = Map<string, TokenProfile>;
@@ -40,6 +42,7 @@ export function loadProfiles(effort: string): Map<string, Profiles> {
       profiles.set(k, {
         input: list.reduce((s, i) => s + i.usage.inputTokens, 0) / list.length,
         output: list.reduce((s, i) => s + i.usage.outputTokens, 0) / list.length,
+        cost: list.reduce((s, i) => s + (i.usage.costUsd ?? 0), 0) / list.length,
       });
     }
     out.set(id, profiles);
@@ -50,22 +53,44 @@ export function loadProfiles(effort: string): Map<string, Profiles> {
 export interface Estimate {
   model: ModelEntry;
   price: Price | undefined;
-  /** Point estimate when the model has its own calibration, else a range over calibrated models. */
+  /** Lowest estimate: calibration token counts with the cache discount the calibration model got. */
   low: number;
+  /** Highest estimate: calibration token counts at list price, no cache discount. */
   high: number;
   basis: string;
 }
 
-function costWith(suite: Suite, epochs: number, profiles: Profiles, price: Price): number | null {
+/**
+ * Cost of a suite for one target price under one calibration profile.
+ * `discount` maps each (task, level) to reported cost / list cost observed in calibration.
+ */
+function costWith(
+  suite: Suite,
+  epochs: number,
+  profile: Profiles,
+  price: Price,
+  discount?: Map<string, number>,
+): number | null {
   let total = 0;
   for (const ref of enumerateItems(suite)) {
-    const p = profiles.get(cellKey(ref.task, ref.level.level));
+    const cell = cellKey(ref.task, ref.level.level);
+    const p = profile.get(cell);
     if (!p) {
       return null;
     }
-    total += (p.input * price.input + p.output * price.output) * epochs;
+    const list = p.input * price.input + p.output * price.output;
+    total += list * (discount?.get(cell) ?? 1) * epochs;
   }
   return total;
+}
+
+function discounts(profile: Profiles, price: Price | undefined): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const [cell, p] of profile) {
+    const list = price ? p.input * price.input + p.output * price.output : 0;
+    out.set(cell, list > 0 ? Math.min(1, Math.max(0.05, p.cost / list)) : 1);
+  }
+  return out;
 }
 
 export function estimate(
@@ -74,6 +99,7 @@ export function estimate(
   models: readonly ModelEntry[],
   prices: Map<string, Price>,
   profiles: Map<string, Profiles>,
+  calibrated: (id: string) => ModelEntry | undefined,
 ): Estimate[] {
   return models.map((model) => {
     const price = prices.get(model.modelId);
@@ -81,23 +107,27 @@ export function estimate(
       return { model, price, low: Number.NaN, high: Number.NaN, basis: "no OpenRouter price" };
     }
     const own = profiles.get(model.id);
-    const ownCost = own ? costWith(suite, epochs, own, price) : null;
-    if (ownCost !== null) {
-      return { model, price, low: ownCost, high: ownCost, basis: "own calibration" };
+    const candidates = own ? [[model.id, own] as const] : [...profiles.entries()];
+    const lows: number[] = [];
+    const highs: number[] = [];
+    for (const [id, profile] of candidates) {
+      const calPrice = prices.get(calibrated(id)?.modelId ?? "");
+      const list = costWith(suite, epochs, profile, price);
+      const cached = costWith(suite, epochs, profile, price, discounts(profile, calPrice));
+      if (list !== null && cached !== null) {
+        highs.push(list);
+        lows.push(cached);
+      }
     }
-    // Apply every calibrated model's token profile to this model's prices.
-    const costs = [...profiles.values()]
-      .map((p) => costWith(suite, epochs, p, price))
-      .filter((c): c is number => c !== null);
-    if (costs.length === 0) {
-      return { model, price, low: Number.NaN, high: Number.NaN, basis: "no calibration data" };
+    if (highs.length === 0) {
+      return { model, price, low: Number.NaN, high: Number.NaN, basis: "no calibration covering this suite" };
     }
     return {
       model,
       price,
-      low: Math.min(...costs),
-      high: Math.max(...costs),
-      basis: `token range of ${costs.length} calibrated model(s)`,
+      low: Math.min(...lows),
+      high: Math.max(...highs),
+      basis: own ? "own calibration" : `token profiles of ${highs.length} calibrated model(s)`,
     };
   });
 }

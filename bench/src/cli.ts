@@ -141,11 +141,13 @@ async function main(): Promise<void> {
     case "estimate": {
       const targets = models.length > 0 ? models : MODELS.filter((m) => m.sweep);
       const epochs = int(values.epochs, "epochs") ?? suite.epochs;
-      const rows = estimate(suite, epochs, targets, await fetchPrices(), loadProfiles(effort));
+      const rows = estimate(suite, epochs, targets, await fetchPrices(), loadProfiles(effort), (id) =>
+        MODELS.find((m) => m.id === id),
+      );
       let low = 0;
       let high = 0;
       for (const r of rows) {
-        const range = r.low === r.high ? `$${r.low.toFixed(2)}` : `$${r.low.toFixed(2)} – $${r.high.toFixed(2)}`;
+        const range = `$${r.low.toFixed(2)} – $${r.high.toFixed(2)}`;
         console.log(`${r.model.id.padEnd(22)} ${range.padEnd(22)} ${r.basis}`);
         if (Number.isFinite(r.low)) {
           low += r.low;
@@ -155,7 +157,10 @@ async function main(): Promise<void> {
       console.log(
         `\n${suiteKey(suite)} x${epochs} epoch(s), effort=${effort}: total $${low.toFixed(2)} – $${high.toFixed(2)}`,
       );
-      console.log("List prices without prompt-cache discounts, so fog estimates lean high.");
+      console.log(
+        "Low: calibration tokens with the cache discount the calibration model got. High: same tokens at list price.",
+      );
+      console.log("Models without their own calibration borrow other models' token counts, so treat those as rough.");
       return;
     }
     case "report":

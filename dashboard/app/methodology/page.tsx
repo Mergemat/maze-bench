@@ -21,7 +21,7 @@ const WHY: Record<TaskId, string> = {
   plan: "The v1 “initial view” mode, labelled honestly. The model sees the full maze once and writes the whole route. Scored by SPL (success weighted by path length), because a wall follower reaches the goal in most mazes and success alone would reward that.",
   recall:
     "Memory for a stateless model: integrate many partial observations into a map. The model reads a walk with a 3×3 view per step and must return to the start. Walks go around loops, and items are kept only if cancelling back-and-forth moves (pure string manipulation) scores at most 0.7 SPL.",
-  fog: "The integrated task and the closest to v1. The model moves with a tool, sees only a 3×3 view, has no coordinates, and gets twice as many moves as there are open tiles. The full history stays in context; there is no scratchpad tool.",
+  fog: "The integrated task and the closest to v1. It runs as a standard AI SDK agent with one move tool that takes a batch of moves; the model sees only a 3×3 view, has no coordinates, and gets twice as many moves as there are open tiles. The full history, including the model's earlier reasoning, stays in context. There is no scratchpad tool.",
 };
 
 function examplePrompt(task: TaskId): string {
@@ -207,8 +207,8 @@ export default function Methodology() {
           <li>No human baseline yet.</li>
           <li>Text only. Image input is out of scope for v2.</li>
           <li>
-            Fog stops at level 2 in the core suite. Its context grows with the square of episode length; a level-3
-            episode used 4.75M input tokens in calibration.
+            Fog stops at level 2 in the core suite. Every agent step resends the whole conversation, so input tokens
+            grow with the square of the number of steps. Batched moves keep a level-2 episode near 130k input tokens.
           </li>
           <li>
             One prompt template per task. Format sensitivity is measured only through the adjacency-list ablation.

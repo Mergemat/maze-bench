@@ -16,7 +16,7 @@ Maze solving looks like one skill but fails in several separate ways. A model ca
 | `trace`: path check | Spatial simulation | Gets a numbered move list from `S` and names the first move that walks into a wall (or 0) | Exact-match accuracy |
 | `plan`: one-shot route | Planning | Sees the maze once and writes the whole route from `S` to `G` | SPL |
 | `recall`: route memory | Memory | Reads a walk through an unseen maze, one 3×3 view per step, then returns to the start | SPL |
-| `fog`: fog navigation | All three, with tool use | Moves with a `move` tool, sees only a 3×3 view, has no coordinates, and must find `G` | Success rate |
+| `fog`: fog navigation | All three, with tool use | Runs as an AI SDK agent with a `move` tool that takes a batch of moves, sees only a 3×3 view, has no coordinates, and must find `G` | Success rate |
 
 SPL is success weighted by path length (`optimal / max(taken, optimal)`, Anderson et al. 2018). The composite score is the unweighted mean of the five task scores.
 
@@ -25,7 +25,7 @@ The benchmark does not measure visual perception (it is text only), and it canno
 ## Methodology
 
 - **Items.** Mazes come from a seeded depth-first carver with optional braiding (extra loops). Start and goal positions come from the seed, not fixed corners. Each item is addressed by `(suite, task, level, index)` and rebuilt on demand. A committed manifest of item hashes fails CI if generation or prompts change without a suite version bump.
-- **Difficulty.** Five levels from 7×7 to 33×33 tiles. Fog uses levels 1–2 only, because its context grows with the square of episode length. When the top level saturates, the next suite version adds a larger level.
+- **Difficulty.** Five levels from 7×7 to 33×33 tiles. Fog uses levels 1–2 only: every agent step resends the whole conversation, so its input tokens grow with the square of the number of steps. Letting the model batch moves cut a level-2 episode from 892k to 134k input tokens. When the top level saturates, the next suite version adds a larger level.
 - **Suite `core@2.0.0`.** 440 items: 100 each for `local`, `trace`, `plan` and `recall`, plus 40 for `fog`.
 - **Answers.** One-shot tasks end with `ANSWER: …`. Parse failures, truncation, invalid moves, stalls and exhausted budgets are scored 0 but labelled separately. API failures are retried and never scored. They are stored as errors and can be resumed.
 - **Statistics.** 95% intervals come from a percentile bootstrap over items (2,000 resamples, clustered by item when there are several attempts). The composite interval uses a bootstrap stratified by task. Models are compared on paired differences over shared items. pass@k and pass^k use the unbiased estimators.
@@ -47,7 +47,7 @@ The [methodology page](https://maze-bench.vercel.app/methodology) shows the exac
 
 The fog heuristic is a right-hand wall follower. Within a budget of twice the open tiles it almost always finds the goal, so a model below that row on fog has done worse than a ten-line program.
 
-Calibration runs (one item per task and level) on cheap models are in `results/calib@2.0.0/`. GPT-6 Luna solved every `local` and `recall` item up to 33×33. It failed `plan` from level 3 up, and its level-4 attempt hit the 32k output cap. It exhausted the fog budget on every level, walking in circles while reporting that it had explored everything.
+Calibration runs (one item per task and level) on cheap models are in `results/calib@2.0.0/`. GPT-6 Luna solved every `local` and `recall` item up to 33×33. It failed `plan` from level 3 up, and its level-4 attempt hit the 32k output cap. In fog it reached the goal in both level-1 smoke episodes but ran out of moves on the level-1 and level-2 calibration mazes, revisiting tiles while reporting that it had explored everything.
 
 ### Status
 

@@ -19,9 +19,9 @@ export function reply(
 
 export const text = (t: string) => reply([{ type: "text", text: t }]);
 
-export function toolCall(id: string, direction: string) {
+export function toolCall(id: string, ...moves: string[]) {
   return reply(
-    [{ type: "tool-call", toolCallId: id, toolName: "move", input: JSON.stringify({ direction }) }],
+    [{ type: "tool-call", toolCallId: id, toolName: "move", input: JSON.stringify({ moves }) }],
     "tool-calls",
   );
 }

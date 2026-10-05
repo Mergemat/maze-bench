@@ -9,6 +9,7 @@ import {
   fogTask,
   getTask,
   movesFromPath,
+  openDirs,
   type PlanItem,
   planTask,
   shortestPath,
@@ -103,6 +104,37 @@ describe("interactive harness", () => {
     expect(a.scored.trace?.moves).toBe(route.join(""));
     // Each later call sees the tool results of earlier calls.
     expect(JSON.stringify(model.doGenerateCalls[1]?.prompt)).toContain("moves_left");
+  });
+
+  test("a batch of moves runs in order in one call", async () => {
+    let i = 0;
+    const model = new MockLanguageModelV4({
+      doGenerate: async () => {
+        const batch = route.slice(i, i + 3);
+        i += 3;
+        return toolCall(`b${i}`, ...batch);
+      },
+    });
+    const a = await runInteractive(model, fog, fogItem, opts);
+    expect(a.scored.outcome).toBe("success");
+    expect(a.scored.metrics.moves).toBe(route.length);
+    expect(a.calls).toBe(Math.ceil(route.length / 3));
+    expect(a.scored.metrics.movesPerCall).toBeCloseTo(route.length / Math.ceil(route.length / 3));
+  });
+
+  test("a batch stops at the first blocked move", async () => {
+    const wall = (["U", "D", "L", "R"] as const).find(
+      (d) => !openDirs(fogItem.tiles, fogItem.start).includes(d),
+    ) as string;
+    let i = 0;
+    const model = new MockLanguageModelV4({
+      doGenerate: async () => (i++ === 0 ? toolCall("w", wall, ...route) : toolCall(`c${i}`, ...route)),
+    });
+    const a = await runInteractive(model, fog, fogItem, opts);
+    expect(a.scored.outcome).toBe("success");
+    // The first batch stopped after the blocked move; the rest of it was skipped.
+    expect(a.scored.metrics.moves).toBe(route.length + 1);
+    expect(a.calls).toBe(2);
   });
 
   test("stalls after repeated replies without a tool call", async () => {
