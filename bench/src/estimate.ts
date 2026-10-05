@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { CALIB_SUITE, enumerateItems, type ItemResult, mergeItems, type Suite } from "@mazebench/core";
+import { enumerateItems, type ItemResult, mergeItems, SMOKE_SUITE, type Suite } from "@mazebench/core";
 import { loadRuns } from "@mazebench/core/node";
 import type { ModelEntry } from "./models.ts";
 import type { Price } from "./pricing.ts";
@@ -17,9 +17,9 @@ type Profiles = Map<string, TokenProfile>;
 
 const cellKey = (task: string, level: number) => `${task}/L${level}`;
 
-/** Token profiles per model id (effort ignored unless it matches), from calib results. */
+/** Token profiles per model id at one effort, from smoke results. */
 export function loadProfiles(effort: string): Map<string, Profiles> {
-  const runs = loadRuns(join(RESULTS_DIR, `${CALIB_SUITE.id}@${CALIB_SUITE.version}`)).filter(
+  const runs = loadRuns(join(RESULTS_DIR, `${SMOKE_SUITE.id}@${SMOKE_SUITE.version}`)).filter(
     (r) => r.header.subject.kind === "model",
   );
   const bySubject = new Map<string, ItemResult[]>();

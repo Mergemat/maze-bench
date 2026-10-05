@@ -40,7 +40,7 @@ describe("agent harness", () => {
     expect(a.scored.outcome).toBe("success");
     expect(a.calls).toBe(route.length);
     expect(a.scored.trace?.moves).toBe(route.join(""));
-    expect(JSON.stringify(model.doGenerateCalls[1]?.prompt)).toContain("moves_left");
+    expect(JSON.stringify(model.doGenerateCalls[1]?.prompt)).toContain("goal_reached");
   });
 
   test("full mode returns the map after a batch; once mode does not", async () => {

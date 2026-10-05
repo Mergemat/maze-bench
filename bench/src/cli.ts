@@ -34,12 +34,12 @@ Commands:
                 --model <id>[,<id>...]  models from \`models\` (or --sweep for the default lineup)
                 --effort <e>            ${EFFORTS.join(" | ")} (default: default)
                 --efforts <e,...>       several efforts; each model runs the ones it supports on OpenRouter
-                --suite <id>            core | smoke | calib (default: core)
+                --suite <id>            core | smoke (default: core)
                 --tasks <t,...>         subset of ${TASK_IDS.join(",")}
                 --levels <n,...>        subset of sizes: 1=7x7 2=11x11 3=17x17 4=25x25
                 --limit <n>             first n items per task and level
                 --epochs <n>            attempts per item (default: suite setting)
-                --concurrency <n>       parallel items (default: 8)
+                --concurrency <n>       cap on parallel mazes per run (default: no cap; everything runs at once)
                 --max-output-tokens <n> per call (default: 32000)
                 --timeout <sec>         per call (default: 600)
                 --resume                skip items already scored for this model
@@ -134,25 +134,28 @@ async function main(): Promise<void> {
       if (requested) {
         console.log(plan.map((p) => `${p.entry.id}@${p.effort}`).join("\n"));
       }
-      let total = 0;
-      for (const { entry, effort } of plan) {
-        const summary = await runModel({
-          suite,
-          entry,
-          effort,
-          epochs: int(values.epochs, "epochs") ?? suite.epochs,
-          concurrency: int(values.concurrency, "concurrency") ?? 8,
-          maxOutputTokens: int(values["max-output-tokens"], "max-output-tokens") ?? 32_000,
-          timeoutMs: (int(values.timeout, "timeout") ?? 600) * 1000,
-          ...(tasks ? { tasks } : {}),
-          ...(values.levels ? { levels: (list(values.levels) ?? []).map(Number) } : {}),
-          ...(values.limit ? { limit: int(values.limit, "limit") as number } : {}),
-          resume: values.resume ?? false,
-          ...(salt ? { holdoutSalt: salt } : {}),
-          log: (line) => console.log(line),
-        });
-        total += summary.costUsd;
-      }
+      // Every (model, effort) run starts at once, and inside each run every maze starts at once.
+      // Transient API errors are retried with backoff, so rate limits slow a run down rather than fail it.
+      const summaries = await Promise.all(
+        plan.map(({ entry, effort }) =>
+          runModel({
+            suite,
+            entry,
+            effort,
+            epochs: int(values.epochs, "epochs") ?? suite.epochs,
+            concurrency: int(values.concurrency, "concurrency") ?? Number.POSITIVE_INFINITY,
+            maxOutputTokens: int(values["max-output-tokens"], "max-output-tokens") ?? 32_000,
+            timeoutMs: (int(values.timeout, "timeout") ?? 600) * 1000,
+            ...(tasks ? { tasks } : {}),
+            ...(values.levels ? { levels: (list(values.levels) ?? []).map(Number) } : {}),
+            ...(values.limit ? { limit: int(values.limit, "limit") as number } : {}),
+            resume: values.resume ?? false,
+            ...(salt ? { holdoutSalt: salt } : {}),
+            log: (line) => console.log(line),
+          }),
+        ),
+      );
+      const total = summaries.reduce((sum, r) => sum + r.costUsd, 0);
       console.log(`Total reported cost: $${total.toFixed(4)}`);
       return;
     }

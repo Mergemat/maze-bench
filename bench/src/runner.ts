@@ -122,7 +122,7 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
       epochs: opts.epochs,
       maxOutputTokens: opts.maxOutputTokens,
       temperature: null,
-      concurrency: opts.concurrency,
+      concurrency: Math.min(opts.concurrency, jobs.length),
     },
     harness: {
       gitSha: gitSha(),
@@ -148,7 +148,7 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
     const call: CallOptions = {
       maxOutputTokens: opts.maxOutputTokens,
       timeoutMs: opts.timeoutMs,
-      onRetry: (msg) => log(`  ${ref.itemId} e${epoch}: ${msg}`),
+      onRetry: (msg) => log(`${key} ${ref.itemId} e${epoch}: ${msg}`),
     };
     const attempt = await runAgent(model, task, item as MazeItem, call);
 
@@ -189,7 +189,7 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
         ? `ERROR ${attempt.error?.category}`
         : `${attempt.scored.outcome} ${attempt.scored.score.toFixed(2)}`;
     log(
-      `[${finished}/${jobs.length}] ${ref.itemId} e${epoch} ${mark} ` +
+      `${key} [${finished}/${jobs.length}] ${ref.itemId} e${epoch} ${mark} ` +
         `$${(attempt.usage.costUsd ?? 0).toFixed(4)} ${attempt.calls} call(s) ${(attempt.latencyMs / 1000).toFixed(1)}s`,
     );
   });

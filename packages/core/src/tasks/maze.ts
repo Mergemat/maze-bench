@@ -113,7 +113,6 @@ export class MazeEnv {
       skipped: dirs.length - steps.length,
       ...(this.mode === "full" ? { map: this.map() } : {}),
       goal_reached: this.reached,
-      moves_left: this.movesLeft,
     };
   }
 }
@@ -135,26 +134,25 @@ export function replayLog(item: MazeItem, log: readonly Dir[]): { positions: Pos
   return { positions, blocked };
 }
 
-const LEGEND = "`#` is a wall, `.` is open floor, `@` is you and `G` is the exit. Up is the top of the map.";
+// The system prompt states the goal, what the agent sees and the budget. The tool description is
+// the single place the move mechanics live. Strategy (how far to plan, how many moves per call,
+// how to remember the maze) is left entirely to the model.
+const SYMBOLS = "`#` wall · `.` floor · `@` you · `G` exit";
 
-const TOOL_RULES =
-  "Use the `move` tool with a list of moves, each U (up), D (down), L (left) or R (right), for example " +
-  '["R", "R", "D"]. You can send one move or a whole route; the moves run in order. A batch stops early if a ' +
-  "move hits a wall or you reach the exit.";
+// The move budget (twice the open tiles) is a hidden safety stop so a looping agent cannot run
+// forever. It is not announced, so it does not shape how the model plays.
+const SYSTEM: Record<TaskId, string> = {
+  full: `Reach the exit of the maze.\n\n${SYMBOLS}. Up is the top of the map.`,
+  once: `Reach the exit of the maze.\n\n${SYMBOLS}. Up is the top of the map. The map is shown once, at the start.`,
+  fog:
+    `Reach the exit of the maze.\n\nYou see the 3×3 area centred on you. ${SYMBOLS}; the exit shows once it is ` +
+    "within view. Up is the top of the view.",
+};
 
-const SYSTEM: Record<TaskId, (budget: number) => string> = {
-  full: (budget) =>
-    `You are in a maze and must reach the exit. ${LEGEND}\n\n${TOOL_RULES} After each batch you get the updated map. ` +
-    `Moving into a wall uses up a move. You have ${budget} moves.`,
-  once: (budget) =>
-    `You are in a maze and must reach the exit. ${LEGEND}\n\n${TOOL_RULES} You see the map only once, now. After ` +
-    "each batch you only learn which moves worked and which were blocked, so keep track of where you are yourself. " +
-    `Moving into a wall uses up a move. You have ${budget} moves.`,
-  fog: (budget) =>
-    "You are in a maze and must reach the exit. You can only see the 3x3 area around you. In a view `#` is a wall, " +
-    "`.` is open floor, `@` is you and `G` is the exit, which you only see once it is within view. The top row of a " +
-    `view is up.\n\n${TOOL_RULES} You get the view after each move. Moving into a wall uses up a move. ` +
-    `You have ${budget} moves. There are no coordinates, so keep track of where you have been yourself.`,
+const TOOL_RETURNS: Record<TaskId, string> = {
+  full: "whether each move went through, the map after the last move,",
+  once: "whether each move went through",
+  fog: "whether each move went through, the 3×3 view after each move,",
 };
 
 export interface MazeTask extends TaskInfo {
@@ -179,19 +177,14 @@ function makeTask(id: TaskId, title: string, summary: string): MazeTask {
     summary,
     generate: generateItem,
     createEnv: (item) => new MazeEnv(item, id),
-    prompt: (item, env) => ({
-      system: SYSTEM[id](item.budget),
-      user:
-        id === "fog"
-          ? `Your current view:\n${env.view()}\n\nFind the exit.`
-          : `The maze:\n\n${env.map()}\n\nFind the exit.`,
+    prompt: (_item, env) => ({
+      system: SYSTEM[id],
+      user: id === "fog" ? env.view() : env.map(),
     }),
     toolDescription:
-      "Make one or more moves in order. Reports, for each move that ran, whether you moved or were blocked" +
-      (id === "fog" ? " and your 3x3 view after it" : "") +
-      (id === "full" ? ", then the updated map" : "") +
-      "; then whether you reached the exit and how many moves you have left.",
-    nudge: "Call the move tool to continue.",
+      "Walk through the maze. Takes any number of moves (U up, D down, L left, R right) and runs them in order, " +
+      `stopping at the first wall or at the exit. Returns ${TOOL_RETURNS[id]} and whether you reached the exit.`,
+    nudge: "Continue.",
     maxNudges: 3,
     scoreEpisode(item, env, end) {
       const success = env.reached;

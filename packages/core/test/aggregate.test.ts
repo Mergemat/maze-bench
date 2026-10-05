@@ -69,9 +69,10 @@ describe("aggregate", () => {
     expect(second?.composite?.mean).toBe(0);
     expect(first?.scored).toBe(refs.length);
     expect(first?.usage.costUsd).toBeCloseTo(0.001 * refs.length);
-    expect(first?.perMaze).toMatchObject({ costUsd: 0.001, outputTokens: 5, steps: 1 });
+    expect(first?.perMaze.costUsd).toBeCloseTo(0.001);
+    expect(first?.perMaze).toMatchObject({ outputTokens: 5, steps: 1 });
     expect(first?.tasks.fog?.perMaze.steps).toBe(1);
-    expect(first?.tasks.full?.levels.map((l) => l.level)).toEqual([1]);
+    expect(first?.tasks.full?.levels.map((l) => l.level)).toEqual([1, 2, 3, 4]);
   });
 
   test("composite is null when a task is missing", () => {
@@ -93,9 +94,10 @@ describe("aggregate", () => {
   });
 
   test("pass^k with several epochs", () => {
-    const items = refs.flatMap((r) => [item(r.itemId, 1, 0), item(r.itemId, r.index === 0 ? 0 : 1, 1)]);
+    const fullRefs = refs.filter((r) => r.task === "full");
+    const items = refs.flatMap((r) => [item(r.itemId, 1, 0), item(r.itemId, r === fullRefs[0] ? 0 : 1, 1)]);
     const s = aggregate([{ header: header("e", "2026-10-01", 2), items }], SMOKE_SUITE)[0];
-    expect(s?.tasks.full?.passHat[2]).toBeCloseTo(0.5);
+    expect(s?.tasks.full?.passHat[2]).toBeCloseTo(1 - 1 / fullRefs.length);
     expect(s?.tasks.full?.passAt[2]).toBe(1);
   });
 

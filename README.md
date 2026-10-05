@@ -60,10 +60,10 @@ bun install
 cp bench/.env.example bench/.env   # add OPENROUTER_API_KEY
 
 bun run bench models                                         # registry with live OpenRouter prices
-bun run bench run --model gpt-6-luna --suite smoke           # 6 mazes, about a cent
-bun run bench run --model claude-sonnet-5.5 --effort high    # core suite
+bun run bench run --model gpt-6-luna --suite smoke           # 10 mazes, one per condition and size
+bun run bench run --model claude-sonnet-5.5 --efforts low,medium,high,xhigh   # core, at the efforts the model supports
 bun run bench run --sweep --resume                           # every model in the lineup
-bun run bench estimate --sweep                               # cost estimate from calibration runs
+bun run bench estimate --sweep --efforts low,medium,high,xhigh   # cost estimate from smoke runs
 bun run bench report                                         # markdown table
 bun run bench validate                                       # schema and item-hash check
 ```
