@@ -127,13 +127,14 @@ function Thumb({ attempt, active, onClick }: { attempt: Attempt; active: boolean
 export function ReplayViewer({ suiteId, subjectKey }: { suiteId: string; subjectKey: string }) {
   const suite = getSuite(suiteId);
   const [items, setItems] = useState<ItemResult[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/data/${slug(subjectKey)}.json`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((data: ItemResult[]) => setItems(data))
-      .catch(() => setItems([]));
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
   }, [subjectKey]);
 
   const attempts = useMemo<Attempt[]>(
@@ -151,8 +152,14 @@ export function ReplayViewer({ suiteId, subjectKey }: { suiteId: string; subject
     [items, suite],
   );
 
+  if (error) {
+    return <p className="text-[rgb(255,150,50)] text-sm">Could not load replays: {error}</p>;
+  }
   if (!items) {
-    return <p className="text-muted-foreground text-sm">Loading…</p>;
+    return <p className="text-muted-foreground text-sm">Loading replays…</p>;
+  }
+  if (attempts.length === 0) {
+    return <p className="text-muted-foreground text-sm">No scored mazes to replay.</p>;
   }
   const current = attempts.find((a) => a.result.itemId === selected) ?? attempts[0];
 

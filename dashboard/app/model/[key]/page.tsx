@@ -31,12 +31,24 @@ function Big({ value, label, accent }: { value: string; label: string; accent?: 
   );
 }
 
+/** Solved and attempted mazes for one condition (or all), from per-level counts. */
+function counts(levels: { n: number; interval: { mean: number } }[] = []): { solved: number; total: number } {
+  return levels.reduce(
+    (acc, l) => ({ solved: acc.solved + Math.round(l.interval.mean * l.n), total: acc.total + l.n }),
+    { solved: 0, total: 0 },
+  );
+}
+
 export default async function ModelPage({ params }: { params: Params }) {
   const row = subject(unslug((await params).key));
   if (!row) {
     notFound();
   }
   const { suite } = activeSuite();
+  const all = TASK_IDS.map((t) => counts(row.tasks[t]?.levels)).reduce(
+    (a, b) => ({ solved: a.solved + b.solved, total: a.total + b.total }),
+    { solved: 0, total: 0 },
+  );
 
   return (
     <div className="space-y-10">
@@ -53,7 +65,11 @@ export default async function ModelPage({ params }: { params: Params }) {
           />
         </h1>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Big value={`${pct(row.composite?.mean, 0)}%`} label="completion" accent />
+          <Big
+            value={`${all.solved}/${all.total}`}
+            label={`mazes solved · ${pct(row.composite?.mean, 0)}% completion`}
+            accent
+          />
           <Big value={usd(row.perMaze.costUsd, row.usage.costComplete)} label="cost per maze" />
           <Big value={compact(row.perMaze.outputTokens)} label="output tokens per maze" />
           <Big value={row.perMaze.steps.toFixed(1)} label="agent steps per maze" />
@@ -62,11 +78,15 @@ export default async function ModelPage({ params }: { params: Params }) {
           {TASK_IDS.map((t) => {
             const ts = row.tasks[t];
             const v = ts && ts.n > 0 ? ts.interval.mean : null;
+            const c = counts(ts?.levels);
             return (
               <div key={t} className="rounded-lg border bg-card px-4 py-3" title={TASKS[t].summary}>
                 <div className="flex items-baseline justify-between">
                   <span className="text-muted-foreground text-xs">{TASKS[t].title}</span>
-                  <span className="font-pixel text-xl">{v === null ? "–" : `${pct(v, 0)}%`}</span>
+                  <span className="font-pixel text-xl">
+                    {c.solved}/{c.total}
+                    <span className="ml-2 text-muted-foreground text-xs">{v === null ? "–" : `${pct(v, 0)}%`}</span>
+                  </span>
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
                   <div className="h-full bg-[rgb(53,143,243)]" style={{ width: `${(v ?? 0) * 100}%` }} />
@@ -76,7 +96,10 @@ export default async function ModelPage({ params }: { params: Params }) {
           })}
         </div>
       </div>
-      <ReplayViewer suiteId={suite.id} subjectKey={row.subject.key} />
+      <section className="space-y-4">
+        <h2 className="font-pixel text-xl">Replays</h2>
+        <ReplayViewer suiteId={suite.id} subjectKey={row.subject.key} />
+      </section>
     </div>
   );
 }
