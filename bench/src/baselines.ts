@@ -52,7 +52,7 @@ export function writeBaselines(suite: Suite, log: (s: string) => void): void {
     let total = 0;
     for (const ref of refs) {
       const item = buildItem(ref);
-      const { scored, value } = runBaseline(ref, kind);
+      const scored = runBaseline(ref, kind);
       const result: ItemResult = {
         type: "item",
         itemId: ref.itemId,
@@ -65,7 +65,6 @@ export function writeBaselines(suite: Suite, log: (s: string) => void): void {
         score: scored.score,
         outcome: scored.outcome,
         metrics: scored.metrics,
-        ...(value === null ? {} : { answer: { text: JSON.stringify(value), parse: "ok" as const, value } }),
         ...(scored.trace ? { trace: scored.trace } : {}),
         usage: { inputTokens: 0, outputTokens: 0, reasoningTokens: 0, costUsd: 0 },
         latencyMs: 0,

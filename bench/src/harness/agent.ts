@@ -1,4 +1,4 @@
-import type { AnyInteractiveTask, Dir, Env, EpisodeEnd } from "@mazebench/core";
+import type { Dir, EpisodeEnd, MazeItem, MazeTask } from "@mazebench/core";
 import { type LanguageModel, type ModelMessage, type StopCondition, ToolLoopAgent, tool } from "ai";
 import { z } from "zod";
 import { classify } from "./retry.ts";
@@ -6,20 +6,21 @@ import { type Attempt, type CallOptions, clip, errorScored } from "./types.ts";
 import { UsageMeter } from "./usage.ts";
 
 /**
- * Interactive episode run as a standard AI SDK agent: a `ToolLoopAgent` with one `move` tool that
- * takes a batch of moves, and the full conversation (reasoning included) in context.
+ * One maze, run as a standard AI SDK agent: a `ToolLoopAgent` with one `move` tool that takes a
+ * batch of moves, and the full conversation (reasoning included) in context. The task decides
+ * what the agent sees (full map, map once, or a 3x3 fog view).
  * The harness only adds what a benchmark needs on top: a move budget, a cap on model calls,
  * a few nudges when the agent stops without reaching the goal, and per-call accounting.
  */
-export async function runInteractive(
+export async function runAgent(
   model: LanguageModel,
-  task: AnyInteractiveTask,
-  item: unknown,
+  task: MazeTask,
+  item: MazeItem,
   opts: CallOptions,
 ): Promise<Attempt> {
   const meter = new UsageMeter();
   const started = performance.now();
-  const env: Env = task.createEnv(item);
+  const env = task.createEnv(item);
   const prompt = task.prompt(item, env);
   // One move per call is the worst case; slack covers calls that only produce bad tool input.
   const maxSteps = env.movesLeft + task.maxNudges + 10;

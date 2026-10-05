@@ -9,7 +9,6 @@ import type { Frame, Scene } from "./frames";
 // so walls get the same ordered-dither texture as the charts.
 const SUB = 4;
 const BLUE: [number, number, number] = [53, 143, 243];
-const PURPLE: [number, number, number] = [150, 110, 255];
 const ORANGE: [number, number, number] = [255, 150, 50];
 const GREEN: [number, number, number] = [40, 210, 110];
 const RED: [number, number, number] = [240, 70, 70];
@@ -64,8 +63,9 @@ function tileCross(img: ImageData, p: Pos, color: [number, number, number]) {
 }
 
 function draw(canvas: HTMLCanvasElement, scene: Scene, frame: Frame, wall: [number, number, number]) {
-  const rows = scene.tiles.length;
-  const cols = scene.tiles[0]?.length ?? 0;
+  const tiles = scene.item.tiles;
+  const rows = tiles.length;
+  const cols = tiles[0]?.length ?? 0;
   canvas.width = cols * SUB;
   canvas.height = rows * SUB;
   const ctx = canvas.getContext("2d");
@@ -78,7 +78,7 @@ function draw(canvas: HTMLCanvasElement, scene: Scene, frame: Frame, wall: [numb
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const p = { r, c };
-      const isWall = scene.tiles[r]?.[c] !== ".";
+      const isWall = tiles[r]?.[c] !== ".";
       if (isWall) {
         tileDither(img, p, wall, seen(p) ? 0.72 : 0.12, seen(p) ? 0.9 : 0.5);
       } else if (!seen(p)) {
@@ -86,32 +86,20 @@ function draw(canvas: HTMLCanvasElement, scene: Scene, frame: Frame, wall: [numb
       }
     }
   }
-  frame.ghost.forEach((p) => {
-    tileCenter(img, p, PURPLE, 0.45);
-  });
   frame.path.forEach((p, i) => {
     const age = frame.path.length <= 1 ? 1 : i / (frame.path.length - 1);
     tileCenter(img, p, BLUE, 0.35 + 0.55 * age);
   });
-  for (const h of frame.highlight ?? []) {
-    tileRing(img, h, ORANGE, 0.9);
-  }
-  if (scene.start) {
-    tileRing(img, scene.start, GREEN, 1);
-  }
-  if (scene.goal) {
-    tileDither(img, scene.goal, ORANGE, 0.7, 1);
-  }
+  tileRing(img, scene.item.start, GREEN, 1);
+  tileDither(img, scene.item.goal, ORANGE, 0.7, 1);
   if (frame.bump) {
     tileCross(img, frame.bump, RED);
   }
-  if (frame.agent) {
-    tileCenter(img, frame.agent, BLUE, 1, 4);
-  }
+  tileCenter(img, frame.agent, BLUE, 1, 4);
   ctx.putImageData(img, 0, 0);
 }
 
-export function MazeCanvas({ scene, frame }: { scene: Scene; frame: Frame }) {
+export function MazeCanvas({ scene, frame, className }: { scene: Scene; frame: Frame; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current;
@@ -121,12 +109,10 @@ export function MazeCanvas({ scene, frame }: { scene: Scene; frame: Frame }) {
     const dark = document.documentElement.classList.contains("dark");
     draw(canvas, scene, frame, dark ? [212, 212, 216] : [39, 39, 42]);
   }, [scene, frame]);
-  const cols = scene.tiles[0]?.length ?? 1;
   return (
     <canvas
       ref={ref}
-      className="pixelated w-full max-w-[560px]"
-      style={{ aspectRatio: `${cols} / ${scene.tiles.length}` }}
+      className={`pixelated aspect-square w-full ${className ?? ""}`}
       aria-label="Maze replay"
       role="img"
     />

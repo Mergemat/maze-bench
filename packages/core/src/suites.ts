@@ -1,11 +1,10 @@
 import { PROMPT_VERSION } from "./meta.ts";
 import { contentHash, fnv1a32 } from "./rng.ts";
 import { getTask } from "./tasks/index.ts";
-import type { LevelSpec, Repr, TaskId } from "./tasks/types.ts";
+import type { LevelSpec, MazeItem, TaskId } from "./tasks/types.ts";
 
 export interface SuiteTask {
   task: TaskId;
-  repr: Repr;
   levels: LevelSpec[];
 }
 
@@ -15,89 +14,75 @@ export interface Suite {
   description: string;
   /** Default number of attempts per item. */
   epochs: number;
-  /** Seeds come from this namespace, so suites can share items (e.g. the repr ablation reuses core mazes). */
+  /** Seeds come from this namespace, so suites can share mazes. */
   seedNamespace: string;
   tasks: SuiteTask[];
 }
 
+/** Maze sizes in cells per side; the tile grid is (2n+1) x (2n+1). */
 const SIZES: ReadonlyArray<[level: number, cells: number]> = [
   [1, 3],
   [2, 5],
   [3, 8],
   [4, 12],
-  [5, 16],
 ];
 
-function ladder(braid: number, items: number, maxLevel = 5): LevelSpec[] {
+function ladder(items: number, maxLevel = 4, braid = 0.1): LevelSpec[] {
   return SIZES.filter(([level]) => level <= maxLevel).map(([level, cells]) => ({ level, cells, braid, items }));
 }
 
 export const CORE_SUITE: Suite = {
   id: "core",
   version: "2.0.0",
-  description: "Main leaderboard suite: five tasks, five size levels (fog: two, for cost).",
+  description: "Main leaderboard: three ways of seeing the maze, 7x7 to 25x25 (fog up to 11x11, for cost).",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
-    { task: "local", repr: "ascii", levels: ladder(0.1, 20) },
-    { task: "trace", repr: "ascii", levels: ladder(0.1, 20) },
-    { task: "plan", repr: "ascii", levels: ladder(0.1, 20) },
-    { task: "recall", repr: "ascii", levels: ladder(0.5, 20) },
-    // Fog resends the whole history every step, so input tokens grow with the square of the
-    // episode length. Level 3 used 4.75M input tokens per episode in calibration, so core
-    // stops at level 2 (see docs/design.md).
-    { task: "fog", repr: "ascii", levels: ladder(0.1, 20, 2) },
-  ],
-};
-
-export const REPR_SUITE: Suite = {
-  id: "repr",
-  version: "2.0.0",
-  description: "Representation ablation: the same core mazes rendered as adjacency lists.",
-  epochs: 1,
-  seedNamespace: "core@2.0.0",
-  tasks: [
-    { task: "local", repr: "adjacency", levels: ladder(0.1, 20, 3) },
-    { task: "plan", repr: "adjacency", levels: ladder(0.1, 20, 3) },
+    { task: "full", levels: ladder(20) },
+    { task: "once", levels: ladder(20) },
+    // Fog episodes are long, and every agent step resends the conversation, so fog stops at 11x11.
+    { task: "fog", levels: ladder(20, 2) },
   ],
 };
 
 export const SMOKE_SUITE: Suite = {
   id: "smoke",
   version: "2.0.0",
-  description: "Tiny subset of core for checking the harness end to end. Not for the leaderboard.",
+  description: "Two small mazes per condition, for checking the harness end to end.",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
-    { task: "local", repr: "ascii", levels: ladder(0.1, 2, 2) },
-    { task: "trace", repr: "ascii", levels: ladder(0.1, 2, 2) },
-    { task: "plan", repr: "ascii", levels: ladder(0.1, 2, 2) },
-    { task: "recall", repr: "ascii", levels: ladder(0.5, 2, 2) },
-    { task: "fog", repr: "ascii", levels: ladder(0.1, 2, 1) },
+    { task: "full", levels: ladder(2, 1) },
+    { task: "once", levels: ladder(2, 1) },
+    { task: "fog", levels: ladder(2, 1) },
   ],
 };
 
 export const CALIB_SUITE: Suite = {
   id: "calib",
   version: "2.0.0",
-  description: "One core item per task and level. Measures token usage per level for cost estimates.",
+  description: "One core maze per condition and size. Measures token use for cost estimates.",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
-    { task: "local", repr: "ascii", levels: ladder(0.1, 1) },
-    { task: "trace", repr: "ascii", levels: ladder(0.1, 1) },
-    { task: "plan", repr: "ascii", levels: ladder(0.1, 1) },
-    { task: "recall", repr: "ascii", levels: ladder(0.5, 1) },
-    { task: "fog", repr: "ascii", levels: ladder(0.1, 1, 3) },
+    { task: "full", levels: ladder(1) },
+    { task: "once", levels: ladder(1) },
+    { task: "fog", levels: ladder(1, 2) },
   ],
 };
 
 export const SUITES: Record<string, Suite> = {
   core: CORE_SUITE,
-  repr: REPR_SUITE,
   smoke: SMOKE_SUITE,
   calib: CALIB_SUITE,
 };
+
+/** Human label for a level: the maze size in tiles, e.g. "11×11". */
+export function sizeLabel(level: LevelSpec | number): string {
+  const cells = typeof level === "number" ? (SIZES.find(([l]) => l === level)?.[1] ?? 0) : level.cells;
+  const tiles = 2 * cells + 1;
+  return `${tiles}×${tiles}`;
+}
 
 export function suiteKey(suite: Pick<Suite, "id" | "version">): string {
   return `${suite.id}@${suite.version}`;
@@ -115,7 +100,6 @@ export function getSuite(id: string): Suite {
 export interface ItemRef {
   itemId: string;
   task: TaskId;
-  repr: Repr;
   level: LevelSpec;
   index: number;
   seed: number;
@@ -135,7 +119,6 @@ export function enumerateItems(suite: Suite, salt = ""): ItemRef[] {
         out.push({
           itemId: id,
           task: t.task,
-          repr: t.repr,
           level,
           index,
           seed: fnv1a32(`${suite.seedNamespace}/${id}${salt}`),
@@ -157,7 +140,8 @@ export function buildItem(ref: ItemRef): unknown {
 /** Hash of the item content and its prompt. Any change to either changes the hash. */
 export function itemHash(ref: ItemRef, item: unknown = buildItem(ref)): string {
   const task = getTask(ref.task);
-  const prompt = task.kind === "oneshot" ? task.prompt(item, ref.repr) : task.prompt(item, task.createEnv(item));
+  const maze = item as MazeItem;
+  const prompt = task.prompt(maze, task.createEnv(maze));
   return contentHash(`${PROMPT_VERSION}\n${JSON.stringify(item)}\n${prompt.system}\n${prompt.user}`);
 }
 

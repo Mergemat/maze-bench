@@ -1,4 +1,4 @@
-import { cols, DIRS, inBounds, isOpen, type Pos, rows, step, type Tiles, WALL } from "./grid.ts";
+import { inBounds, type Pos, type Tiles, WALL } from "./grid.ts";
 
 export interface Mark {
   pos: Pos;
@@ -15,30 +15,6 @@ export function renderAscii(tiles: Tiles, marks: readonly Mark[] = []): string {
     }
   }
   return grid.map((row) => row.join("")).join("\n");
-}
-
-const DIR_WORD = { U: "up", D: "down", L: "left", R: "right" } as const;
-
-/**
- * Adjacency-list rendering: one line per open tile, listing open neighbours by direction.
- * Coordinates are (row,col) with (0,0) at the top-left.
- */
-export function renderAdjacency(tiles: Tiles): string {
-  const lines: string[] = [];
-  for (let r = 0; r < rows(tiles); r++) {
-    for (let c = 0; c < cols(tiles); c++) {
-      const p = { r, c };
-      if (!isOpen(tiles, p)) {
-        continue;
-      }
-      const links = DIRS.filter((d) => isOpen(tiles, step(p, d))).map((d) => {
-        const n = step(p, d);
-        return `${DIR_WORD[d]} (${n.r},${n.c})`;
-      });
-      lines.push(`(${r},${c}): ${links.join(", ")}`);
-    }
-  }
-  return lines.join("\n");
 }
 
 /** Square window of side 2*radius+1 centred on `center`. Off-grid tiles render as walls. */

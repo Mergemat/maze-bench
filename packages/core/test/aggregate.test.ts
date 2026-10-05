@@ -69,7 +69,9 @@ describe("aggregate", () => {
     expect(second?.composite?.mean).toBe(0);
     expect(first?.scored).toBe(refs.length);
     expect(first?.usage.costUsd).toBeCloseTo(0.001 * refs.length);
-    expect(first?.tasks.plan?.levels.map((l) => l.level)).toEqual([1, 2]);
+    expect(first?.perMaze).toMatchObject({ costUsd: 0.001, outputTokens: 5, steps: 1 });
+    expect(first?.tasks.fog?.perMaze.steps).toBe(1);
+    expect(first?.tasks.full?.levels.map((l) => l.level)).toEqual([1]);
   });
 
   test("composite is null when a task is missing", () => {
@@ -93,8 +95,8 @@ describe("aggregate", () => {
   test("pass^k with several epochs", () => {
     const items = refs.flatMap((r) => [item(r.itemId, 1, 0), item(r.itemId, r.index === 0 ? 0 : 1, 1)]);
     const s = aggregate([{ header: header("e", "2026-10-01", 2), items }], SMOKE_SUITE)[0];
-    expect(s?.tasks.local?.passHat[2]).toBeCloseTo(0.5);
-    expect(s?.tasks.local?.passAt[2]).toBe(1);
+    expect(s?.tasks.full?.passHat[2]).toBeCloseTo(0.5);
+    expect(s?.tasks.full?.passAt[2]).toBe(1);
   });
 
   test("paired composite difference", () => {
@@ -109,9 +111,9 @@ describe("aggregate", () => {
 describe("parseRunJsonl", () => {
   test("round-trips and reports bad lines", () => {
     const h = header("x", "2026-10-01");
-    const good = [JSON.stringify(h), JSON.stringify(item("plan/L1/0", 1))].join("\n");
+    const good = [JSON.stringify(h), JSON.stringify(item("full/L1/0", 1))].join("\n");
     expect(parseRunJsonl(good).items).toHaveLength(1);
-    const bad = [JSON.stringify(h), JSON.stringify({ ...item("plan/L1/0", 1), score: 2 })].join("\n");
+    const bad = [JSON.stringify(h), JSON.stringify({ ...item("full/L1/0", 1), score: 2 })].join("\n");
     expect(() => parseRunJsonl(bad, "f.jsonl")).toThrow(/f\.jsonl:2/);
   });
 });

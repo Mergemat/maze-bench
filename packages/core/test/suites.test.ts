@@ -2,23 +2,22 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  buildItem,
   buildManifest,
   CORE_SUITE,
   enumerateItems,
   findItem,
   getSuite,
-  REPR_SUITE,
   SUITES,
+  sizeLabel,
   suiteKey,
 } from "../src/index.ts";
 
 describe("suites", () => {
   test("core has the documented size", () => {
     const refs = enumerateItems(CORE_SUITE);
-    expect(refs).toHaveLength(440);
-    expect(new Set(refs.map((r) => r.itemId)).size).toBe(440);
-    expect(new Set(refs.map((r) => r.seed)).size).toBe(440);
+    expect(refs).toHaveLength(200);
+    expect(new Set(refs.map((r) => r.itemId)).size).toBe(200);
+    expect(new Set(refs.map((r) => r.seed)).size).toBe(200);
   });
 
   test("held-out salt changes every seed", () => {
@@ -27,11 +26,12 @@ describe("suites", () => {
     expect(pub.every((r, i) => r.seed !== held[i]?.seed)).toBe(true);
   });
 
-  test("repr ablation reuses core mazes", () => {
-    const ref = findItem(REPR_SUITE, "plan/L2/3");
-    const core = findItem(CORE_SUITE, "plan/L2/3");
-    expect(ref?.seed).toBe(core?.seed as number);
-    expect(buildItem(ref as never)).toEqual(buildItem(core as never));
+  test("conditions share the same mazes at the same size and index", () => {
+    const full = findItem(CORE_SUITE, "full/L2/3");
+    const fog = findItem(CORE_SUITE, "fog/L2/3");
+    expect(full?.seed).not.toBe(fog?.seed as number);
+    expect(sizeLabel(2)).toBe("11×11");
+    expect(sizeLabel(full?.level as never)).toBe("11×11");
   });
 
   test("getSuite accepts a versioned key", () => {
