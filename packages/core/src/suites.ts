@@ -48,20 +48,8 @@ export const CORE_SUITE: Suite = {
 export const SMOKE_SUITE: Suite = {
   id: "smoke",
   version: "2.0.0",
-  description: "Two small mazes per condition, for checking the harness end to end.",
-  epochs: 1,
-  seedNamespace: "core@2.0.0",
-  tasks: [
-    { task: "full", levels: ladder(2, 1) },
-    { task: "once", levels: ladder(2, 1) },
-    { task: "fog", levels: ladder(2, 1) },
-  ],
-};
-
-export const CALIB_SUITE: Suite = {
-  id: "calib",
-  version: "2.0.0",
-  description: "One core maze per condition and size. Measures token use for cost estimates.",
+  description:
+    "One core maze per condition and size. Checks the harness end to end and measures token use for cost estimates.",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
@@ -74,7 +62,6 @@ export const CALIB_SUITE: Suite = {
 export const SUITES: Record<string, Suite> = {
   core: CORE_SUITE,
   smoke: SMOKE_SUITE,
-  calib: CALIB_SUITE,
 };
 
 /** Human label for a level: the maze size in tiles, e.g. "11×11". */

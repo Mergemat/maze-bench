@@ -36,7 +36,7 @@ export async function runAgent(
         moves: z
           .array(z.enum(["U", "D", "L", "R"]))
           .min(1)
-          .describe("Moves to make in order. U = up, D = down, L = left, R = right."),
+          .describe("Moves, run in order."),
       }),
       execute: async ({ moves }: { moves: Dir[] }) =>
         env.done ? { result: "ignored", reason: "The episode is over." } : env.moveBatch(moves),

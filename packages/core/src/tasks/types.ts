@@ -27,7 +27,7 @@ export interface MazeItem {
   tiles: Tiles;
   start: Pos;
   goal: Pos;
-  /** Move budget: twice the number of open tiles. */
+  /** Hidden move cap: twice the number of open tiles. Not shown to the agent. */
   budget: number;
   /** BFS distance from start to goal. */
   optimal: number;
@@ -65,7 +65,6 @@ export type BatchResult = {
   /** Full mode only: the map after the batch. */
   map?: string;
   goal_reached: boolean;
-  moves_left: number;
 };
 
 export interface TaskInfo {

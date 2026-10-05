@@ -52,7 +52,10 @@ export function DitherPlot({
       for (const s of series) {
         const seed = { fill: fillOf(s.color), line: fillOf(s.color), star: fillOf(s.color) };
         const isHover = hovered === s.key;
-        const dim = hovered && !isHover ? 0.15 : isHover ? 1 : 0.55;
+        const faded = hovered !== null && !isHover;
+        // Areas are a faint wash so overlapping models stay readable; lines carry the data.
+        const area = faded ? 0.03 : isHover ? 0.35 : 0.12;
+        const line = faded ? 0.15 : 1;
         const pts = s.points.map((p) => ({ x: p.x / CELL, y: p.y / CELL }));
         // Area: one dithered column per backing pixel between consecutive points.
         for (let i = 1; i < pts.length; i++) {
@@ -62,15 +65,15 @@ export function DitherPlot({
             const t = b.x === a.x ? 1 : (x - a.x) / (b.x - a.x);
             paintColumn(ctx, x, a.y + (b.y - a.y) * t, rows, seed, {
               variant: "gradient",
-              intensity: isHover ? 1 : 0,
-              dim,
+              intensity: 0,
+              dim: area,
               stacked: false,
-              sparse: isHover ? 0 : 0.35,
+              sparse: isHover ? 0.2 : 0.45,
             });
           }
         }
         // Line: solid cells along each segment so steep segments have no gaps.
-        ctx.fillStyle = rgb(seed.fill, 1, Math.min(1, dim + 0.35));
+        ctx.fillStyle = rgb(seed.fill, 1, line * 0.9);
         for (let i = 1; i < pts.length; i++) {
           const a = pts[i - 1] as { x: number; y: number };
           const b = pts[i] as { x: number; y: number };
@@ -87,7 +90,7 @@ export function DitherPlot({
           if (p.x > limit) {
             continue;
           }
-          ctx.fillStyle = rgb(seed.fill, 1, Math.min(1, dim + 0.45));
+          ctx.fillStyle = rgb(seed.fill, 1, line);
           ctx.fillRect(Math.round(p.x) - 1, Math.round(p.y) - 1, 3, 3);
         }
       }

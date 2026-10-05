@@ -20,7 +20,11 @@ move({ moves: ["R", "R", "D"] })
 
 The moves run in order. The result reports, for each move that ran, `moved` or `blocked`, then `goal_reached` and `moves_left`. A batch stops early at the first blocked move or at the exit. The move budget is twice the number of open tiles. A blocked move uses up budget.
 
-The loop is a standard AI SDK `ToolLoopAgent`, with the full conversation (reasoning included) in context. If the agent replies without calling the tool, the harness sends "Call the move tool to continue." up to three times, and then ends the episode as `stalled`. Model calls are capped at the move budget plus a small margin.
+The loop is a standard AI SDK `ToolLoopAgent`, with the full conversation (reasoning included) in context. If the agent replies without calling the tool, the harness sends "Continue." up to three times, and then ends the episode as `stalled`. Model calls are capped at the move budget plus a small margin.
+
+## Prompt
+
+The system prompt holds the goal, the symbols, what the condition shows, and the move budget. The tool description is the single place the move mechanics are explained. The prompt gives no strategy: how far ahead to plan, how many moves to send per call and how to keep track of the maze are left to the model. The user message is the map, or in fog the first 3×3 view, with no other text. The methodology page renders the exact prompts from the code.
 
 ## Conditions
 
@@ -48,7 +52,7 @@ The loop is a standard AI SDK `ToolLoopAgent`, with the full conversation (reaso
 
 200 mazes per (model, effort). Fog stops at 11×11 because every agent step resends the conversation, so input tokens grow with the square of the number of steps.
 
-Two helper suites reuse the core seeds. `smoke@2.0.0` (2 mazes per condition at 7×7) checks the harness. `calib@2.0.0` (one maze per condition and size) measures token use for the cost estimate.
+`smoke@2.0.0` reuses the core seeds: one maze per condition and size, 10 in total. It checks the harness end to end, and its token counts feed the cost estimate.
 
 ## Metrics
 

@@ -52,7 +52,7 @@ describe("maze environment", () => {
     expect(r.steps[0]?.result).toBe("blocked");
     expect(r.skipped).toBe(2);
     expect(env.moves).toBe(1);
-    expect(r.moves_left).toBe(item.budget - 1);
+    expect(env.movesLeft).toBe(item.budget - 1);
   });
 
   test("what each condition reports back", () => {
@@ -101,13 +101,14 @@ describe("prompts", () => {
     for (const id of TASK_IDS) {
       const task = getTask(id);
       const p = task.prompt(item, task.createEnv(item));
-      expect(p.system).toContain("`move` tool");
-      expect(p.system).toContain(`You have ${item.budget} moves`);
+      expect(p.system).toContain("Reach the exit");
+      expect(p.system).not.toContain(String(item.budget));
       if (id === "fog") {
-        expect(p.user.split("\n").filter((l) => /^[#.@G]{3}$/.test(l))).toHaveLength(3);
+        expect(p.user.split("\n")).toHaveLength(3);
       } else {
-        expect(p.user).toContain(item.tiles[0] as string);
+        expect(p.user.split("\n")).toHaveLength(item.tiles.length);
       }
+      expect(task.toolDescription).toContain("any number of moves");
     }
   });
 });
