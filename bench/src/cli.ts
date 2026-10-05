@@ -6,10 +6,24 @@ import { writeBaselines } from "./baselines.ts";
 import { loadDotEnv } from "./env.ts";
 import { estimate, loadProfiles } from "./estimate.ts";
 import { EFFORTS, type Effort, getModel, MODELS } from "./models.ts";
-import { fetchPrices } from "./pricing.ts";
+import { effortsFor, fetchCatalog, fetchPrices } from "./pricing.ts";
 import { markdownLeaderboard } from "./report.ts";
 import { runModel } from "./runner.ts";
 import { HOLDOUT_DIR, RESULTS_DIR } from "./storage.ts";
+
+/**
+ * Cost per maze relative to medium effort, from GPT-6 Luna smoke runs (low $0.0009,
+ * medium $0.0011, high $0.0017). xhigh is extrapolated by the same step. Rough on purpose.
+ */
+const EFFORT_COST: Record<string, number> = {
+  none: 0.8,
+  minimal: 0.8,
+  low: 0.8,
+  default: 1,
+  medium: 1,
+  high: 1.55,
+  xhigh: 2.4,
+};
 
 const HELP = `MazeBench runner
 
@@ -19,6 +33,7 @@ Commands:
   run         Run models on a suite.
                 --model <id>[,<id>...]  models from \`models\` (or --sweep for the default lineup)
                 --effort <e>            ${EFFORTS.join(" | ")} (default: default)
+                --efforts <e,...>       several efforts; each model runs the ones it supports on OpenRouter
                 --suite <id>            core | smoke | calib (default: core)
                 --tasks <t,...>         subset of ${TASK_IDS.join(",")}
                 --levels <n,...>        subset of sizes: 1=7x7 2=11x11 3=17x17 4=25x25
@@ -62,6 +77,7 @@ async function main(): Promise<void> {
       model: { type: "string" },
       sweep: { type: "boolean" },
       effort: { type: "string" },
+      efforts: { type: "string" },
       suite: { type: "string" },
       tasks: { type: "string" },
       levels: { type: "string" },
@@ -102,8 +118,24 @@ async function main(): Promise<void> {
       if (values.holdout && !salt) {
         throw new Error("--holdout needs MAZEBENCH_HOLDOUT_SALT in the environment.");
       }
+      const requested = list(values.efforts);
+      for (const e of requested ?? []) {
+        if (!EFFORTS.includes(e as Effort)) {
+          throw new Error(`Unknown effort "${e}"`);
+        }
+      }
+      const catalog = requested ? await fetchCatalog() : undefined;
+      const plan = models.flatMap((entry) =>
+        (requested ? effortsFor(requested, catalog?.get(entry.modelId)) : [effort]).map((e) => ({
+          entry,
+          effort: e as Effort,
+        })),
+      );
+      if (requested) {
+        console.log(plan.map((p) => `${p.entry.id}@${p.effort}`).join("\n"));
+      }
       let total = 0;
-      for (const entry of models) {
+      for (const { entry, effort } of plan) {
         const summary = await runModel({
           suite,
           entry,
@@ -141,26 +173,34 @@ async function main(): Promise<void> {
     case "estimate": {
       const targets = models.length > 0 ? models : MODELS.filter((m) => m.sweep);
       const epochs = int(values.epochs, "epochs") ?? suite.epochs;
-      const rows = estimate(suite, epochs, targets, await fetchPrices(), loadProfiles(effort), (id) =>
+      const catalog = await fetchCatalog();
+      const requested = list(values.efforts) ?? [effort];
+      // Calibration ran at each model's default effort (medium for the calibration model).
+      const rows = estimate(suite, epochs, targets, await fetchPrices(), loadProfiles("default"), (id) =>
         MODELS.find((m) => m.id === id),
       );
       let low = 0;
       let high = 0;
       for (const r of rows) {
-        const range = `$${r.low.toFixed(2)} – $${r.high.toFixed(2)}`;
-        console.log(`${r.model.id.padEnd(22)} ${range.padEnd(22)} ${r.basis}`);
-        if (Number.isFinite(r.low)) {
-          low += r.low;
-          high += r.high;
+        const efforts = values.efforts ? effortsFor(requested, catalog.get(r.model.modelId)) : [effort];
+        const k = efforts.reduce((sum, e) => sum + (EFFORT_COST[e] ?? 1), 0);
+        const lo = r.low * k;
+        const hi = r.high * k;
+        console.log(
+          `${r.model.id.padEnd(22)} ${`$${lo.toFixed(0)} – $${hi.toFixed(0)}`.padEnd(18)} ${efforts.join(",")}`,
+        );
+        if (Number.isFinite(lo)) {
+          low += lo;
+          high += hi;
         }
       }
-      console.log(
-        `\n${suiteKey(suite)} x${epochs} epoch(s), effort=${effort}: total $${low.toFixed(2)} – $${high.toFixed(2)}`,
-      );
+      console.log(`\n${suiteKey(suite)} x${epochs} epoch(s): total $${low.toFixed(0)} – $${high.toFixed(0)}`);
       console.log(
         "Low: calibration tokens with the cache discount the calibration model got. High: same tokens at list price.",
       );
-      console.log("Models without their own calibration borrow other models' token counts, so treat those as rough.");
+      console.log(
+        "Effort scaling is from GPT-6 Luna smoke runs (cost per maze relative to medium); xhigh is extrapolated.",
+      );
       return;
     }
     case "report":
