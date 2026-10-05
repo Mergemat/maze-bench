@@ -1,0 +1,24 @@
+{
+  "suite": "smoke@2.0.0",
+  "promptVersion": "2.0.0",
+  "items": {
+    "local/L1/0": "025e0aa4b0d242",
+    "local/L1/1": "16f47f381e92ad",
+    "local/L2/0": "0d3347318d523b",
+    "local/L2/1": "0c925c2d38a8f3",
+    "trace/L1/0": "15aa77de819b1b",
+    "trace/L1/1": "13504701c7c36b",
+    "trace/L2/0": "0136818a911a66",
+    "trace/L2/1": "13f9ec8cce2910",
+    "plan/L1/0": "1682648067681e",
+    "plan/L1/1": "128ee6698d91b2",
+    "plan/L2/0": "129aa454e12b6e",
+    "plan/L2/1": "01ec5b68b102e9",
+    "recall/L1/0": "0309f2c921a860",
+    "recall/L1/1": "0adfdaf0dc8cea",
+    "recall/L2/0": "16bb1b4336b2e2",
+    "recall/L2/1": "0a8437b4b471d3",
+    "fog/L1/0": "09628c698bc512",
+    "fog/L1/1": "00cce0b57cdecf"
+  }
+}
