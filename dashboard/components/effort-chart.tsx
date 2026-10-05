@@ -37,15 +37,26 @@ const LAB: Record<string, PixelColor> = {
 const colorOf = (creator: string): PixelColor => LAB[creator] ?? "grey";
 const EFFORTS = ["none", "minimal", "low", "default", "medium", "high", "xhigh"];
 
-export function EffortChart({ points, format }: { points: EffortPoint[]; format: (v: number) => string }) {
+export function EffortChart({
+  points,
+  format,
+  metric,
+}: {
+  points: EffortPoint[];
+  format: (v: number) => string;
+  /** Name of the x measure, shown in the tooltip ("Cost", "Output tokens", "Steps"). */
+  metric: string;
+}) {
   const { ref, size } = useChartDimensions<HTMLDivElement>();
   const router = useRouter();
   const [hover, setHover] = useState<EffortPoint | null>(null);
+  const [labelGroup, setLabelGroup] = useState<string | null>(null);
+  const active = hover?.group ?? labelGroup;
 
   const wide = size.width >= 640;
   const width = size.width;
   const height = wide ? 420 : 300;
-  const m = { top: 12, right: wide ? 140 : 14, bottom: 26, left: 38 };
+  const m = { top: 12, right: wide ? 150 : 14, bottom: 26, left: 38 };
   const plotW = Math.max(1, width - m.left - m.right);
   const plotH = height - m.top - m.bottom;
 
@@ -75,22 +86,40 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
       }
     }
   }
-  // Keep at most ~6 tick labels so they never collide on small screens.
+  // Keep few tick labels so they never collide on small screens.
   const stride = Math.ceil(xTicks.length / (wide ? 8 : 4));
   const shownTicks = xTicks.filter((_, i) => i % stride === 0);
 
-  // End-of-line labels, nudged apart so they never overlap.
+  // One label per model in a column on the right, joined to the end of its line by a leader
+  // line. Labels are nudged apart so they never overlap.
   const labels = lines
     .map((list) => {
       const last = list.at(-1) as EffortPoint;
-      return { group: last.group, name: last.name, color: colorOf(last.creator), y: y(last.score) };
+      const right = [...list].sort((a, b) => b.x - a.x)[0] as EffortPoint;
+      return {
+        group: last.group,
+        name: last.name,
+        href: last.href,
+        color: rgb(fillOf(colorOf(last.creator))),
+        ax: x(right.x),
+        ay: y(right.score),
+        y: y(right.score),
+      };
     })
     .sort((a, b) => a.y - b.y);
   for (let i = 1; i < labels.length; i++) {
     const prev = labels[i - 1] as { y: number };
     const cur = labels[i] as { y: number };
-    cur.y = Math.max(cur.y, prev.y + 16);
+    cur.y = Math.max(cur.y, prev.y + 18);
   }
+  const overflow = (labels.at(-1)?.y ?? 0) - plotH;
+  if (overflow > 0) {
+    for (const l of labels) {
+      l.y -= overflow;
+    }
+  }
+
+  const fade = (group: string) => (active && active !== group ? 0.2 : 1);
 
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const box = e.currentTarget.getBoundingClientRect();
@@ -108,6 +137,8 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
     setHover(best);
   };
 
+  const hoverColor = hover ? rgb(fillOf(colorOf(hover.creator))) : undefined;
+
   return (
     <div>
       <div ref={ref} className="relative w-full" style={{ height }}>
@@ -117,7 +148,7 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
               <DitherPlot
                 width={plotW}
                 height={plotH}
-                hovered={hover?.group ?? null}
+                hovered={active}
                 series={lines.map((list) => ({
                   key: list[0]?.group ?? "",
                   color: colorOf(list[0]?.creator ?? ""),
@@ -128,7 +159,7 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
             <svg
               width={width}
               height={height}
-              className="absolute inset-0 cursor-crosshair"
+              className="absolute inset-0"
               role="img"
               aria-label="Completion by reasoning effort for each model"
               onPointerMove={onMove}
@@ -140,6 +171,7 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
                   router.push(hover.href);
                 }
               }}
+              style={{ cursor: hover ? "pointer" : "default" }}
             >
               <g transform={`translate(${m.left},${m.top})`}>
                 {[0, 0.25, 0.5, 0.75, 1].map((s) => (
@@ -171,26 +203,40 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
                 ))}
                 {wide
                   ? labels.map((l) => (
-                      <text
+                      // biome-ignore lint/a11y/noStaticElementInteractions: hover highlight only; the table links every model
+                      <g
                         key={l.group}
-                        x={plotW + 12}
-                        y={l.y + 4}
-                        className="text-[11px]"
-                        fill={rgb(fillOf(l.color))}
-                        opacity={hover && hover.group !== l.group ? 0.35 : 1}
+                        opacity={fade(l.group)}
+                        className="cursor-pointer transition-opacity"
+                        onPointerEnter={() => setLabelGroup(l.group)}
+                        onPointerLeave={() => setLabelGroup(null)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(l.href);
+                        }}
                       >
-                        {l.name}
-                      </text>
+                        <path
+                          d={`M ${l.ax + 5} ${l.ay} L ${plotW + 6} ${l.y} L ${plotW + 12} ${l.y}`}
+                          fill="none"
+                          stroke={l.color}
+                          strokeWidth={1}
+                          opacity={active === l.group ? 0.9 : 0.35}
+                        />
+                        <rect x={plotW + 14} y={l.y - 9} width={m.right - 16} height={18} fill="transparent" />
+                        <text x={plotW + 16} y={l.y + 4} className="text-[11px]" fill={l.color}>
+                          {l.name}
+                        </text>
+                      </g>
                     ))
                   : null}
                 {hover ? (
-                  <circle
-                    cx={x(hover.x)}
-                    cy={y(hover.score)}
-                    r={6}
-                    fill="none"
-                    stroke={rgb(fillOf(colorOf(hover.creator)))}
-                    strokeWidth={1.5}
+                  <rect
+                    x={x(hover.x) - 4}
+                    y={y(hover.score) - 4}
+                    width={8}
+                    height={8}
+                    fill={hoverColor}
+                    style={{ filter: `drop-shadow(0 0 6px ${hoverColor})` }}
                   />
                 ) : null}
                 {usable.length === 0 ? (
@@ -202,19 +248,25 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
             </svg>
             {hover ? (
               <div
-                className="pointer-events-none absolute z-10 min-w-36 rounded-md border bg-popover/95 px-2.5 py-1.5 text-xs shadow-lg backdrop-blur"
+                className="pointer-events-none absolute z-10 w-44 rounded border bg-popover/95 px-2 py-1.5 font-mono text-[11px] shadow-lg backdrop-blur"
                 style={{
-                  left: Math.min(m.left + x(hover.x) + 12, width - 170),
-                  top: Math.max(0, m.top + y(hover.score) - 52),
+                  left: Math.min(m.left + x(hover.x) + 10, width - 184),
+                  top: Math.min(Math.max(0, m.top + y(hover.score) - 30), height - 70),
                 }}
               >
-                <div className="font-medium" style={{ color: rgb(fillOf(colorOf(hover.creator))) }}>
-                  {hover.name}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate font-sans" style={{ color: hoverColor }}>
+                    {hover.name}
+                  </span>
+                  <span className="text-muted-foreground">{hover.effort}</span>
                 </div>
-                <div className="text-muted-foreground">{hover.effort} effort</div>
-                <div className="mt-1 flex justify-between gap-4 font-mono">
-                  <span>{pct(hover.score, 0)}%</span>
-                  <span>{format(hover.x)}</span>
+                <div className="mt-1 flex justify-between text-muted-foreground">
+                  <span>Completion</span>
+                  <span className="text-foreground">{pct(hover.score, 0)}%</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>{metric}</span>
+                  <span className="text-foreground">{format(hover.x)}</span>
                 </div>
               </div>
             ) : null}
@@ -224,10 +276,18 @@ export function EffortChart({ points, format }: { points: EffortPoint[]; format:
       {wide ? null : (
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
           {labels.map((l) => (
-            <span key={l.group} className="flex items-center gap-1.5 text-[11px]">
-              <span className="size-2" style={{ background: rgb(fillOf(l.color)) }} />
+            <button
+              key={l.group}
+              type="button"
+              className="flex items-center gap-1.5 text-[11px] transition-opacity"
+              style={{ opacity: fade(l.group) }}
+              onPointerEnter={() => setLabelGroup(l.group)}
+              onPointerLeave={() => setLabelGroup(null)}
+              onClick={() => setLabelGroup((g) => (g === l.group ? null : l.group))}
+            >
+              <span className="size-2" style={{ background: l.color }} />
               {l.name}
-            </span>
+            </button>
           ))}
         </div>
       )}

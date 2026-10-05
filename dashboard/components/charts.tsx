@@ -50,7 +50,12 @@ export function Charts({ models }: { models: ChartModel[] }) {
           ))}
         </div>
       </div>
-      <EffortChart key={active.id} points={models.map((m) => ({ ...m, x: active.x(m) }))} format={active.format} />
+      <EffortChart
+        key={active.id}
+        metric={active.tab}
+        points={models.map((m) => ({ ...m, x: active.x(m) }))}
+        format={active.format}
+      />
     </section>
   );
 }
