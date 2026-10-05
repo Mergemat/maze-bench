@@ -5,6 +5,7 @@ import { loadRuns } from "@mazebench/core/node";
 import { writeBaselines } from "./baselines.ts";
 import { loadDotEnv } from "./env.ts";
 import { estimate, loadProfiles } from "./estimate.ts";
+import { SpendGuard } from "./harness/guard.ts";
 import { EFFORTS, type Effort, getModel, MODELS } from "./models.ts";
 import { effortsFor, fetchCatalog, fetchPrices } from "./pricing.ts";
 import { markdownLeaderboard } from "./report.ts";
@@ -43,6 +44,7 @@ Commands:
                 --max-output-tokens <n> per call (default: 32000)
                 --timeout <sec>         per call (default: 600)
                 --resume                skip items already scored for this model
+                --max-cost <usd>        stop everything once reported spend reaches this many dollars
                 --holdout               use the held-out split (needs MAZEBENCH_HOLDOUT_SALT)
   baselines   Write oracle/random/heuristic results for a suite (--suite).
   models      List registered models with live OpenRouter prices.
@@ -87,6 +89,7 @@ async function main(): Promise<void> {
       "max-output-tokens": { type: "string" },
       timeout: { type: "string" },
       resume: { type: "boolean" },
+      "max-cost": { type: "string" },
       holdout: { type: "boolean" },
       help: { type: "boolean", short: "h" },
     },
@@ -134,6 +137,11 @@ async function main(): Promise<void> {
       if (requested) {
         console.log(plan.map((p) => `${p.entry.id}@${p.effort}`).join("\n"));
       }
+      const maxCost = values["max-cost"] ? Number(values["max-cost"]) : undefined;
+      if (maxCost !== undefined && !(maxCost > 0)) {
+        throw new Error("--max-cost must be a positive number of dollars");
+      }
+      const guard = maxCost === undefined ? undefined : new SpendGuard(maxCost);
       // Every (model, effort) run starts at once, and inside each run every maze starts at once.
       // Transient API errors are retried with backoff, so rate limits slow a run down rather than fail it.
       const summaries = await Promise.all(
@@ -151,6 +159,7 @@ async function main(): Promise<void> {
             ...(values.limit ? { limit: int(values.limit, "limit") as number } : {}),
             resume: values.resume ?? false,
             ...(salt ? { holdoutSalt: salt } : {}),
+            ...(guard ? { guard } : {}),
             log: (line) => console.log(line),
           }),
         ),

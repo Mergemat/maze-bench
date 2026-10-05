@@ -19,43 +19,40 @@ export interface Suite {
   tasks: SuiteTask[];
 }
 
-/** Maze sizes in cells per side; the tile grid is (2n+1) x (2n+1). */
+/** Maze sizes in cells per side. The tile grid is (2n+1) x (2n+1), so sides are always odd. */
 const SIZES: ReadonlyArray<[level: number, cells: number]> = [
-  [1, 3],
-  [2, 5],
-  [3, 8],
-  [4, 12],
+  [1, 5], // 11×11
+  [2, 8], // 17×17
+  [3, 12], // 25×25
 ];
 
-function ladder(items: number, maxLevel = 4, braid = 0.1): LevelSpec[] {
-  return SIZES.filter(([level]) => level <= maxLevel).map(([level, cells]) => ({ level, cells, braid, items }));
+function ladder(items: number, braid = 0.1): LevelSpec[] {
+  return SIZES.map(([level, cells]) => ({ level, cells, braid, items }));
 }
 
 export const CORE_SUITE: Suite = {
   id: "core",
   version: "2.0.0",
-  description: "Main leaderboard: three ways of seeing the maze, 7x7 to 25x25 (fog up to 11x11, for cost).",
+  description: "Main leaderboard: every condition at 11×11, 17×17 and 25×25, 9 mazes each (81 per run).",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
-    { task: "full", levels: ladder(20) },
-    { task: "once", levels: ladder(20) },
-    // Fog episodes are long, and every agent step resends the conversation, so fog stops at 11x11.
-    { task: "fog", levels: ladder(20, 2) },
+    { task: "full", levels: ladder(9) },
+    { task: "once", levels: ladder(9) },
+    { task: "fog", levels: ladder(9) },
   ],
 };
 
 export const SMOKE_SUITE: Suite = {
   id: "smoke",
   version: "2.0.0",
-  description:
-    "One core maze per condition and size. Checks the harness end to end and measures token use for cost estimates.",
+  description: "One core maze per condition and size. Checks the harness and feeds cost estimates.",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
     { task: "full", levels: ladder(1) },
     { task: "once", levels: ladder(1) },
-    { task: "fog", levels: ladder(1, 2) },
+    { task: "fog", levels: ladder(1) },
   ],
 };
 
@@ -64,10 +61,9 @@ export const SUITES: Record<string, Suite> = {
   smoke: SMOKE_SUITE,
 };
 
-/** Human label for a level: the maze size in tiles, e.g. "11×11". */
-export function sizeLabel(level: LevelSpec | number): string {
-  const cells = typeof level === "number" ? (SIZES.find(([l]) => l === level)?.[1] ?? 0) : level.cells;
-  const tiles = 2 * cells + 1;
+/** Maze size in tiles, e.g. "17×17". */
+export function sizeLabel(level: LevelSpec): string {
+  const tiles = 2 * level.cells + 1;
   return `${tiles}×${tiles}`;
 }
 

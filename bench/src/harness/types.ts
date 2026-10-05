@@ -1,4 +1,5 @@
 import type { Scored, Usage } from "@mazebench/core";
+import type { SpendGuard } from "./guard.ts";
 import type { RetryOptions } from "./retry.ts";
 
 /** What one attempt at one item produced, before it is written to the results file. */
@@ -21,6 +22,8 @@ export interface CallOptions {
   onRetry?: (message: string) => void;
   /** Overrides for tests. */
   retry?: Omit<RetryOptions, "onRetry">;
+  /** Shared spending cap; the episode stops once it trips. */
+  guard?: SpendGuard;
 }
 
 /** Keep the end of long replies: that is where the answer line is. */

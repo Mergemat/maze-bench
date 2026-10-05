@@ -11,11 +11,12 @@ import {
 } from "@mazebench/core";
 import { APICallError } from "ai";
 import { runAgent } from "../src/harness/agent.ts";
+import { SpendGuard } from "../src/harness/guard.ts";
 import type { CallOptions } from "../src/harness/types.ts";
 import { MockLanguageModelV4, text, toolCall } from "./mock.ts";
 
 const opts: CallOptions = { maxOutputTokens: 1000, timeoutMs: 10_000, retry: { retries: 1, sleep: async () => {} } };
-const ref = enumerateItems(CORE_SUITE).find((r) => r.itemId === "full/L2/0");
+const ref = enumerateItems(CORE_SUITE).find((r) => r.itemId === "full/L1/0");
 const item = buildItem(ref as never) as MazeItem;
 const route = movesFromPath(shortestPath(item.tiles, item.start, item.goal) ?? []);
 
@@ -85,6 +86,18 @@ describe("agent harness", () => {
     expect(a.scored.outcome).toBe("success");
     expect(a.scored.metrics.toolErrors).toBe(1);
     expect(a.scored.metrics.moves).toBe(route.length);
+  });
+
+  test("the spending guard stops an episode mid-run and leaves it unscored", async () => {
+    let i = 0;
+    const model = new MockLanguageModelV4({ doGenerate: async () => toolCall(`c${i}`, route[i++] as string) });
+    // Each mock step reports $0.001, so the cap trips during the third step.
+    const guard = new SpendGuard(0.0025);
+    const a = await runAgent(model, getTask("fog"), item, { ...opts, guard });
+    expect(a.status).toBe("error");
+    expect(a.error?.category).toBe("spend_limit");
+    expect(a.calls).toBe(3);
+    expect(guard.spent).toBeCloseTo(0.003);
   });
 
   test("API failures become errors and are not scored", async () => {

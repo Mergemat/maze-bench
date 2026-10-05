@@ -15,8 +15,8 @@ export class UsageMeter {
   calls = 0;
   readonly providers = new Set<string>();
 
-  /** Add one model call. OpenRouter reports cost and the serving provider in provider metadata. */
-  add(step: StepLike): void {
+  /** Add one model call and return its reported cost. OpenRouter reports cost and provider in metadata. */
+  add(step: StepLike): number {
     this.calls++;
     this.inputTokens += step.usage.inputTokens ?? 0;
     this.outputTokens += step.usage.outputTokens ?? 0;
@@ -27,9 +27,10 @@ export class UsageMeter {
     }
     if (typeof meta?.usage?.cost === "number") {
       this.cost += meta.usage.cost;
-    } else {
-      this.costMissing = true;
+      return meta.usage.cost;
     }
+    this.costMissing = true;
+    return 0;
   }
 
   toUsage(): Usage {
