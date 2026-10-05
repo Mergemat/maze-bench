@@ -74,10 +74,26 @@ export const SMOKE_SUITE: Suite = {
   ],
 };
 
+export const CALIB_SUITE: Suite = {
+  id: "calib",
+  version: "2.0.0",
+  description: "One core item per task and level. Measures token usage per level for cost estimates.",
+  epochs: 1,
+  seedNamespace: "core@2.0.0",
+  tasks: [
+    { task: "local", repr: "ascii", levels: ladder(0.1, 1) },
+    { task: "trace", repr: "ascii", levels: ladder(0.1, 1) },
+    { task: "plan", repr: "ascii", levels: ladder(0.1, 1) },
+    { task: "recall", repr: "ascii", levels: ladder(0.5, 1) },
+    { task: "fog", repr: "ascii", levels: ladder(0.1, 1, 3) },
+  ],
+};
+
 export const SUITES: Record<string, Suite> = {
   core: CORE_SUITE,
   repr: REPR_SUITE,
   smoke: SMOKE_SUITE,
+  calib: CALIB_SUITE,
 };
 
 export function suiteKey(suite: Pick<Suite, "id" | "version">): string {

@@ -59,7 +59,8 @@ export function parseMoves(text: string): Dir[] | null {
     .replace(/[,;:.|>→-]+/g, " ")
     .trim()
     .toLowerCase();
-  if (cleaned === "" || cleaned === "none") {
+  // An explicit claim that no route exists is a (wrong) answer, not a format failure.
+  if (cleaned === "" || /^(none|no (valid )?(route|path)( exists)?|impossible|unreachable|not reachable)$/.test(cleaned)) {
     return [];
   }
   const tokens = cleaned.split(/\s+/);

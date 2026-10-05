@@ -1,0 +1,22 @@
+{
+  "name": "@mazebench/bench",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "bench": "./src/cli.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "3.0.62",
+    "@mazebench/core": "workspace:*",
+    "@openrouter/ai-sdk-provider": "3.1.0",
+    "ai": "7.0.127",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@ai-sdk/provider": "4.0.21"
+  }
+}
