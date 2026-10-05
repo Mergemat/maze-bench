@@ -2,7 +2,11 @@
   "name": "mazebench",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*", "bench", "dashboard"],
+  "workspaces": [
+    "packages/*",
+    "bench",
+    "dashboard"
+  ],
   "scripts": {
     "bench": "bun run bench/src/cli.ts",
     "test": "bun test packages bench",

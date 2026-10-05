@@ -64,7 +64,8 @@ Each task defines item generation from `(level, seed)`, a prompt, an answer pars
 - **Input.** Full ASCII maze with `S` and `G`.
 - **Question.** Give the full move sequence from `S` to `G`.
 - **Answer.** A move string, e.g. `ANSWER: R R D D L`. Commas and words are accepted.
-- **Score.** Success if executing the moves reaches `G` without an invalid move before that point. Moves after reaching `G` are ignored. Secondary metrics: **SPL** = success x `opt / max(len, opt)` (Anderson et al. 2018), where `opt` is the BFS distance and `len` is the number of moves up to reaching `G`. Also the index of the first invalid move.
+- **Score.** **SPL** = success x `opt / max(len, opt)` (Anderson et al. 2018), where success means executing the moves reaches `G` without an invalid move before that point (later moves are ignored), `opt` is the BFS distance and `len` is the number of moves up to reaching `G`. Success and the index of the first invalid move are secondary metrics.
+- **Why SPL and not success.** A right-hand wall follower written out as a move list reaches `G` in 91% of core mazes. Success alone would reward that; SPL gives it about 0.52.
 - **Why.** This is v1's "initial" mode done honestly. In v1 the maze sat in the first message for the whole tool loop, so it never tested memory. Here it is labelled as planning.
 
 ### 4. `recall`: route memory
@@ -72,7 +73,8 @@ Each task defines item generation from `(level, seed)`, a prompt, an answer pars
 - **Input.** No map. A transcript of a walk through an unseen maze. Each step is the move taken and the 3x3 view after it. The walk starts at `S`, which appears as `S` in any view that contains it.
 - **Question.** Return to `S` by the shortest route you can justify from what you have seen.
 - **Answer.** A move string.
-- **Item sampling.** Mazes use `braid = 0.3`, so loops exist. The walk joins BFS paths through random waypoints (`S -> w1 -> w2 -> T`), which produces backtracking and loops. The *known map* is every tile that appeared in any view. `opt` is the BFS distance from `T` to `S` over known open tiles. Items are rejected unless reversing the walk is at least 1.5x longer than `opt`, so there is something to remember.
+- **Item sampling.** Mazes use `braid = 0.5`, so loops are common. The walk is a non-reversing random walk of `n x U(5, 9)` moves from `S`; it only backtracks at dead ends, so it goes around loops. The *known map* is every tile that appeared in any view. `opt` is the BFS distance from `T` (where the walk ends) to `S` over known open tiles. A walk is kept only if free reduction of the reversed walk scores SPL <= 0.7, so cancelling back-and-forth moves is not enough.
+- **Why the walk changed.** The first version joined BFS paths through random waypoints. Those walks were mostly out-and-back, and free reduction alone scored 0.95, which made the task string manipulation. With the current sampler free reduction scores 0.39.
 - **Score.** SPL against `opt`, with validity checked against the true maze. Success alone is not the primary metric, because replaying the walk backwards always succeeds.
 - **Baselines.** *Reverse the walk* (always valid, low SPL). *Free reduction* cancels adjacent opposite moves (`U D`). It removes dead-end excursions but cannot find loop shortcuts. The gap between free reduction and the oracle is the part that needs a spatial map rather than string manipulation.
 - **Why.** Everyone gets the same information regardless of exploration skill, so this tests integrating many partial observations into a map, which is what memory means for a stateless model.
@@ -94,11 +96,13 @@ Size is the main difficulty knob because the search cost grows with it.
 |---|---|---|---|---|---|
 | 1 | 3 | 7x7 | yes | yes | yes |
 | 2 | 5 | 11x11 | yes | yes | yes |
-| 3 | 8 | 17x17 | yes | yes | yes |
+| 3 | 8 | 17x17 | yes | yes | no (cost) |
 | 4 | 12 | 25x25 | yes | yes | no (cost) |
 | 5 | 16 | 33x33 | yes | yes | no (cost) |
 
-Braid is 0.1 for `local`, `trace`, `plan` and `fog`, and 0.3 for `recall`. When a model clears level 5 above 90%, the next suite version adds a level 6 (n = 24) rather than replacing items.
+Braid is 0.1 for `local`, `trace`, `plan` and `fog`, and 0.5 for `recall`.
+
+**Why fog stops at level 2.** The fog loop resends the whole history each step, so input tokens grow with the square of episode length. In calibration with GPT-6 Luna, one episode used 118k input tokens at level 1, 892k at level 2 and 4.75M at level 3. At $10 per million input tokens a single level-3 episode would cost about $47 before cache discounts. When a model clears level 5 above 90%, the next suite version adds a level 6 (n = 24) rather than replacing items.
 
 ## Suite `core@2.0.0`
 
@@ -108,9 +112,11 @@ Braid is 0.1 for `local`, `trace`, `plan` and `fog`, and 0.3 for `recall`. When 
 | `trace` | 1 to 5 | 20 | 100 |
 | `plan` | 1 to 5 | 20 | 100 |
 | `recall` | 1 to 5 | 20 | 100 |
-| `fog` | 1 to 3 | 15 | 45 |
+| `fog` | 1 to 2 | 20 | 40 |
 
-One epoch by default. With n = 100 the 95% CI half-width is at most about 10 points per task. `fog` has fewer items because each one is up to a few hundred calls, so its CIs are wider and the dashboard shows that.
+440 items. One epoch by default. With n = 100 the 95% CI half-width is at most about 10 points per task. `fog` has fewer items because each episode is up to about 100 calls, so its CIs are wider and the dashboard shows that.
+
+**Other suites.** `smoke@2.0.0` (2 items per task and level on levels 1-2, fog level 1) checks the harness end to end. `calib@2.0.0` (one item per task and level, fog levels 1-3) measures token use per level for the cost estimate. Both reuse core seeds and never appear on the main leaderboard.
 
 **Composite score** = the unweighted mean of the five primary task scores, times 100. An equal-weight mean is easy to explain, and the per-task breakdown sits next to it.
 
@@ -154,6 +160,8 @@ Baselines are deterministic programs that run through the same item generator an
 | `oracle` (BFS) | 100% | 100% | 100% | SPL 1.0 | ~100% |
 | `random` | random non-empty set | random index | random walk of length `opt` | random walk | random walk |
 | `heuristic` | always `U, D` | always 0 | right-hand wall follower | free reduction | right-hand wall follower |
+
+Measured on `core@2.0.0`: oracle 100 on every task; random 12 / 3 / 0 / 2 / 15 (composite 6.4); heuristic 17 / 25 / 52 / 39 / 97.5 (composite 46.2). The fog heuristic is strong: a wall follower almost always finds the goal within a budget of twice the open tiles. A model below that row on fog has done worse than a ten-line program, which is itself a finding.
 
 The oracle is a test. If it does not score 100% on every one-shot item, CI fails (ABC T.8/T.9).
 
