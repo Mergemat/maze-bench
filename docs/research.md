@@ -41,7 +41,7 @@ The one that matters for naming is **mazebench.com**. It owns the domain, has a 
 
 ### How this bench differs, and the rename
 
-This bench is text-only and procedurally generated. It splits the score into tasks that each target one ability (grid reading, path simulation, planning, route memory, closed-loop navigation). Every item comes from a seed, so any number of fresh items can be drawn, and every score has a bootstrap confidence interval. It runs on cheap API calls (cents per model per task), where mazebench.com costs thousands per run.
+This bench is text-only, procedurally generated and agentic. A model gets a batched `move` tool and has to reach the exit. Three conditions (full map, map once, 3×3 fog) vary only what it sees. Every result reports completion with a bootstrap interval next to cost, output tokens and agent steps, across reasoning effort. Every maze comes from a seed, so any number of fresh items can be drawn, and runs cost cents to dollars per model, where mazebench.com costs thousands per run. (An earlier draft split the score into five single-ability tasks; [design.md](./design.md) explains why that was cut.)
 
 It does need a new name. Sharing "MazeBench" with a better-known, well-funded 3D benchmark will confuse readers and reviewers, and the comparison does not flatter a small text benchmark.
 

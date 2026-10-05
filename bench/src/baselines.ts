@@ -14,9 +14,9 @@ import { gitSha } from "./env.ts";
 import { RunWriter, runPath } from "./storage.ts";
 
 const NAMES = {
-  oracle: "Oracle (BFS)",
-  random: "Random",
-  heuristic: "Heuristic",
+  oracle: "BFS",
+  random: "Random walk",
+  heuristic: "Wall follower",
 } as const;
 
 /** Write one results file per baseline. Baselines are deterministic, so files are overwritten in place. */

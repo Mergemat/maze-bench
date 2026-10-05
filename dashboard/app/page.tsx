@@ -1,5 +1,4 @@
 import { BENCH_NAME } from "@mazebench/core";
-import Link from "next/link";
 import { type ChartModel, Charts } from "@/components/charts";
 import { LeaderboardTable } from "@/components/leaderboard-table";
 import { activeSuite, leaderboard } from "@/lib/data";
@@ -27,27 +26,15 @@ export default function Home() {
     }));
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-pixel text-3xl tracking-tight">{BENCH_NAME}</h1>
-          <p className="mt-1 text-muted-foreground text-sm">
-            LLM agents walk procedurally generated mazes with a move tool. They see the full map, the map once, or a 3×3
-            fog view.{" "}
-            <Link href="/methodology" className="text-foreground underline underline-offset-4">
-              Method
-            </Link>
-          </p>
-        </div>
-        {preview ? (
-          <span className="rounded-md border border-dashed px-2 py-1 font-mono text-[11px] text-muted-foreground">
-            preview: smoke runs only
-          </span>
-        ) : null}
+    <div className="space-y-10">
+      <header className="space-y-1">
+        <h1 className="font-pixel text-3xl tracking-tight">{BENCH_NAME}</h1>
+        <p className="text-muted-foreground text-sm">
+          LLM agents walking procedurally generated mazes. One line per model across reasoning effort.{" "}
+          {preview ? <span className="font-mono text-xs">(preview: smoke runs)</span> : null}
+        </p>
       </header>
-
       <Charts models={models} />
-
       <LeaderboardTable rows={rows} />
     </div>
   );
