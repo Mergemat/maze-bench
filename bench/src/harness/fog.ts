@@ -1,13 +1,15 @@
 import type { AnyInteractiveTask, Dir, Env, EpisodeEnd } from "@mazebench/core";
-import { generateText, type LanguageModel, type ModelMessage, tool } from "ai";
+import { type LanguageModel, type ModelMessage, type StopCondition, ToolLoopAgent, tool } from "ai";
 import { z } from "zod";
-import { classify, withRetry } from "./retry.ts";
+import { classify } from "./retry.ts";
 import { type Attempt, type CallOptions, clip, errorScored } from "./types.ts";
 import { UsageMeter } from "./usage.ts";
 
 /**
- * Interactive episode. We drive the loop one model call at a time instead of using the SDK's
- * multi-step loop so the harness owns the budget, the nudges and the per-call accounting.
+ * Interactive episode run as a standard AI SDK agent: a `ToolLoopAgent` with one `move` tool that
+ * takes a batch of moves, and the full conversation (reasoning included) in context.
+ * The harness only adds what a benchmark needs on top: a move budget, a cap on model calls,
+ * a few nudges when the agent stops without reaching the goal, and per-call accounting.
  */
 export async function runInteractive(
   model: LanguageModel,
@@ -19,8 +21,8 @@ export async function runInteractive(
   const started = performance.now();
   const env: Env = task.createEnv(item);
   const prompt = task.prompt(item, env);
-  // Hard cap on model calls: one per move, plus nudges, plus slack for calls that only produce bad tool input.
-  const maxCalls = env.movesLeft + task.maxNudges + 10;
+  // One move per call is the worst case; slack covers calls that only produce bad tool input.
+  const maxSteps = env.movesLeft + task.maxNudges + 10;
   let toolErrors = 0;
   let nudges = 0;
   let lastText = "";
@@ -30,19 +32,39 @@ export async function runInteractive(
     move: tool({
       description: task.toolDescription,
       inputSchema: z.object({
-        direction: z.enum(["U", "D", "L", "R"]).describe("U = up, D = down, L = left, R = right"),
+        moves: z
+          .array(z.enum(["U", "D", "L", "R"]))
+          .min(1)
+          .describe("Moves to make in order. U = up, D = down, L = left, R = right."),
       }),
-      execute: async ({ direction }: { direction: Dir }) =>
-        env.done ? { result: "ignored", reason: "The episode is over." } : env.move(direction),
+      execute: async ({ moves }: { moves: Dir[] }) =>
+        env.done ? { result: "ignored", reason: "The episode is over." } : env.moveBatch(moves),
     }),
   };
 
-  const messages: ModelMessage[] = [{ role: "user", content: prompt.user }];
+  const episodeOver: StopCondition<typeof tools> = () => env.done;
+  const callCap: StopCondition<typeof tools> = () => meter.calls >= maxSteps;
+
+  const agent = new ToolLoopAgent({
+    model,
+    instructions: prompt.system,
+    tools,
+    stopWhen: [episodeOver, callCap],
+    maxOutputTokens: opts.maxOutputTokens,
+    maxRetries: opts.retry?.retries ?? 4,
+    onStepFinish: (step) => {
+      meter.add(step);
+      toolErrors += step.content.filter((p) => p.type === "tool-error").length;
+    },
+  });
+
+  let messages: ModelMessage[] = [{ role: "user", content: prompt.user }];
 
   const finish = (end: EpisodeEnd): Attempt => {
     const scored = task.scoreEpisode(item, env, end);
     scored.metrics.toolErrors = toolErrors;
     scored.metrics.nudges = nudges;
+    scored.metrics.movesPerCall = meter.calls === 0 ? 0 : Number(scored.metrics.moves ?? 0) / meter.calls;
     return {
       status: "scored",
       scored,
@@ -57,48 +79,24 @@ export async function runInteractive(
 
   try {
     while (true) {
-      if (env.reached) {
-        return finish("goal");
-      }
-      if (env.done || meter.calls >= maxCalls) {
-        return finish("budget");
-      }
-      const res = await withRetry(
-        () =>
-          generateText({
-            model,
-            system: prompt.system,
-            messages,
-            tools,
-            maxOutputTokens: opts.maxOutputTokens,
-            maxRetries: 0,
-            timeout: opts.timeoutMs,
-          }),
-        {
-          ...opts.retry,
-          onRetry: (e, n, ms) => opts.onRetry?.(`retry ${n} in ${ms}ms: [${e.category}] ${e.message}`),
-        },
-      );
-      for (const s of res.steps) {
-        meter.add(s);
-      }
-      messages.push(...res.response.messages);
+      const res = await agent.generate({ messages, timeout: { stepMs: opts.timeoutMs } });
+      messages = [...messages, ...res.response.messages];
       finishReason = res.finishReason;
       if (res.text) {
         lastText = res.text;
       }
-      toolErrors += res.content.filter((p) => p.type === "tool-error").length;
-
-      // Invalid tool input already gets an error result the model can react to, so only a reply
-      // with no tool call at all counts as stalling. The call cap stops endless invalid calls.
-      const calledTool = res.content.some((p) => p.type === "tool-call");
-      if (!calledTool && !env.done) {
-        nudges++;
-        if (nudges > task.maxNudges) {
-          return finish(res.finishReason === "length" ? "truncated" : "stalled");
-        }
-        messages.push({ role: "user", content: task.nudge });
+      if (env.reached) {
+        return finish("goal");
       }
+      if (env.done || meter.calls >= maxSteps) {
+        return finish("budget");
+      }
+      // The agent stopped on its own: the model replied without calling the tool.
+      nudges++;
+      if (nudges > task.maxNudges) {
+        return finish(res.finishReason === "length" ? "truncated" : "stalled");
+      }
+      messages = [...messages, { role: "user", content: task.nudge }];
     }
   } catch (raw) {
     const error = classify(raw);

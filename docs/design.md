@@ -82,10 +82,11 @@ Each task defines item generation from `(level, seed)`, a prompt, an answer pars
 ### 5. `fog`: navigation under fog of war (integrated, interactive)
 
 - **Input.** Instructions plus the initial 3x3 view. No coordinates and no goal direction. The goal shows up as `G` once it is inside the view.
-- **Interaction.** A `move` tool with `direction: "U" | "D" | "L" | "R"` returns `moved` or `blocked`, the new 3x3 view, and `goal_reached`. Parallel tool calls run in order and processing stops once the goal is reached. If the model replies with no tool call, the harness sends "Call the move tool to continue." up to 3 times in total. After that the episode ends as `stalled`.
+- **Interaction.** The episode runs as a standard AI SDK agent (`ToolLoopAgent`) with one `move` tool that takes a list of moves, for example `{"moves": ["U", "U", "L"]}`. Moves run in order and the result gives, for each move that ran, `moved` or `blocked` and the 3x3 view after it, then `goal_reached` and `moves_left`. A batch stops early at the first blocked move or at the goal. If the agent stops without calling the tool, the harness sends "Call the move tool to continue." up to 3 times in total. After that the episode ends as `stalled`.
+- **Why batches.** Each model call resends the whole conversation, including the model's earlier reasoning, so input tokens grow with the square of the number of calls. With one move per call, a level-2 episode on GPT-6 Luna used 892k input tokens over 99 calls. With batches it used 134k over 55 calls (1.8 moves per call), with reasoning still in context.
 - **Budget.** `2 x (number of open tiles)` moves. That is enough for depth-first exploration with perfect memory to visit every tile.
-- **Context policy.** Full history stays in context. There is no scratchpad tool, but the model's own text between tool calls stays in context. AGI Maze showed that scratchpads change scores a lot, so this policy is fixed and recorded.
-- **Score.** Success (goal reached within budget). Secondary metrics: moves used, SPL against the BFS shortest path (low by design, since the agent has to explore), invalid-move rate (blocked moves / moves), and revisit rate (moves into an already-visited tile / moves).
+- **Context policy.** Full history stays in context, including the model's earlier reasoning. There is no scratchpad tool, but the model's own text between tool calls stays in context. AGI Maze showed that scratchpads change scores a lot, so this policy is fixed and recorded.
+- **Score.** Success (goal reached within budget). Secondary metrics: moves per model call, moves used, SPL against the BFS shortest path (low by design, since the agent has to explore), invalid-move rate (blocked moves / moves), and revisit rate (moves into an already-visited tile / moves).
 - **Baselines.** Random walk. Right-hand wall follower, which always succeeds in a perfect maze but may loop in braided ones. DFS explorer with perfect memory, an upper reference that is not an oracle.
 
 ## Difficulty ladder
@@ -102,7 +103,7 @@ Size is the main difficulty knob because the search cost grows with it.
 
 Braid is 0.1 for `local`, `trace`, `plan` and `fog`, and 0.5 for `recall`.
 
-**Why fog stops at level 2.** The fog loop resends the whole history each step, so input tokens grow with the square of episode length. In calibration with GPT-6 Luna, one episode used 118k input tokens at level 1, 892k at level 2 and 4.75M at level 3. At $10 per million input tokens a single level-3 episode would cost about $47 before cache discounts. When a model clears level 5 above 90%, the next suite version adds a level 6 (n = 24) rather than replacing items.
+**Why fog stops at level 2.** The fog loop resends the whole history each call, so input tokens grow with the square of the number of calls. In the first calibration (one move per call) GPT-6 Luna used 118k input tokens at level 1, 892k at level 2 and 4.75M at level 3. Batched moves cut level 2 to 134k, but level 3 would still cost several dollars per episode for frontier models. When a model clears level 5 above 90%, the next suite version adds a level 6 (n = 24) rather than replacing items.
 
 ## Suite `core@2.0.0`
 

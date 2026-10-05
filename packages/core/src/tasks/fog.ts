@@ -4,7 +4,7 @@ import { CLOCKWISE, countOpen, DIRS, type Dir, isOpen, type Pos, posKey, samePos
 import { localView } from "../render.ts";
 import { Rng } from "../rng.ts";
 import { spl } from "./plan.ts";
-import type { Env, EpisodeEnd, InteractiveTask, StepResult } from "./types.ts";
+import type { BatchResult, Env, EpisodeEnd, InteractiveTask, StepResult } from "./types.ts";
 
 export interface FogItem {
   tiles: Tiles;
@@ -48,6 +48,10 @@ export class FogEnv implements Env {
     ]);
   }
 
+  moveBatch(dirs: readonly Dir[]): BatchResult {
+    return runBatch(this, dirs);
+  }
+
   move(dir: Dir): StepResult {
     if (this.done) {
       return { result: "blocked", view: this.currentView(), goal_reached: this.reached, moves_left: this.movesLeft };
@@ -73,6 +77,21 @@ export class FogEnv implements Env {
     }
     return { result, view: this.currentView(), goal_reached: this.reached, moves_left: this.movesLeft };
   }
+}
+
+export function runBatch(env: Env, dirs: readonly Dir[]): BatchResult {
+  const steps: BatchResult["steps"] = [];
+  for (const dir of dirs) {
+    if (env.done) {
+      break;
+    }
+    const r = env.move(dir);
+    steps.push({ move: dir, result: r.result, view: r.view });
+    if (r.result === "blocked") {
+      break;
+    }
+  }
+  return { steps, skipped: dirs.length - steps.length, goal_reached: env.reached, moves_left: env.movesLeft };
 }
 
 /** Replay a move log (including blocked moves) into positions, for the viewer. */
@@ -109,7 +128,8 @@ export const fogTask: InteractiveTask<FogItem, FogEnv> = {
   nudge: "Call the move tool to continue.",
   maxNudges: 3,
   toolDescription:
-    "Move one step. Returns whether you moved or were blocked by a wall, your new 3x3 view, whether you reached the goal, and how many moves you have left.",
+    "Make one or more moves in order. Returns, for each move that ran, whether you moved or were blocked and your 3x3 view after it; " +
+    "then whether you reached the goal and how many moves you have left. A batch stops early at the first blocked move or at the goal.",
 
   generate({ level, seed }) {
     const rng = new Rng(seed);
@@ -127,8 +147,10 @@ export const fogTask: InteractiveTask<FogItem, FogEnv> = {
       system:
         "You are in a maze and can only see the 3x3 area around you. In a view `#` is a wall, `.` is open floor, " +
         "`@` is you, and `G` is the goal, which you only see once it is within your view. The top row of a view is up.\n\n" +
-        "Find the goal. Use the `move` tool with direction U (up), D (down), L (left) or R (right). Each call moves one " +
-        `step and returns your new view. Moving into a wall uses up a move. You have ${item.budget} moves. ` +
+        "Find the goal. Use the `move` tool with a list of moves, each U (up), D (down), L (left) or R (right), " +
+        'for example ["U", "U", "L"]. The moves run in order and you get the view after each one. ' +
+        "A batch stops early if a move hits a wall or you reach the goal. " +
+        `Moving into a wall uses up a move. You have ${item.budget} moves. ` +
         "There are no coordinates, so keep track of where you have been yourself.",
       user: `Your current view:\n${env.currentView()}\n\nFind the goal.`,
     };
