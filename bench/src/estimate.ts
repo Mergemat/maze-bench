@@ -1,6 +1,6 @@
+import { join } from "node:path";
 import { CALIB_SUITE, enumerateItems, type ItemResult, mergeItems, type Suite } from "@mazebench/core";
 import { loadRuns } from "@mazebench/core/node";
-import { join } from "node:path";
 import type { ModelEntry } from "./models.ts";
 import type { Price } from "./pricing.ts";
 import { RESULTS_DIR } from "./storage.ts";
@@ -86,7 +86,9 @@ export function estimate(
       return { model, price, low: ownCost, high: ownCost, basis: "own calibration" };
     }
     // Apply every calibrated model's token profile to this model's prices.
-    const costs = [...profiles.values()].map((p) => costWith(suite, epochs, p, price)).filter((c): c is number => c !== null);
+    const costs = [...profiles.values()]
+      .map((p) => costWith(suite, epochs, p, price))
+      .filter((c): c is number => c !== null);
     if (costs.length === 0) {
       return { model, price, low: Number.NaN, high: Number.NaN, basis: "no calibration data" };
     }

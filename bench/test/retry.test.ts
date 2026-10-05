@@ -27,16 +27,13 @@ describe("classify", () => {
 describe("withRetry", () => {
   test("retries transient errors, then succeeds", async () => {
     let calls = 0;
-    const out = await withRetry(
-      async () => {
-        calls++;
-        if (calls < 3) {
-          throw apiError(502);
-        }
-        return "ok";
-      },
-      noSleep,
-    );
+    const out = await withRetry(async () => {
+      calls++;
+      if (calls < 3) {
+        throw apiError(502);
+      }
+      return "ok";
+    }, noSleep);
     expect(out).toBe("ok");
     expect(calls).toBe(3);
   });

@@ -1,11 +1,8 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  reactCompiler: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+const config: NextConfig = {
+  // The core package ships TypeScript source; Next compiles it.
+  transpilePackages: ["@mazebench/core"],
 };
 
-export default nextConfig;
+export default config;

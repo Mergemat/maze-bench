@@ -35,7 +35,7 @@ function ladder(braid: number, items: number, maxLevel = 5): LevelSpec[] {
 export const CORE_SUITE: Suite = {
   id: "core",
   version: "2.0.0",
-  description: "Main leaderboard suite: five tasks, five size levels (fog: three).",
+  description: "Main leaderboard suite: five tasks, five size levels (fog: two, for cost).",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
@@ -43,7 +43,10 @@ export const CORE_SUITE: Suite = {
     { task: "trace", repr: "ascii", levels: ladder(0.1, 20) },
     { task: "plan", repr: "ascii", levels: ladder(0.1, 20) },
     { task: "recall", repr: "ascii", levels: ladder(0.5, 20) },
-    { task: "fog", repr: "ascii", levels: ladder(0.1, 15, 3) },
+    // Fog resends the whole history every step, so input tokens grow with the square of the
+    // episode length. Level 3 used 4.75M input tokens per episode in calibration, so core
+    // stops at level 2 (see docs/design.md).
+    { task: "fog", repr: "ascii", levels: ladder(0.1, 20, 2) },
   ],
 };
 

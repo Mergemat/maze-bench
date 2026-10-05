@@ -92,7 +92,10 @@ describe("local", () => {
     expect(localTask.parse("up, right")).toEqual(["U", "R"]);
     expect(localTask.parse("")).toBeNull();
     expect(localTask.score(item, item.expected).score).toBe(1);
-    const wrong = localTask.score(item, ["U", "D", "L", "R"].filter((d) => !item.expected.includes(d as never)) as never);
+    const wrong = localTask.score(
+      item,
+      ["U", "D", "L", "R"].filter((d) => !item.expected.includes(d as never)) as never,
+    );
     expect(wrong.score).toBe(0);
   });
 });

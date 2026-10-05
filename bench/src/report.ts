@@ -1,4 +1,4 @@
-import { aggregate, type RunFile, type Suite, type SubjectSummary } from "@mazebench/core";
+import { aggregate, type RunFile, type SubjectSummary, type Suite } from "@mazebench/core";
 
 const pct = (x: number) => (Number.isFinite(x) ? (100 * x).toFixed(1) : "–");
 
@@ -16,7 +16,8 @@ export function markdownLeaderboard(runs: readonly RunFile[], suite: Suite): str
   const lines = rows.map((s, i) => {
     const c = s.composite;
     const score = c ? `${pct(c.mean)} (${pct(c.lo)}–${pct(c.hi)})` : "partial";
-    const cost = s.subject.kind === "baseline" ? "–" : `${s.usage.costComplete ? "" : "≥"}${s.usage.costUsd.toFixed(2)}`;
+    const cost =
+      s.subject.kind === "baseline" ? "–" : `${s.usage.costComplete ? "" : "≥"}${s.usage.costUsd.toFixed(2)}`;
     const name = s.subject.kind === "baseline" ? `_${s.subject.displayName}_` : s.subject.displayName;
     return `| ${i + 1} | ${name} | ${score} | ${tasks.map((t) => cell(s, t)).join(" | ")} | ${cost} | ${s.scored}/${s.expected} |`;
   });

@@ -29,5 +29,8 @@ export function createModel(entry: ModelEntry, effort: Effort): LanguageModel {
     usage: { include: true },
     ...(effort === "default" ? {} : { reasoning: { effort } }),
     ...(entry.routing ? { provider: entry.routing } : {}),
+    // Anthropic only caches prompts when asked. Fog episodes resend a growing history every
+    // step, so without this they cost several times more. Other providers cache automatically.
+    ...(entry.creator === "anthropic" ? { cache_control: { type: "ephemeral" as const } } : {}),
   });
 }

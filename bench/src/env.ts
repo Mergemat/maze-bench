@@ -15,7 +15,10 @@ export function loadDotEnv(path = join(import.meta.dir, "..", ".env")): void {
 }
 
 export function gitSha(): string {
-  const run = (args: string[]) => Bun.spawnSync(["git", ...args], { cwd: import.meta.dir }).stdout.toString().trim();
+  const run = (args: string[]) =>
+    Bun.spawnSync(["git", ...args], { cwd: import.meta.dir })
+      .stdout.toString()
+      .trim();
   const sha = run(["rev-parse", "--short", "HEAD"]) || "unknown";
   const dirty = run(["status", "--porcelain", "--", "../../packages", "."]).length > 0;
   return dirty ? `${sha}-dirty` : sha;

@@ -1,4 +1,4 @@
-import { placeStartGoal, generateMaze } from "../generate.ts";
+import { generateMaze, placeStartGoal } from "../generate.ts";
 import { DIRS, type Dir, isOpen, OPPOSITE, type Pos, step, type Tiles } from "../grid.ts";
 import { renderAscii } from "../render.ts";
 import { Rng } from "../rng.ts";

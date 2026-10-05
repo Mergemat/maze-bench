@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 import { parseArgs } from "node:util";
-import { getSuite, itemHash, findItem, suiteKey, TASK_IDS, type TaskId } from "@mazebench/core";
+import { findItem, getSuite, itemHash, suiteKey, TASK_IDS, type TaskId } from "@mazebench/core";
 import { loadRuns } from "@mazebench/core/node";
 import { writeBaselines } from "./baselines.ts";
 import { loadDotEnv } from "./env.ts";
 import { estimate, loadProfiles } from "./estimate.ts";
-import { type Effort, EFFORTS, getModel, MODELS } from "./models.ts";
+import { EFFORTS, type Effort, getModel, MODELS } from "./models.ts";
 import { fetchPrices } from "./pricing.ts";
 import { markdownLeaderboard } from "./report.ts";
 import { runModel } from "./runner.ts";
@@ -152,7 +152,9 @@ async function main(): Promise<void> {
           high += r.high;
         }
       }
-      console.log(`\n${suiteKey(suite)} x${epochs} epoch(s), effort=${effort}: total $${low.toFixed(2)} – $${high.toFixed(2)}`);
+      console.log(
+        `\n${suiteKey(suite)} x${epochs} epoch(s), effort=${effort}: total $${low.toFixed(2)} – $${high.toFixed(2)}`,
+      );
       console.log("List prices without prompt-cache discounts, so fog estimates lean high.");
       return;
     }

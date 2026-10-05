@@ -21,9 +21,7 @@ export class UsageMeter {
     this.inputTokens += step.usage.inputTokens ?? 0;
     this.outputTokens += step.usage.outputTokens ?? 0;
     this.reasoningTokens += step.usage.outputTokenDetails?.reasoningTokens ?? 0;
-    const meta = step.providerMetadata?.openrouter as
-      | { provider?: string; usage?: { cost?: number } }
-      | undefined;
+    const meta = step.providerMetadata?.openrouter as { provider?: string; usage?: { cost?: number } } | undefined;
     if (meta?.provider) {
       this.providers.add(meta.provider);
     }

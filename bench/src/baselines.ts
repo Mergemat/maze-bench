@@ -40,7 +40,12 @@ export function writeBaselines(suite: Suite, log: (s: string) => void): void {
         openWeights: true,
       },
       settings: { epochs: 1, maxOutputTokens: 1, temperature: null, concurrency: 1 },
-      harness: { gitSha: gitSha().replace(/-dirty$/, ""), promptVersion: PROMPT_VERSION, aiSdkVersion: "n/a", runtime: "baseline" },
+      harness: {
+        gitSha: gitSha().replace(/-dirty$/, ""),
+        promptVersion: PROMPT_VERSION,
+        aiSdkVersion: "n/a",
+        runtime: "baseline",
+      },
       // Fixed so regenerating an unchanged suite gives a byte-identical file.
       startedAt: "2026-01-01T00:00:00.000Z",
     });
