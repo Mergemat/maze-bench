@@ -32,6 +32,9 @@ describe("parseMoves", () => {
     ["up up LEFT", ["U", "U", "L"]],
     ["north east", ["U", "R"]],
     ["none", []],
+    ["NO ROUTE", []],
+    ["no valid path", []],
+    ["unreachable", []],
   ])("%p", (text, expected) => {
     expect(parseMoves(text)).toEqual(expected as never);
   });
