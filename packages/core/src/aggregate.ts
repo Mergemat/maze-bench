@@ -32,7 +32,29 @@ export interface TaskSummary {
   /** pass@k and pass^k for k = 2..epochs, when epochs > 1. */
   passAt: Record<number, number>;
   passHat: Record<number, number>;
-  parse: { ok: number; fallback: number; failed: number };
+  /** Per scored maze. */
+  perMaze: PerMaze;
+}
+
+export interface PerMaze {
+  costUsd: number;
+  outputTokens: number;
+  inputTokens: number;
+  /** Model calls (agent steps). */
+  steps: number;
+  latencyMs: number;
+}
+
+function perMaze(items: readonly ItemResult[]): PerMaze {
+  const n = Math.max(1, items.length);
+  const sum = (f: (i: ItemResult) => number) => items.reduce((s, i) => s + f(i), 0) / n;
+  return {
+    costUsd: sum((i) => i.usage.costUsd ?? 0),
+    outputTokens: sum((i) => i.usage.outputTokens),
+    inputTokens: sum((i) => i.usage.inputTokens),
+    steps: sum((i) => i.calls),
+    latencyMs: sum((i) => i.latencyMs),
+  };
 }
 
 export interface SubjectSummary {
@@ -46,6 +68,8 @@ export interface SubjectSummary {
   /** Composite over all suite tasks, or null if any task has no scored items. */
   composite: Interval | null;
   tasks: Partial<Record<TaskId, TaskSummary>>;
+  /** Per scored maze, across all conditions. */
+  perMaze: PerMaze;
   usage: {
     costUsd: number;
     /** False if any scored attempt is missing a cost, so the total is a lower bound. */
@@ -159,13 +183,6 @@ function summarizeTask(task: TaskId, items: readonly ItemResult[], expected: num
     }
   }
 
-  const parse = { ok: 0, fallback: 0, failed: 0 };
-  for (const i of scored) {
-    if (i.answer) {
-      parse[i.answer.parse]++;
-    }
-  }
-
   return {
     task,
     n: byItem.size,
@@ -177,7 +194,7 @@ function summarizeTask(task: TaskId, items: readonly ItemResult[], expected: num
     metrics,
     passAt,
     passHat,
-    parse,
+    perMaze: perMaze(scored),
   };
 }
 
@@ -220,6 +237,7 @@ export function aggregate(runs: readonly RunFile[], suite: Suite): SubjectSummar
       errors: items.filter((i) => i.status === "error").length,
       composite: complete ? bootstrapStratified(strata) : null,
       tasks,
+      perMaze: perMaze(scored),
       usage: {
         costUsd: scored.reduce((s, i) => s + (i.usage.costUsd ?? 0), 0),
         costComplete: scored.every((i) => i.usage.costUsd !== null),

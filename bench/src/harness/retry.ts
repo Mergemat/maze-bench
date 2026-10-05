@@ -16,6 +16,10 @@ export function classify(error: unknown): InfraError {
   if (error instanceof InfraError) {
     return error;
   }
+  // The AI SDK wraps the last API error in a RetryError once its own retries run out.
+  if (error instanceof Error && "lastError" in error && (error as { lastError?: unknown }).lastError) {
+    return classify((error as { lastError: unknown }).lastError);
+  }
   const message = error instanceof Error ? error.message : String(error);
   if (APICallError.isInstance(error)) {
     const status = error.statusCode ?? 0;

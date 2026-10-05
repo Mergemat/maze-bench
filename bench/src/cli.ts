@@ -19,9 +19,9 @@ Commands:
   run         Run models on a suite.
                 --model <id>[,<id>...]  models from \`models\` (or --sweep for the default lineup)
                 --effort <e>            ${EFFORTS.join(" | ")} (default: default)
-                --suite <id>            core | repr | smoke | calib (default: core)
+                --suite <id>            core | smoke | calib (default: core)
                 --tasks <t,...>         subset of ${TASK_IDS.join(",")}
-                --levels <n,...>        subset of levels
+                --levels <n,...>        subset of sizes: 1=7x7 2=11x11 3=17x17 4=25x25
                 --limit <n>             first n items per task and level
                 --epochs <n>            attempts per item (default: suite setting)
                 --concurrency <n>       parallel items (default: 8)

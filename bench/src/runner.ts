@@ -5,6 +5,7 @@ import {
   type ItemRef,
   type ItemResult,
   itemHash,
+  type MazeItem,
   mergeItems,
   PROMPT_VERSION,
   type RunHeader,
@@ -15,9 +16,8 @@ import {
 } from "@mazebench/core";
 import type { LanguageModel } from "ai";
 import { aiSdkVersion, gitSha } from "./env.ts";
-import { runInteractive } from "./harness/fog.ts";
-import { runOneShot } from "./harness/oneshot.ts";
-import type { Attempt, CallOptions } from "./harness/types.ts";
+import { runAgent } from "./harness/agent.ts";
+import type { CallOptions } from "./harness/types.ts";
 import { type Effort, type ModelEntry, subjectKey } from "./models.ts";
 import { createModel } from "./providers.ts";
 import { loadSubjectRuns, RunWriter, runPath, timestampId } from "./storage.ts";
@@ -150,10 +150,7 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
       timeoutMs: opts.timeoutMs,
       onRetry: (msg) => log(`  ${ref.itemId} e${epoch}: ${msg}`),
     };
-    const attempt: Attempt =
-      task.kind === "oneshot"
-        ? await runOneShot(model, task, item, ref.repr, call)
-        : await runInteractive(model, task, item, call);
+    const attempt = await runAgent(model, task, item as MazeItem, call);
 
     const result: ItemResult = {
       type: "item",
