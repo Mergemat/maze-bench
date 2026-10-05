@@ -1,6 +1,17 @@
 import { shortestDistance, shortestPath } from "../bfs.ts";
 import { cellCenters, generateMaze } from "../generate.ts";
-import { type Dir, DIRS, isOpen, movesFromPath, OPPOSITE, type Pos, posKey, samePos, step, type Tiles } from "../grid.ts";
+import {
+  DIRS,
+  type Dir,
+  isOpen,
+  movesFromPath,
+  OPPOSITE,
+  type Pos,
+  posKey,
+  samePos,
+  step,
+  type Tiles,
+} from "../grid.ts";
 import { executeMoves, freeReduce, parseMoves, reverseMoves } from "../moves.ts";
 import { localView, viewTiles } from "../render.ts";
 import { Rng } from "../rng.ts";
@@ -54,7 +65,8 @@ export const recallTask: OneShotTask<RecallItem, Dir[]> = {
   kind: "oneshot",
   title: "Route recall",
   ability: "memory",
-  summary: "Read a walk through an unseen maze, step by local view, then return to the start by the shortest known route.",
+  summary:
+    "Read a walk through an unseen maze, step by local view, then return to the start by the shortest known route.",
   metric: "SPL",
 
   generate({ level, seed }) {

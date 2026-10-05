@@ -1,4 +1,4 @@
-import { Rng, fnv1a32 } from "./rng.ts";
+import { fnv1a32, Rng } from "./rng.ts";
 import { buildItem, type ItemRef } from "./suites.ts";
 import { getTask } from "./tasks/index.ts";
 import type { BaselineKind, Scored } from "./tasks/types.ts";

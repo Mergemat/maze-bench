@@ -1,4 +1,4 @@
-import { type AnyInteractiveTask, type Dir, type EpisodeEnd, type Env } from "@mazebench/core";
+import type { AnyInteractiveTask, Dir, Env, EpisodeEnd } from "@mazebench/core";
 import { generateText, type LanguageModel, type ModelMessage, tool } from "ai";
 import { z } from "zod";
 import { classify, withRetry } from "./retry.ts";

@@ -51,7 +51,10 @@ export interface RunSummary {
   meanScore: number;
 }
 
-export function selectItems(suite: Suite, opts: Pick<RunOptions, "tasks" | "levels" | "limit" | "holdoutSalt">): ItemRef[] {
+export function selectItems(
+  suite: Suite,
+  opts: Pick<RunOptions, "tasks" | "levels" | "limit" | "holdoutSalt">,
+): ItemRef[] {
   return enumerateItems(suite, opts.holdoutSalt ?? "").filter(
     (r) =>
       (!opts.tasks || opts.tasks.includes(r.task)) &&
@@ -61,7 +64,11 @@ export function selectItems(suite: Suite, opts: Pick<RunOptions, "tasks" | "leve
 }
 
 /** Run worker functions over a queue with a fixed concurrency. */
-export async function pool<T>(items: readonly T[], concurrency: number, worker: (item: T) => Promise<void>): Promise<void> {
+export async function pool<T>(
+  items: readonly T[],
+  concurrency: number,
+  worker: (item: T) => Promise<void>,
+): Promise<void> {
   let next = 0;
   const lanes = Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, async () => {
     while (next < items.length) {
@@ -78,7 +85,9 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
   const key = subjectKey(entry, effort);
   const sKey = suiteKey(suite);
 
-  let jobs = selectItems(suite, opts).flatMap((ref) => Array.from({ length: opts.epochs }, (_, epoch) => ({ ref, epoch })));
+  let jobs = selectItems(suite, opts).flatMap((ref) =>
+    Array.from({ length: opts.epochs }, (_, epoch) => ({ ref, epoch })),
+  );
   if (opts.resume) {
     const done = new Set(
       mergeItems(loadSubjectRuns(split, sKey, key))
@@ -109,8 +118,18 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
       openWeights: entry.openWeights,
       ...(entry.routing ? { routing: { ...entry.routing } } : {}),
     },
-    settings: { epochs: opts.epochs, maxOutputTokens: opts.maxOutputTokens, temperature: null, concurrency: opts.concurrency },
-    harness: { gitSha: gitSha(), promptVersion: PROMPT_VERSION, aiSdkVersion: aiSdkVersion(), runtime: `bun ${Bun.version}` },
+    settings: {
+      epochs: opts.epochs,
+      maxOutputTokens: opts.maxOutputTokens,
+      temperature: null,
+      concurrency: opts.concurrency,
+    },
+    harness: {
+      gitSha: gitSha(),
+      promptVersion: PROMPT_VERSION,
+      aiSdkVersion: aiSdkVersion(),
+      runtime: `bun ${Bun.version}`,
+    },
     startedAt: startedAt.toISOString(),
   };
   const writer = new RunWriter(runPath(split, sKey, key, `${timestampId(startedAt)}.jsonl`), header);
@@ -168,7 +187,10 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
     } else {
       errors++;
     }
-    const mark = attempt.status === "error" ? `ERROR ${attempt.error?.category}` : `${attempt.scored.outcome} ${attempt.scored.score.toFixed(2)}`;
+    const mark =
+      attempt.status === "error"
+        ? `ERROR ${attempt.error?.category}`
+        : `${attempt.scored.outcome} ${attempt.scored.score.toFixed(2)}`;
     log(
       `[${finished}/${jobs.length}] ${ref.itemId} e${epoch} ${mark} ` +
         `$${(attempt.usage.costUsd ?? 0).toFixed(4)} ${attempt.calls} call(s) ${(attempt.latencyMs / 1000).toFixed(1)}s`,
@@ -178,5 +200,12 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
   log(
     `${key}: done. scored ${scored}, errors ${errors}, mean score ${(scoreSum / Math.max(1, scored)).toFixed(3)}, cost $${cost.toFixed(4)}`,
   );
-  return { path: writer.path, attempted: jobs.length, scored, errors, costUsd: cost, meanScore: scoreSum / Math.max(1, scored) };
+  return {
+    path: writer.path,
+    attempted: jobs.length,
+    scored,
+    errors,
+    costUsd: cost,
+    meanScore: scoreSum / Math.max(1, scored),
+  };
 }

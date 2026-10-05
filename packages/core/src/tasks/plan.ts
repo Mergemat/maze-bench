@@ -1,6 +1,6 @@
 import { shortestPath } from "../bfs.ts";
 import { generateMaze, placeStartGoal } from "../generate.ts";
-import { CLOCKWISE, type Dir, DIRS, isOpen, movesFromPath, type Pos, samePos, step, type Tiles } from "../grid.ts";
+import { CLOCKWISE, DIRS, type Dir, isOpen, movesFromPath, type Pos, samePos, step, type Tiles } from "../grid.ts";
 import { executeMoves, parseMoves } from "../moves.ts";
 import { renderAdjacency, renderAscii } from "../render.ts";
 import { Rng } from "../rng.ts";

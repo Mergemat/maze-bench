@@ -35,9 +35,9 @@ export async function runOneShot(
           timeout: opts.timeoutMs,
         }),
       {
-          ...opts.retry,
-          onRetry: (e, n, ms) => opts.onRetry?.(`retry ${n} in ${ms}ms: [${e.category}] ${e.message}`),
-        },
+        ...opts.retry,
+        onRetry: (e, n, ms) => opts.onRetry?.(`retry ${n} in ${ms}ms: [${e.category}] ${e.message}`),
+      },
     );
     for (const s of res.steps) {
       meter.add(s);
@@ -67,6 +67,10 @@ export async function runOneShot(
     });
   } catch (raw) {
     const error = classify(raw);
-    return done({ status: "error", scored: errorScored(), error: { category: error.category, message: error.message } });
+    return done({
+      status: "error",
+      scored: errorScored(),
+      error: { category: error.category, message: error.message },
+    });
   }
 }

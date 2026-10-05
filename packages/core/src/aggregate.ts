@@ -97,10 +97,7 @@ export function itemScores(items: readonly ItemResult[], task: TaskId): Map<stri
     (i) => i.itemId,
   );
   for (const [id, list] of byItem) {
-    out.set(
-      id,
-      mean(list.map((i) => i.score)),
-    );
+    out.set(id, mean(list.map((i) => i.score)));
   }
   return out;
 }
@@ -116,10 +113,7 @@ function summarizeTask(task: TaskId, items: readonly ItemResult[], expected: num
       const perItem = [...groupBy(list, (i) => i.itemId).values()].map((l) => mean(l.map((i) => i.score)));
       const binary = list.every((i) => i.score === 0 || i.score === 1);
       const interval = binary
-        ? wilson(
-            list.filter((i) => i.score === 1).length,
-            list.length,
-          )
+        ? wilson(list.filter((i) => i.score === 1).length, list.length)
         : bootstrapValues(perItem, { seed: Number(level) });
       return { level: Number(level), n: perItem.length, interval };
     })
@@ -135,9 +129,10 @@ function summarizeTask(task: TaskId, items: readonly ItemResult[], expected: num
     for (const [k, v] of Object.entries(i.metrics)) {
       const value = typeof v === "boolean" ? Number(v) : v;
       if (typeof value === "number" && Number.isFinite(value)) {
-        const acc = (sums[k] ??= { s: 0, n: 0 });
+        const acc = sums[k] ?? { s: 0, n: 0 };
         acc.s += value;
         acc.n++;
+        sums[k] = acc;
       }
     }
   }
@@ -245,7 +240,11 @@ export function aggregate(runs: readonly RunFile[], suite: Suite): SubjectSummar
  * Paired difference in composite score (a - b) over items both subjects scored,
  * with a stratified bootstrap CI. Positive means a is better.
  */
-export function pairedComposite(a: readonly ItemResult[], b: readonly ItemResult[], suite: Suite): Interval & { n: number } {
+export function pairedComposite(
+  a: readonly ItemResult[],
+  b: readonly ItemResult[],
+  suite: Suite,
+): Interval & { n: number } {
   const strata: number[][] = [];
   let n = 0;
   for (const t of suite.tasks) {

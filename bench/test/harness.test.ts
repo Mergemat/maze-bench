@@ -1,5 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
+  type AnyInteractiveTask,
+  type AnyOneShotTask,
   buildItem,
   CORE_SUITE,
   enumerateItems,
@@ -10,8 +12,6 @@ import {
   type PlanItem,
   planTask,
   shortestPath,
-  type AnyInteractiveTask,
-  type AnyOneShotTask,
 } from "@mazebench/core";
 import { APICallError } from "ai";
 import { runInteractive } from "../src/harness/fog.ts";
@@ -68,7 +68,13 @@ describe("one-shot harness", () => {
     const model = new MockLanguageModelV4({
       doGenerate: async () => {
         calls++;
-        throw new APICallError({ message: "upstream", url: "x", requestBodyValues: {}, statusCode: 502, isRetryable: true });
+        throw new APICallError({
+          message: "upstream",
+          url: "x",
+          requestBodyValues: {},
+          statusCode: 502,
+          isRetryable: true,
+        });
       },
     });
     const a = await runOneShot(model, plan, planItem, "ascii", opts);

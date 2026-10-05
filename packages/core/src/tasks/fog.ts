@@ -1,17 +1,6 @@
 import { shortestPath } from "../bfs.ts";
 import { generateMaze, placeStartGoal } from "../generate.ts";
-import {
-  CLOCKWISE,
-  countOpen,
-  type Dir,
-  DIRS,
-  isOpen,
-  type Pos,
-  posKey,
-  samePos,
-  step,
-  type Tiles,
-} from "../grid.ts";
+import { CLOCKWISE, countOpen, DIRS, type Dir, isOpen, type Pos, posKey, samePos, step, type Tiles } from "../grid.ts";
 import { localView } from "../render.ts";
 import { Rng } from "../rng.ts";
 import { spl } from "./plan.ts";

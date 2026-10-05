@@ -1,5 +1,5 @@
 import { bfsDistances } from "./bfs.ts";
-import { DIRS, DELTA, OPEN, type Pos, posKey, type Tiles, WALL } from "./grid.ts";
+import { DELTA, DIRS, OPEN, type Pos, posKey, type Tiles, WALL } from "./grid.ts";
 import type { Rng } from "./rng.ts";
 
 export interface MazeSpec {

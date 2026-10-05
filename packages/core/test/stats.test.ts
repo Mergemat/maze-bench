@@ -90,7 +90,11 @@ describe("bootstrap", () => {
   });
 
   test("cluster bootstrap averages epochs within an item first", () => {
-    const ci = bootstrapMean([[1, 0], [1, 1], [0, 0]]);
+    const ci = bootstrapMean([
+      [1, 0],
+      [1, 1],
+      [0, 0],
+    ]);
     expect(ci.mean).toBeCloseTo(0.5);
   });
 

@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.*
+!.env.example
+results-holdout/
+.DS_Store
+*.tsbuildinfo
+coverage/
