@@ -1,0 +1,11 @@
+{
+  "suite": "smoke@3.0.0",
+  "promptVersion": "2.0.0",
+  "items": {
+    "full/L3/0": "1cdb1d91348993",
+    "once/L3/0": "1a4c2411b65054",
+    "fog/L1/0": "19b6a9facf1e76",
+    "fog/L2/0": "144c14de3b1714",
+    "fog/L3/0": "1db68cea352230"
+  }
+}

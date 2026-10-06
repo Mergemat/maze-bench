@@ -1,0 +1,145 @@
+import { PROMPT_VERSION } from "./meta.ts";
+import { contentHash, fnv1a32 } from "./rng.ts";
+import { getTask } from "./tasks/index.ts";
+import type { LevelSpec, MazeItem, TaskId } from "./tasks/types.ts";
+
+export interface SuiteTask {
+  task: TaskId;
+  levels: LevelSpec[];
+}
+
+export interface Suite {
+  id: string;
+  version: string;
+  description: string;
+  /** Default number of attempts per item. */
+  epochs: number;
+  /** Seeds come from this namespace, so suites can share mazes. */
+  seedNamespace: string;
+  tasks: SuiteTask[];
+}
+
+/** Maze sizes in cells per side. The tile grid is (2n+1) x (2n+1), so sides are always odd. */
+const SIZES: ReadonlyArray<[level: number, cells: number]> = [
+  [1, 5], // 11×11
+  [2, 12], // 25×25
+  [3, 25], // 51×51
+];
+
+/** Perfect Wilson mazes (no extra loops). */
+function ladder(items: number, levels: readonly number[], braid = 0): LevelSpec[] {
+  return SIZES.filter(([level]) => levels.includes(level)).map(([level, cells]) => ({ level, cells, braid, items }));
+}
+
+export const CORE_SUITE: Suite = {
+  id: "core",
+  version: "3.0.0",
+  description:
+    "Main leaderboard: full map and map once at 51×51; fog at 11×11, 25×25 and 51×51. 9 mazes each (45 per run).",
+  epochs: 1,
+  seedNamespace: "core@3.0.0",
+  tasks: [
+    { task: "full", levels: ladder(9, [3]) },
+    { task: "once", levels: ladder(9, [3]) },
+    { task: "fog", levels: ladder(9, [1, 2, 3]) },
+  ],
+};
+
+export const SMOKE_SUITE: Suite = {
+  id: "smoke",
+  version: "3.0.0",
+  description: "One core maze per condition and size. Checks the harness and feeds cost estimates.",
+  epochs: 1,
+  seedNamespace: "core@3.0.0",
+  tasks: [
+    { task: "full", levels: ladder(1, [3]) },
+    { task: "once", levels: ladder(1, [3]) },
+    { task: "fog", levels: ladder(1, [1, 2, 3]) },
+  ],
+};
+
+export const SUITES: Record<string, Suite> = {
+  core: CORE_SUITE,
+  smoke: SMOKE_SUITE,
+};
+
+/** Maze size in tiles, e.g. "17×17". */
+export function sizeLabel(level: LevelSpec): string {
+  const tiles = 2 * level.cells + 1;
+  return `${tiles}×${tiles}`;
+}
+
+export function suiteKey(suite: Pick<Suite, "id" | "version">): string {
+  return `${suite.id}@${suite.version}`;
+}
+
+export function getSuite(id: string): Suite {
+  const name = id.split("@")[0] ?? id;
+  const suite = SUITES[name];
+  if (!suite) {
+    throw new Error(`Unknown suite "${id}". Known: ${Object.keys(SUITES).join(", ")}`);
+  }
+  return suite;
+}
+
+export interface ItemRef {
+  itemId: string;
+  task: TaskId;
+  level: LevelSpec;
+  index: number;
+  seed: number;
+}
+
+export function itemId(task: TaskId, level: number, index: number): string {
+  return `${task}/L${level}/${index}`;
+}
+
+/** Every item in a suite, in a stable order. `salt` selects the held-out split. */
+export function enumerateItems(suite: Suite, salt = ""): ItemRef[] {
+  const out: ItemRef[] = [];
+  for (const t of suite.tasks) {
+    for (const level of t.levels) {
+      for (let index = 0; index < level.items; index++) {
+        const id = itemId(t.task, level.level, index);
+        out.push({
+          itemId: id,
+          task: t.task,
+          level,
+          index,
+          seed: fnv1a32(`${suite.seedNamespace}/${id}${salt}`),
+        });
+      }
+    }
+  }
+  return out;
+}
+
+export function findItem(suite: Suite, id: string, salt = ""): ItemRef | undefined {
+  return enumerateItems(suite, salt).find((r) => r.itemId === id);
+}
+
+export function buildItem(ref: ItemRef): unknown {
+  return getTask(ref.task).generate({ level: ref.level, seed: ref.seed, index: ref.index });
+}
+
+/** Hash of the item content and its prompt. Any change to either changes the hash. */
+export function itemHash(ref: ItemRef, item: unknown = buildItem(ref)): string {
+  const task = getTask(ref.task);
+  const maze = item as MazeItem;
+  const prompt = task.prompt(maze, task.createEnv(maze));
+  return contentHash(`${PROMPT_VERSION}\n${JSON.stringify(item)}\n${prompt.system}\n${prompt.user}`);
+}
+
+export interface Manifest {
+  suite: string;
+  promptVersion: string;
+  items: Record<string, string>;
+}
+
+export function buildManifest(suite: Suite): Manifest {
+  const items: Record<string, string> = {};
+  for (const ref of enumerateItems(suite)) {
+    items[ref.itemId] = itemHash(ref);
+  }
+  return { suite: suiteKey(suite), promptVersion: PROMPT_VERSION, items };
+}
