@@ -35,7 +35,7 @@ export interface MazeItem {
   optimal: number;
 }
 
-export type Outcome = "success" | "budget_exhausted" | "stalled" | "truncated";
+export type Outcome = "success" | "budget_exhausted" | "stalled" | "truncated" | "spend_limit";
 export type EpisodeEnd = "goal" | "budget" | "stalled" | "truncated";
 
 export type Metrics = Record<string, number | boolean | null>;

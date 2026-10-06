@@ -6,7 +6,7 @@ const pct = (x: number) => (Number.isFinite(x) ? (100 * x).toFixed(1) : "–");
 export function markdownLeaderboard(runs: readonly RunFile[], suite: Suite): string {
   const rows = aggregate(runs, suite);
   const tasks = suite.tasks.map((t) => t.task);
-  const head = `| # | Model | Completion % (95% CI) | ${tasks.map((t) => TASKS[t].title).join(" | ")} | $ / maze | Output tokens / maze | Steps / maze |`;
+  const head = `| # | Model | Completion % (95% CI) | ${tasks.map((t) => TASKS[t].title).join(" | ")} | $ / task | Output tokens / task | Steps / task |`;
   const sep = `|---|---|---|${tasks.map(() => "---").join("|")}|---|---|---|`;
   let rank = 0;
   const lines = rows.map((s) => {

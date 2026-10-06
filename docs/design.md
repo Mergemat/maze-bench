@@ -92,7 +92,7 @@ The wall follower is strong, because twice the open tiles is enough budget to fo
 
 ## Errors
 
-API errors (429, 5xx, timeouts, network) are retried by the AI SDK. If they persist, the maze is stored with `status: "error"`, is not scored, and is retried by `--resume`. Model-side endings are scored as failures and labelled: `budget_exhausted`, `stalled` or `truncated`.
+API errors (429, 5xx, timeouts, network) are retried, including failed connections at the fetch level. If they persist, the task is stored with `status: "error"`, is not scored, and is retried by `--resume`. Every other ending is scored, and any ending other than reaching the exit counts as not solved: `budget_exhausted` (move cap), `stalled`, `truncated`, or `spend_limit` (stopped by the `--max-cost` cap, a resource limit like the move cap). Every model gets the same tasks, and the score is how many it solved.
 
 ## Results schema `2.0.0`
 

@@ -89,14 +89,14 @@ describe("agent harness", () => {
     expect(a.scored.metrics.moves).toBe(route.length);
   });
 
-  test("the spending guard stops an episode mid-run and leaves it unscored", async () => {
+  test("the spending guard stops an episode mid-run and scores it as not solved", async () => {
     let i = 0;
     const model = new MockLanguageModelV4({ doGenerate: async () => toolCall(`c${i}`, route[i++] as string) });
     // Each mock step reports $0.001, so the cap trips during the third step.
     const guard = new SpendGuard(0.0025);
     const a = await runAgent(model, getTask("fog"), item, { ...opts, guard });
-    expect(a.status).toBe("error");
-    expect(a.error?.category).toBe("spend_limit");
+    expect(a.status).toBe("scored");
+    expect(a.scored).toMatchObject({ score: 0, outcome: "spend_limit" });
     expect(a.calls).toBe(3);
     expect(guard.spent).toBeCloseTo(0.003);
   });

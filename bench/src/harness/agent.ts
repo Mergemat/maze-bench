@@ -82,15 +82,19 @@ export async function runAgent(
     };
   };
 
-  const stopped = (): Attempt => ({
-    status: "error",
-    scored: errorScored(),
-    usage: meter.toUsage(),
-    calls: meter.calls,
-    providers: [...meter.providers],
-    latencyMs: Math.round(performance.now() - started),
-    error: { category: "spend_limit", message: "Stopped by --max-cost before the episode finished." },
-  });
+  // A task stopped by --max-cost counts as not solved, like one that runs out of moves: every
+  // model gets the same tasks and the score is what it solved. The outcome records why.
+  const stopped = (): Attempt => {
+    const scored = task.scoreEpisode(item, env, "budget");
+    return {
+      status: "scored",
+      scored: { ...scored, score: 0, outcome: "spend_limit" },
+      usage: meter.toUsage(),
+      calls: meter.calls,
+      providers: [...meter.providers],
+      latencyMs: Math.round(performance.now() - started),
+    };
+  };
 
   try {
     while (true) {
