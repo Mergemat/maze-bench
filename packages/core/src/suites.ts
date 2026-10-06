@@ -26,20 +26,23 @@ const SIZES: ReadonlyArray<[level: number, cells: number]> = [
   [3, 12], // 25×25
 ];
 
-function ladder(items: number, braid = 0.1): LevelSpec[] {
-  return SIZES.map(([level, cells]) => ({ level, cells, braid, items }));
+function ladder(items: number, levels: readonly number[] = [1, 2, 3], braid = 0.1): LevelSpec[] {
+  return SIZES.filter(([level]) => levels.includes(level)).map(([level, cells]) => ({ level, cells, braid, items }));
 }
 
 export const CORE_SUITE: Suite = {
   id: "core",
   version: "2.0.0",
-  description: "Main leaderboard: every condition at 11×11, 17×17 and 25×25, 9 mazes each (81 per run).",
+  description:
+    "Main leaderboard: full map and map once at 11×11, 17×17 and 25×25; fog at 11×11 and 17×17. 9 mazes each (72 per run).",
   epochs: 1,
   seedNamespace: "core@2.0.0",
   tasks: [
     { task: "full", levels: ladder(9) },
     { task: "once", levels: ladder(9) },
-    { task: "fog", levels: ladder(9) },
+    // Fog at 25×25 is not run: long episodes resend the whole conversation every step, and
+    // finishing them did not fit the budget of the first sweep.
+    { task: "fog", levels: ladder(9, [1, 2]) },
   ],
 };
 
@@ -52,7 +55,7 @@ export const SMOKE_SUITE: Suite = {
   tasks: [
     { task: "full", levels: ladder(1) },
     { task: "once", levels: ladder(1) },
-    { task: "fog", levels: ladder(1) },
+    { task: "fog", levels: ladder(1, [1, 2]) },
   ],
 };
 
