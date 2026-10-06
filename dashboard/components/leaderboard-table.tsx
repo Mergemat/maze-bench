@@ -20,6 +20,9 @@ export function LeaderboardTable({ rows }: { rows: Row[] }) {
             <th className="px-3 py-2.5 text-right font-normal">$ / maze</th>
             <th className="px-3 py-2.5 text-right font-normal">Output tokens / maze</th>
             <th className="px-3 py-2.5 text-right font-normal">Steps / maze</th>
+            <th className="px-3 py-2.5 text-right font-normal" title="Mazes scored out of the suite">
+              Mazes
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -65,6 +68,16 @@ export function LeaderboardTable({ rows }: { rows: Row[] }) {
                 </td>
                 <td className="px-3 py-2.5 text-right font-mono tabular-nums">
                   {baseline ? "–" : row.perMaze.steps.toFixed(1)}
+                </td>
+                <td
+                  className={`px-3 py-2.5 text-right font-mono tabular-nums ${row.scored < row.expected * 0.95 ? "text-[rgb(255,150,50)]" : "text-muted-foreground"}`}
+                  title={
+                    row.scored < row.expected
+                      ? "Incomplete run: unscored mazes are missing, not failed, so completion is not final"
+                      : undefined
+                  }
+                >
+                  {row.scored}/{row.expected}
                 </td>
               </tr>
             );

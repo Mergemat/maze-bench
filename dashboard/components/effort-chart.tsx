@@ -94,16 +94,16 @@ export function EffortChart({
   // line. Labels are nudged apart so they never overlap.
   const labels = lines
     .map((list) => {
+      // The label hangs off the highest-effort point, where the line ends.
       const last = list.at(-1) as EffortPoint;
-      const right = [...list].sort((a, b) => b.x - a.x)[0] as EffortPoint;
       return {
         group: last.group,
         name: last.name,
         href: last.href,
         color: rgb(fillOf(colorOf(last.creator))),
-        ax: x(right.x),
-        ay: y(right.score),
-        y: y(right.score),
+        ax: x(last.x),
+        ay: y(last.score),
+        y: y(last.score),
       };
     })
     .sort((a, b) => a.y - b.y);
@@ -152,7 +152,9 @@ export function EffortChart({
                 series={lines.map((list) => ({
                   key: list[0]?.group ?? "",
                   color: colorOf(list[0]?.creator ?? ""),
-                  points: [...list].sort((a, b) => a.x - b.x).map((p) => ({ x: x(p.x), y: y(p.score) })),
+                  // In effort order (low → high), so the line reads as "more effort", even when a
+                  // lower effort happens to cost more and the line turns back.
+                  points: list.map((p) => ({ x: x(p.x), y: y(p.score) })),
                 }))}
               />
             </div>
