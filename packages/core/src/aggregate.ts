@@ -28,7 +28,12 @@ export interface TaskSummary {
 }
 
 export interface PerMaze {
+  /** What the provider billed, after its cache discount. */
   costUsd: number;
+  /** Token counts at list prices; null when the runs did not record the cache split. */
+  listCostUsd: number | null;
+  /** Share of input tokens served from the prompt cache; null when not recorded. */
+  cacheReadShare: number | null;
   outputTokens: number;
   inputTokens: number;
   /** Model calls (agent steps). */
@@ -39,8 +44,13 @@ export interface PerMaze {
 function perMaze(items: readonly ItemResult[]): PerMaze {
   const n = Math.max(1, items.length);
   const sum = (f: (i: ItemResult) => number) => items.reduce((s, i) => s + f(i), 0) / n;
+  const priced = items.every((i) => i.usage.listCostUsd !== undefined);
+  const cached = items.every((i) => i.usage.cacheReadTokens !== undefined);
+  const input = items.reduce((s, i) => s + i.usage.inputTokens, 0);
   return {
     costUsd: sum((i) => i.usage.costUsd ?? 0),
+    listCostUsd: priced && items.length > 0 ? sum((i) => i.usage.listCostUsd ?? 0) : null,
+    cacheReadShare: cached && input > 0 ? items.reduce((s, i) => s + (i.usage.cacheReadTokens ?? 0), 0) / input : null,
     outputTokens: sum((i) => i.usage.outputTokens),
     inputTokens: sum((i) => i.usage.inputTokens),
     steps: sum((i) => i.calls),

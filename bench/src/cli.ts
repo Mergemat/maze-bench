@@ -7,7 +7,7 @@ import { loadDotEnv } from "./env.ts";
 import { estimate, loadProfiles } from "./estimate.ts";
 import { SpendGuard } from "./harness/guard.ts";
 import { EFFORTS, type Effort, getModel, MODELS } from "./models.ts";
-import { effortsFor, fetchCatalog, fetchPrices } from "./pricing.ts";
+import { effortsFor, fetchCatalog, fetchPrices, listPrice } from "./pricing.ts";
 import { markdownLeaderboard } from "./report.ts";
 import { runModel } from "./runner.ts";
 import { HOLDOUT_DIR, RESULTS_DIR } from "./storage.ts";
@@ -127,7 +127,8 @@ async function main(): Promise<void> {
           throw new Error(`Unknown effort "${e}"`);
         }
       }
-      const catalog = requested ? await fetchCatalog() : undefined;
+      // Always fetch the catalogue: it supplies supported efforts and the list prices recorded per run.
+      const catalog = await fetchCatalog().catch(() => undefined);
       const plan = models.flatMap((entry) =>
         (requested ? effortsFor(requested, catalog?.get(entry.modelId)) : [effort]).map((e) => ({
           entry,
@@ -145,8 +146,9 @@ async function main(): Promise<void> {
       // Every (model, effort) run starts at once, and inside each run every maze starts at once.
       // Transient API errors are retried with backoff, so rate limits slow a run down rather than fail it.
       const summaries = await Promise.all(
-        plan.map(({ entry, effort }) =>
-          runModel({
+        plan.map(({ entry, effort }) => {
+          const price = listPrice(catalog?.get(entry.modelId));
+          return runModel({
             suite,
             entry,
             effort,
@@ -160,9 +162,10 @@ async function main(): Promise<void> {
             resume: values.resume ?? false,
             ...(salt ? { holdoutSalt: salt } : {}),
             ...(guard ? { guard } : {}),
+            ...(price ? { price } : {}),
             log: (line) => console.log(line),
-          }),
-        ),
+          });
+        }),
       );
       const total = summaries.reduce((sum, r) => sum + r.costUsd, 0);
       console.log(`Total reported cost: $${total.toFixed(4)}`);

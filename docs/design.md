@@ -59,7 +59,8 @@ The system prompt holds the goal, the symbols, what the condition shows, and the
 Per maze:
 
 - **Completion**: 1 if the agent reached the exit within budget. This is the primary score.
-- **Cost** (OpenRouter-reported, after cache discounts), **input and output tokens**, and **agent steps** (model calls).
+- **Cost**, two ways: *billed* (what OpenRouter charged, after the provider's prompt-cache discount) and *list price* (the same token counts priced at the model's published rates for uncached input, cache reads, cache writes and output, as Artificial Analysis and DeepSWE do). The run header stores the prices used.
+- **Input tokens** with the cache-read and cache-write shares, **output tokens** (reasoning included, as both Artificial Analysis and DeepSWE count them), and **agent steps** (model calls).
 - Moves, SPL (`optimal / max(moves, optimal)` on success), invalid-move rate, revisit rate, tool errors, nudges, and moves per step.
 
 Per (model, effort): completion per condition, and overall completion as mazes solved out of mazes scored, so the headline always matches the solved count. Every leaderboard entry is a (model, reasoning effort) pair, and the dashboard joins a model's efforts into one line.

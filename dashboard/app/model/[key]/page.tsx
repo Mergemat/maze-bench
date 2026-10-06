@@ -70,7 +70,14 @@ export default async function ModelPage({ params }: { params: Params }) {
             label={`${all.solved} of ${all.total} mazes solved${row.scored < row.expected ? ` · ${row.expected - row.scored} not finished` : ""}`}
             accent
           />
-          <Big value={usd(row.perMaze.costUsd, row.usage.costComplete)} label="cost per task" />
+          <Big
+            value={usd(row.perMaze.costUsd, row.usage.costComplete)}
+            label={
+              row.perMaze.listCostUsd === null
+                ? "billed cost per task"
+                : `billed per task · ${usd(row.perMaze.listCostUsd)} at list price · ${pct(row.perMaze.cacheReadShare, 0)}% input from cache`
+            }
+          />
           <Big value={compact(row.perMaze.outputTokens)} label="output tokens per task" />
           <Big value={row.perMaze.steps.toFixed(1)} label="agent steps per task" />
         </div>

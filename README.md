@@ -23,7 +23,7 @@ Full map and map once run at 11×11, 17×17 and 25×25; fog runs at 11×11 and 1
 ## What is reported
 
 - **Completion**: mazes solved out of mazes scored, with a 95% bootstrap interval over mazes.
-- **Cost per maze**, as reported by OpenRouter, including prompt-cache discounts.
+- **Cost per task**, two ways. *Billed* is what OpenRouter charged, including whatever prompt-cache discount the serving provider applied. *List price* prices the same token counts at the model's published rates (uncached input, cache reads, cache writes, output), so it compares models fairly regardless of how their host caches. Runs record cache reads and writes per task; the first sweep predates this and has billed cost only.
 - **Output tokens per maze**, reasoning included.
 - **Agent steps per maze** (model calls). Every step resends the conversation, so steps drive input cost.
 

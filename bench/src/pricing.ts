@@ -6,6 +6,9 @@ export interface Price {
 
 export interface ModelMeta {
   price: Price;
+  /** Cache prices in USD per token; fall back to the input price when the model has none. */
+  cacheRead: number;
+  cacheWrite: number;
   /** Reasoning efforts the model accepts on OpenRouter, e.g. ["low", "medium", "high"]. Empty if it has no effort control. */
   efforts: string[];
   defaultEffort: string | null;
@@ -13,7 +16,7 @@ export interface ModelMeta {
 
 interface CatalogEntry {
   id: string;
-  pricing: { prompt: string; completion: string };
+  pricing: { prompt: string; completion: string; input_cache_read?: string; input_cache_write?: string };
   reasoning?: { supported_efforts?: string[]; default_effort?: string | null } | null;
 }
 
@@ -29,11 +32,19 @@ export async function fetchCatalog(): Promise<Map<string, ModelMeta>> {
       m.id,
       {
         price: { input: Number(m.pricing.prompt), output: Number(m.pricing.completion) },
+        cacheRead: Number(m.pricing.input_cache_read ?? m.pricing.prompt),
+        cacheWrite: Number(m.pricing.input_cache_write ?? m.pricing.prompt),
         efforts: m.reasoning?.supported_efforts ?? [],
         defaultEffort: m.reasoning?.default_effort ?? null,
       },
     ]),
   );
+}
+
+export function listPrice(meta: ModelMeta | undefined) {
+  return meta
+    ? { input: meta.price.input, output: meta.price.output, cacheRead: meta.cacheRead, cacheWrite: meta.cacheWrite }
+    : undefined;
 }
 
 export async function fetchPrices(): Promise<Map<string, Price>> {

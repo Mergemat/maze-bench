@@ -1,6 +1,7 @@
 import type { Scored, Usage } from "@mazebench/core";
 import type { SpendGuard } from "./guard.ts";
 import type { RetryOptions } from "./retry.ts";
+import type { ListPrice } from "./usage.ts";
 
 /** What one attempt at one item produced, before it is written to the results file. */
 export interface Attempt {
@@ -24,6 +25,8 @@ export interface CallOptions {
   retry?: Omit<RetryOptions, "onRetry">;
   /** Shared spending cap; the episode stops once it trips. */
   guard?: SpendGuard;
+  /** List prices for the fixed-price cost. */
+  price?: ListPrice;
 }
 
 /** Keep the end of long replies: that is where the answer line is. */

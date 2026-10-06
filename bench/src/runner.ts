@@ -19,6 +19,7 @@ import { aiSdkVersion, gitSha } from "./env.ts";
 import { runAgent } from "./harness/agent.ts";
 import type { SpendGuard } from "./harness/guard.ts";
 import type { CallOptions } from "./harness/types.ts";
+import type { ListPrice } from "./harness/usage.ts";
 import { type Effort, type ModelEntry, subjectKey } from "./models.ts";
 import { createModel } from "./providers.ts";
 import { loadSubjectRuns, RunWriter, runPath, timestampId } from "./storage.ts";
@@ -40,6 +41,8 @@ export interface RunOptions {
   holdoutSalt?: string;
   /** Shared spending cap across runs. */
   guard?: SpendGuard;
+  /** List prices (USD per token) for the fixed-price cost, recorded in the run header. */
+  price?: ListPrice;
   /** Injected in tests. */
   model?: LanguageModel;
   log: (line: string) => void;
@@ -131,6 +134,7 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
       temperature: null,
       concurrency: Math.min(opts.concurrency, jobs.length),
     },
+    ...(opts.price ? { pricing: opts.price } : {}),
     harness: {
       gitSha: gitSha(),
       promptVersion: PROMPT_VERSION,
@@ -162,6 +166,7 @@ export async function runModel(opts: RunOptions): Promise<RunSummary> {
       timeoutMs: opts.timeoutMs,
       onRetry: (msg) => log(`${key} ${ref.itemId} e${epoch}: ${msg}`),
       ...(opts.guard ? { guard: opts.guard } : {}),
+      ...(opts.price ? { price: opts.price } : {}),
     };
     const attempt = await runAgent(model, task, item as MazeItem, call);
 
