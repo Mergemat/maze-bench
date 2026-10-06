@@ -62,12 +62,12 @@ Per maze:
 - **Cost** (OpenRouter-reported, after cache discounts), **input and output tokens**, and **agent steps** (model calls).
 - Moves, SPL (`optimal / max(moves, optimal)` on success), invalid-move rate, revisit rate, tool errors, nudges, and moves per step.
 
-Per (model, effort): completion per condition, and overall completion as the unweighted mean of the three conditions. Every leaderboard entry is a (model, reasoning effort) pair, and the dashboard joins a model's efforts into one line.
+Per (model, effort): completion per condition, and overall completion as mazes solved out of mazes scored, so the headline always matches the solved count. Every leaderboard entry is a (model, reasoning effort) pair, and the dashboard joins a model's efforts into one line.
 
 ## Statistics
 
 - 95% percentile bootstrap over mazes (2,000 resamples, seeded). Repeated attempts on a maze are averaged within the maze first.
-- The overall interval uses a bootstrap stratified by condition.
+- The overall interval is a bootstrap over all scored mazes.
 - Comparisons use paired differences over shared mazes. The table marks a model "tied with #1" when that interval includes zero.
 - pass@k and pass^k use the unbiased estimators when there are at least k attempts per maze.
 

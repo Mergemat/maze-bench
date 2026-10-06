@@ -1,7 +1,6 @@
 import type { ItemResult, RunFile, Subject } from "./schema.ts";
 import {
   bootstrapMean,
-  bootstrapStratified,
   bootstrapValues,
   type Interval,
   mean,
@@ -65,7 +64,7 @@ export interface SubjectSummary {
   scored: number;
   expected: number;
   errors: number;
-  /** Composite over all suite tasks, or null if any task has no scored items. */
+  /** Completion over all scored mazes (solved / scored), or null if any task has no scored items. */
   composite: Interval | null;
   tasks: Partial<Record<TaskId, TaskSummary>>;
   /** Per scored maze, across all conditions. */
@@ -235,7 +234,8 @@ export function aggregate(runs: readonly RunFile[], suite: Suite): SubjectSummar
       scored: scored.length,
       expected: refs.length * epochs,
       errors: items.filter((i) => i.status === "error").length,
-      composite: complete ? bootstrapStratified(strata) : null,
+      // Completion is mazes solved / mazes scored, so the headline matches the solved count.
+      composite: complete ? bootstrapValues(strata.flat()) : null,
       tasks,
       perMaze: perMaze(scored),
       usage: {
@@ -278,5 +278,5 @@ export function pairedComposite(
     n += diffs.length;
     strata.push(diffs);
   }
-  return { ...bootstrapStratified(strata, { seed: 7 }), n };
+  return { ...bootstrapValues(strata.flat(), { seed: 7 }), n };
 }

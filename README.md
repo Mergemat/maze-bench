@@ -22,7 +22,7 @@ Full map and map once run at 11×11, 17×17 and 25×25; fog runs at 11×11 and 1
 
 ## What is reported
 
-- **Completion**: share of mazes solved, with a 95% bootstrap interval. The headline averages the three conditions equally.
+- **Completion**: mazes solved out of mazes scored, with a 95% bootstrap interval over mazes.
 - **Cost per maze**, as reported by OpenRouter, including prompt-cache discounts.
 - **Output tokens per maze**, reasoning included.
 - **Agent steps per maze** (model calls). Every step resends the conversation, so steps drive input cost.
