@@ -21,6 +21,8 @@ export interface EffortPoint {
   lo: number;
   hi: number;
   x: number;
+  /** Extra rows for the tooltip, e.g. cost, output tokens and steps per task. */
+  details?: { label: string; value: string; active?: boolean }[];
 }
 
 // One dither-kit colour per lab, fixed so a lab keeps its colour whatever else is shown.
@@ -250,10 +252,10 @@ export function EffortChart({
             </svg>
             {hover ? (
               <div
-                className="pointer-events-none absolute z-10 w-44 rounded border bg-popover/95 px-2 py-1.5 font-mono text-[11px] shadow-lg backdrop-blur"
+                className="pointer-events-none absolute z-10 w-52 rounded border bg-popover/95 px-2 py-1.5 font-mono text-[11px] shadow-lg backdrop-blur"
                 style={{
-                  left: Math.min(m.left + x(hover.x) + 10, width - 184),
-                  top: Math.min(Math.max(0, m.top + y(hover.score) - 30), height - 70),
+                  left: Math.min(m.left + x(hover.x) + 10, width - 216),
+                  top: Math.min(Math.max(0, m.top + y(hover.score) - 30), height - 110),
                 }}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -266,10 +268,15 @@ export function EffortChart({
                   <span>Completion</span>
                   <span className="text-foreground">{pct(hover.score, 0)}%</span>
                 </div>
-                <div className="flex justify-between text-muted-foreground">
-                  <span>{metric}</span>
-                  <span className="text-foreground">{format(hover.x)}</span>
-                </div>
+                {(hover.details ?? [{ label: metric, value: format(hover.x), active: true }]).map((d) => (
+                  <div
+                    key={d.label}
+                    className={`flex justify-between ${d.active ? "text-foreground" : "text-muted-foreground"}`}
+                  >
+                    <span>{d.label}</span>
+                    <span>{d.value}</span>
+                  </div>
+                ))}
               </div>
             ) : null}
           </>

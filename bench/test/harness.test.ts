@@ -30,6 +30,7 @@ describe("agent harness", () => {
     expect(a.scored.metrics.moves).toBe(route.length);
     expect(a.scored.metrics.spl).toBe(1);
     expect(a.scored.metrics.movesPerCall).toBe(route.length);
+    expect(a.scored.metrics.peakContext).toBe(100);
     expect(a.usage).toEqual({ inputTokens: 100, outputTokens: 20, reasoningTokens: 5, costUsd: 0.001 });
     expect(a.providers).toEqual(["MockCloud"]);
   });

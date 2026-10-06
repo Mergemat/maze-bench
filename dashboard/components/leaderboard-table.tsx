@@ -17,9 +17,9 @@ export function LeaderboardTable({ rows }: { rows: Row[] }) {
                 {TASKS[t].title}
               </th>
             ))}
-            <th className="px-3 py-2.5 text-right font-normal">$ / maze</th>
-            <th className="px-3 py-2.5 text-right font-normal">Output tokens / maze</th>
-            <th className="px-3 py-2.5 text-right font-normal">Steps / maze</th>
+            <th className="px-3 py-2.5 text-right font-normal">$ / task</th>
+            <th className="px-3 py-2.5 text-right font-normal">Output tokens / task</th>
+            <th className="px-3 py-2.5 text-right font-normal">Steps / task</th>
             <th className="px-3 py-2.5 text-right font-normal" title="Mazes scored out of the suite">
               Mazes
             </th>
