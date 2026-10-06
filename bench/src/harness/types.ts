@@ -35,5 +35,5 @@ export function clip(text: string, max = 4000): string {
 }
 
 export function errorScored(): Scored {
-  return { score: 0, outcome: "stalled", metrics: {} };
+  return { score: 0, outcome: "gave_up", metrics: {} };
 }

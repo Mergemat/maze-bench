@@ -8,7 +8,7 @@ Dashboard: https://maze-bench.vercel.app · Design: [docs/design.md](docs/design
 
 ## The task
 
-An agent gets a maze and one tool, `move`, which takes a list of moves (`["R", "R", "D"]`). It has to reach the exit within twice as many moves as there are open tiles. The agent can send a whole planned route in one step or feel its way one move at a time, so good planning shows up as fewer steps and fewer tokens.
+An agent gets a maze and one tool, `move`, which takes a list of moves (`["R", "R", "D"]`). There is no move limit: the agent succeeds by reaching the exit and fails by stopping before it. The agent can send a whole planned route in one step or feel its way one move at a time, so good planning shows up as fewer steps and fewer tokens.
 
 The only thing that changes between conditions is what the agent sees:
 
@@ -18,7 +18,7 @@ The only thing that changes between conditions is what the agent sees:
 | **Map once** | The map once at the start, then only whether each move worked | Planning and keeping track of position from memory |
 | **Fog** | A 3×3 view after every move, no coordinates | Exploring and remembering where it has been |
 
-Full map and map once run at 11×11, 17×17 and 25×25; fog runs at 11×11 and 17×17. That is 9 mazes per condition and size, 72 per model and effort setting. Fog at 25×25 was dropped from the first sweep because those episodes did not fit its budget.
+Suite `core@3.0.0`: full map and map once run at 51×51; fog runs at 11×11, 25×25 and 51×51. That is 9 mazes per condition and size, 45 per model and effort setting. Sides are odd because walls sit between cells.
 
 ## What is reported
 
@@ -31,15 +31,15 @@ Each model runs at several reasoning-effort settings, and the dashboard joins th
 
 ## Methodology
 
-- **Mazes** come from a seeded depth-first carver with a few extra loops. Start and exit come from the seed and are at least moderately far apart. Every maze is rebuilt from `(suite, condition, size, index)`, and a committed manifest of item hashes fails CI if mazes or prompts change without a suite version bump.
-- **Agent loop.** The agent is a standard AI SDK `ToolLoopAgent`, and the full conversation (reasoning included) stays in context. A batch stops at the first wall or at the exit. If the agent stops calling the tool, it gets up to three nudges.
-- **Baselines** run on the same mazes: BFS, a random walk, and a right-hand wall follower that needs no map and no memory.
+- **Mazes** come from Wilson's algorithm, which draws a uniformly random perfect maze from the seed: many short branches and dead ends (about a quarter of cells are forks), and one route between any two tiles. Start and exit come from the seed and are at least moderately far apart. Every maze is rebuilt from `(suite, condition, size, index)`, and a committed manifest of item hashes fails CI if mazes or prompts change without a suite version bump.
+- **Agent loop.** The agent is a standard AI SDK `ToolLoopAgent`, and the full conversation (reasoning included) stays in context. A batch stops at the first wall or at the exit. The episode ends when the agent reaches the exit or replies without calling the tool; there is no move or step limit. The only stop besides those is the optional `--max-cost` spending cap.
+- **Baselines** run on the same mazes: BFS, a random walk, and a right-hand wall follower that needs no map and no memory. With no move limit all three reach every exit, so they set the efficiency scale rather than the completion scale: on 51×51 full-map mazes the wall follower takes about 1,300 moves (SPL 0.12) and the random walk about 255,000.
 - **Statistics.** Bootstrap intervals over mazes, paired comparison to the leader on shared mazes, and pass@k and pass^k when there are several attempts per maze.
 - **Settings.** Models run through OpenRouter. Temperature is left at the provider default, and the serving provider is recorded for every call. API errors are retried and never counted as failures.
 
 ## Results
 
-First sweep on `core@2.0.0` (72 tasks per model and effort), from `bun run bench report`:
+`core@3.0.0` has no model runs yet. The first sweep ran on `core@2.0.0`: depth-first mazes up to 25×25, 72 tasks per model and effort, and a move cap of twice the open tiles. Its results stay in `results/core@2.0.0/` and are not comparable with 3.0.0:
 
 | Model | Completion (95% CI) | Full map | Map once | Fog | $ / task | Output tokens / task | Steps / task |
 |---|---|---|---|---|---|---|---|
@@ -51,7 +51,7 @@ First sweep on `core@2.0.0` (72 tasks per model and effort), from `bun run bench
 | _Wall follower_ | 95.8 (91.7–100.0) | 96.3 | 92.6 | 100.0 | – | – | – |
 | _Random walk_ | 1.4 (0.0–4.2) | 3.7 | 0.0 | 0.0 | – | – | – |
 
-Reasoning effort is the biggest lever: GPT-6 Luna goes from 26% at low effort to 75% at high. Fog separates the models: GLM-5.3 Flash solves every full-map task at high effort but only 17% in fog. No model beats the wall follower yet. Nine long tasks were stopped by the spending cap and count as not solved (outcome `spend_limit` in the results).
+Reasoning effort is the biggest lever: GPT-6 Luna goes from 26% at low effort to 75% at high. Fog separates the models: GLM-5.3 Flash solves every full-map task at high effort but only 17% in fog. No model beat the wall follower, which solved 96% within the cap. Those mazes turned out too easy, which led to 3.0.0: larger Wilson mazes, and no move cap.
 
 Version 1 results (December 2025) used a different harness and are not comparable. They remain in git history at commit `c55850a`.
 
@@ -64,7 +64,7 @@ bun install
 cp bench/.env.example bench/.env   # add OPENROUTER_API_KEY
 
 bun run bench models                                         # registry with live OpenRouter prices
-bun run bench run --model gpt-6-luna --suite smoke           # 10 mazes, one per condition and size
+bun run bench run --model gpt-6-luna --suite smoke           # 5 mazes, one per condition and size
 bun run bench run --model claude-sonnet-5.5 --efforts low,medium,high,xhigh   # core, at the efforts the model supports
 bun run bench run --sweep --resume                           # every model in the lineup
 bun run bench estimate --sweep --efforts low,medium,high,xhigh   # cost estimate from smoke runs
@@ -101,7 +101,8 @@ docs            research notes and design
 
 - No human baseline yet.
 - Text only.
-- A simple wall follower solves most mazes, so read completion together with steps and tokens.
+- With no move limit, completion only shows whether a model gives up. Read it together with steps, tokens and cost.
+- A model that never stops can run until the spending cap; use `--max-cost` on every sweep.
 - Open-weight models can behave differently depending on which OpenRouter provider serves them.
 - The dashboard relaxes two TypeScript flags (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), because the vendored dither-kit components do not compile under them.
 
@@ -112,7 +113,7 @@ docs            research notes and design
   author  = {Omarov, Bagautdin},
   title   = {MazeBench: LLM agents in procedurally generated text mazes},
   year    = {2026},
-  version = {2.0.0},
+  version = {3.0.0},
   url     = {https://github.com/Mergemat/maze-bench}
 }
 ```

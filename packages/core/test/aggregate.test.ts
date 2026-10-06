@@ -17,7 +17,7 @@ function header(key: string, startedAt: string, epochs = 1): RunHeader {
     type: "run",
     schemaVersion: SCHEMA_VERSION as "2.0.0",
     runId: `${key}-${startedAt}`,
-    suite: { id: "smoke", version: "2.0.0", split: "public" },
+    suite: { id: "smoke", version: SMOKE_SUITE.version, split: "public" },
     subject: {
       kind: "model",
       key,
@@ -72,7 +72,7 @@ describe("aggregate", () => {
     expect(first?.perMaze.costUsd).toBeCloseTo(0.001);
     expect(first?.perMaze).toMatchObject({ outputTokens: 5, steps: 1 });
     expect(first?.tasks.fog?.perMaze.steps).toBe(1);
-    expect(first?.tasks.full?.levels.map((l) => l.level)).toEqual([1, 2, 3]);
+    expect(first?.tasks.full?.levels.map((l) => l.level)).toEqual([3]);
   });
 
   test("composite is null when a task is missing", () => {

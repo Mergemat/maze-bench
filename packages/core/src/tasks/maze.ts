@@ -1,6 +1,6 @@
 import { shortestPath } from "../bfs.ts";
 import { generateMaze, placeStartGoal } from "../generate.ts";
-import { CLOCKWISE, countOpen, DIRS, type Dir, isOpen, type Pos, posKey, samePos, step } from "../grid.ts";
+import { CLOCKWISE, DIRS, type Dir, isOpen, type Pos, posKey, samePos, step } from "../grid.ts";
 import { localView, renderAscii } from "../render.ts";
 import { Rng } from "../rng.ts";
 import type {
@@ -25,7 +25,7 @@ export function generateItem({ level, seed }: ItemContext): MazeItem {
   const rng = new Rng(seed);
   const tiles = generateMaze({ cells: level.cells, braid: level.braid }, rng);
   const { start, goal, distance } = placeStartGoal(tiles, rng);
-  return { tiles, start, goal, budget: 2 * countOpen(tiles), optimal: distance };
+  return { tiles, start, goal, optimal: distance };
 }
 
 /** The maze an agent is walking through. Counts moves, blocked moves and revisits. */
@@ -47,12 +47,9 @@ export class MazeEnv {
     this.visits.set(posKey(item.start), 1);
   }
 
+  /** The episode ends only at the exit (or when the agent stops); there is no move limit. */
   get done(): boolean {
-    return this.reached || this.moves >= this.item.budget;
-  }
-
-  get movesLeft(): number {
-    return Math.max(0, this.item.budget - this.moves);
+    return this.reached;
   }
 
   get uniqueVisited(): number {
@@ -73,7 +70,7 @@ export class MazeEnv {
     ]);
   }
 
-  /** One move. Returns whether it moved; a blocked move still uses up budget. */
+  /** One move. Returns whether it moved; a blocked move still counts as a move. */
   move(dir: Dir): "moved" | "blocked" {
     this.moves++;
     this.log.push(dir);
@@ -95,7 +92,7 @@ export class MazeEnv {
     return "moved";
   }
 
-  /** Run moves in order, stopping after the first blocked move, at the goal, or when the budget runs out. */
+  /** Run moves in order, stopping after the first blocked move or at the exit. */
   moveBatch(dirs: readonly Dir[]): BatchResult {
     const steps: MoveReport[] = [];
     for (const dir of dirs) {
@@ -134,13 +131,12 @@ export function replayLog(item: MazeItem, log: readonly Dir[]): { positions: Pos
   return { positions, blocked };
 }
 
-// The system prompt states the goal, what the agent sees and the budget. The tool description is
-// the single place the move mechanics live. Strategy (how far to plan, how many moves per call,
-// how to remember the maze) is left entirely to the model.
+// The system prompt states the goal and what the agent sees. The tool description is the single
+// place the move mechanics live. Strategy (how far to plan, how many moves per call, how to
+// remember the maze) is left entirely to the model. There is no move limit: the episode ends at
+// the exit or when the agent stops calling the tool.
 const SYMBOLS = "`#` wall · `.` floor · `@` you · `G` exit";
 
-// The move budget (twice the open tiles) is a hidden safety stop so a looping agent cannot run
-// forever. It is not announced, so it does not shape how the model plays.
 const SYSTEM: Record<TaskId, string> = {
   full: `Reach the exit of the maze.\n\n${SYMBOLS}. Up is the top of the map.`,
   once: `Reach the exit of the maze.\n\n${SYMBOLS}. Up is the top of the map. The map is shown once, at the start.`,
@@ -160,15 +156,10 @@ export interface MazeTask extends TaskInfo {
   createEnv(item: MazeItem): MazeEnv;
   prompt(item: MazeItem, env: MazeEnv): Prompt;
   toolDescription: string;
-  /** Sent when the agent stops without calling the tool. */
-  nudge: string;
-  maxNudges: number;
   scoreEpisode(item: MazeItem, env: MazeEnv, end: EpisodeEnd): Scored;
   /** Next move for a baseline policy. */
   baselinePolicy(kind: BaselineKind, item: MazeItem, rng: Rng): (env: MazeEnv) => Dir;
 }
-
-const OUTCOME = { goal: "success", budget: "budget_exhausted", stalled: "stalled", truncated: "truncated" } as const;
 
 function makeTask(id: TaskId, title: string, summary: string): MazeTask {
   return {
@@ -184,17 +175,14 @@ function makeTask(id: TaskId, title: string, summary: string): MazeTask {
     toolDescription:
       "Walk through the maze. Takes any number of moves (U up, D down, L left, R right) and runs them in order, " +
       `stopping at the first wall or at the exit. Returns ${TOOL_RETURNS[id]} and whether you reached the exit.`,
-    nudge: "Continue.",
-    maxNudges: 3,
     scoreEpisode(item, env, end) {
       const success = env.reached;
       const moved = env.moves - env.blocked;
       return {
         score: success ? 1 : 0,
-        outcome: success ? "success" : OUTCOME[end],
+        outcome: success ? "success" : end,
         metrics: {
           moves: env.moves,
-          budget: item.budget,
           optimal: item.optimal,
           spl: spl(success, item.optimal, moved),
           invalidRate: env.moves === 0 ? 0 : env.blocked / env.moves,

@@ -9,8 +9,8 @@ import { UsageMeter } from "./usage.ts";
  * One maze, run as a standard AI SDK agent: a `ToolLoopAgent` with one `move` tool that takes a
  * batch of moves, and the full conversation (reasoning included) in context. The task decides
  * what the agent sees (full map, map once, or a 3x3 fog view).
- * The harness only adds what a benchmark needs on top: a move budget, a cap on model calls,
- * a few nudges when the agent stops without reaching the goal, and per-call accounting.
+ * Success is reaching the exit. If the agent stops calling the tool before that, it gave up.
+ * There is no move or step limit; the only outside stop is the shared --max-cost guard.
  */
 export async function runAgent(
   model: LanguageModel,
@@ -22,10 +22,7 @@ export async function runAgent(
   const started = performance.now();
   const env = task.createEnv(item);
   const prompt = task.prompt(item, env);
-  // One move per call is the worst case; slack covers calls that only produce bad tool input.
-  const maxSteps = env.movesLeft + task.maxNudges + 10;
   let toolErrors = 0;
-  let nudges = 0;
   let lastText = "";
   let finishReason: string | undefined;
 
@@ -44,14 +41,15 @@ export async function runAgent(
   };
 
   const episodeOver: StopCondition<typeof tools> = () => env.done;
-  const callCap: StopCondition<typeof tools> = () => meter.calls >= maxSteps;
   const overBudget: StopCondition<typeof tools> = () => opts.guard?.tripped ?? false;
 
   const agent = new ToolLoopAgent({
     model,
     instructions: prompt.system,
     tools,
-    stopWhen: [episodeOver, callCap, overBudget],
+    // These replace the SDK's default step limit: the loop runs until the exit, the agent stops
+    // calling the tool, or the spending guard trips.
+    stopWhen: [episodeOver, overBudget],
     maxOutputTokens: opts.maxOutputTokens,
     maxRetries: opts.retry?.retries ?? 4,
     onStepFinish: (step) => {
@@ -62,12 +60,9 @@ export async function runAgent(
     },
   });
 
-  let messages: ModelMessage[] = [{ role: "user", content: prompt.user }];
-
   const finish = (end: EpisodeEnd): Attempt => {
     const scored = task.scoreEpisode(item, env, end);
     scored.metrics.toolErrors = toolErrors;
-    scored.metrics.nudges = nudges;
     scored.metrics.movesPerCall = meter.calls === 0 ? 0 : Number(scored.metrics.moves ?? 0) / meter.calls;
     scored.metrics.peakContext = meter.peakInputTokens;
     return {
@@ -82,47 +77,23 @@ export async function runAgent(
     };
   };
 
-  // A task stopped by --max-cost counts as not solved, like one that runs out of moves: every
-  // model gets the same tasks and the score is what it solved. The outcome records why.
-  const stopped = (): Attempt => {
-    const scored = task.scoreEpisode(item, env, "budget");
-    return {
-      status: "scored",
-      scored: { ...scored, score: 0, outcome: "spend_limit" },
-      usage: meter.toUsage(opts.price),
-      calls: meter.calls,
-      providers: [...meter.providers],
-      latencyMs: Math.round(performance.now() - started),
-    };
-  };
-
   try {
-    while (true) {
-      if (opts.guard?.tripped) {
-        return stopped();
-      }
-      const res = await agent.generate({ messages, timeout: { stepMs: opts.timeoutMs } });
-      messages = [...messages, ...res.response.messages];
-      finishReason = res.finishReason;
-      if (res.text) {
-        lastText = res.text;
-      }
-      if (env.reached) {
-        return finish("goal");
-      }
-      if (opts.guard?.tripped) {
-        return stopped();
-      }
-      if (env.done || meter.calls >= maxSteps) {
-        return finish("budget");
-      }
-      // The agent stopped on its own: the model replied without calling the tool.
-      nudges++;
-      if (nudges > task.maxNudges) {
-        return finish(res.finishReason === "length" ? "truncated" : "stalled");
-      }
-      messages = [...messages, { role: "user", content: task.nudge }];
+    if (opts.guard?.tripped) {
+      // A task stopped by --max-cost counts as not solved; the outcome records why.
+      return finish("spend_limit");
     }
+    const messages: ModelMessage[] = [{ role: "user", content: prompt.user }];
+    const res = await agent.generate({ messages, timeout: { stepMs: opts.timeoutMs } });
+    finishReason = res.finishReason;
+    lastText = res.text;
+    if (env.reached) {
+      return finish("success");
+    }
+    if (opts.guard?.tripped) {
+      return finish("spend_limit");
+    }
+    // The agent stopped calling the tool without reaching the exit.
+    return finish(res.finishReason === "length" ? "truncated" : "gave_up");
   } catch (raw) {
     const error = classify(raw);
     return {

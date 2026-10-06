@@ -13,15 +13,16 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: `Method · ${BENCH_NAME}` };
 
-function examplePrompt(task: TaskId): string {
-  const ref = enumerateItems(CORE_SUITE).find((r) => r.task === task && r.level.level === 1 && r.index === 1);
+/** The prompt of the first maze in the condition's smallest size. */
+function examplePrompt(task: TaskId): { size: string; text: string } | null {
+  const ref = enumerateItems(CORE_SUITE).find((r) => r.task === task && r.index === 1);
   if (!ref) {
-    return "";
+    return null;
   }
   const t = getTask(task);
   const item = buildItem(ref) as MazeItem;
   const p = t.prompt(item, t.createEnv(item));
-  return `[system]\n${p.system}\n\n[user]\n${p.user}`;
+  return { size: sizeLabel(ref.level), text: `[system]\n${p.system}\n\n[user]\n${p.user}` };
 }
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -41,22 +42,29 @@ export default function Method() {
 
       <section className="space-y-4">
         <H2>Three conditions</H2>
-        {(Object.keys(TASKS) as TaskId[]).map((t) => (
-          <div key={t} className="space-y-2">
-            <p>
-              <span className="font-medium">{TASKS[t].title}.</span>{" "}
-              <span className="text-muted-foreground">{TASKS[t].summary}</span>
-            </p>
-            <details className="rounded-lg border bg-card">
-              <summary className="cursor-pointer px-4 py-2 text-muted-foreground text-xs">Prompt on a 7×7 maze</summary>
-              <pre className="overflow-x-auto px-4 pb-4 font-mono text-xs leading-relaxed">{examplePrompt(t)}</pre>
-            </details>
-          </div>
-        ))}
+        {(Object.keys(TASKS) as TaskId[]).map((t) => {
+          const example = examplePrompt(t);
+          return (
+            <div key={t} className="space-y-2">
+              <p>
+                <span className="font-medium">{TASKS[t].title}.</span>{" "}
+                <span className="text-muted-foreground">{TASKS[t].summary}</span>
+              </p>
+              {example ? (
+                <details className="rounded-lg border bg-card">
+                  <summary className="cursor-pointer px-4 py-2 text-muted-foreground text-xs">
+                    Prompt on a {example.size} maze
+                  </summary>
+                  <pre className="overflow-x-auto px-4 pb-4 font-mono text-xs leading-tight">{example.text}</pre>
+                </details>
+              ) : null}
+            </div>
+          );
+        })}
         <p className="text-muted-foreground text-sm">
           The tool takes a list of moves, so the agent can plan a whole route in one step or feel its way one move at a
-          time. Planning shows up as fewer steps. A batch stops at the first wall or at the exit. The agent gets twice
-          as many moves as there are open tiles.
+          time. Planning shows up as fewer steps. A batch stops at the first wall or at the exit. There is no move
+          limit: the agent succeeds by reaching the exit and fails by stopping before it.
         </p>
       </section>
 
@@ -85,12 +93,13 @@ export default function Method() {
       <section className="space-y-3">
         <H2>Mazes</H2>
         <p>
-          Generated from a seed by a depth-first carver with a few extra loops. Start and exit are drawn from the seed
-          and at least moderately far apart. Sizes:{" "}
+          Generated from a seed with Wilson's algorithm, which draws a uniformly random perfect maze: many short
+          branches and dead ends, one route between any two tiles. Start and exit are drawn from the seed and at least
+          moderately far apart. Sizes:{" "}
           {CORE_SUITE.tasks
             .map((t) => `${TASKS[t.task].title} ${t.levels.map((l) => sizeLabel(l)).join(", ")}`)
             .join("; ")}
-          . 20 mazes per condition and size. Fog stops at 11×11 because its long episodes get expensive.
+          . 9 mazes per condition and size. Sides are odd because walls sit between cells.
         </p>
       </section>
 
@@ -113,7 +122,10 @@ export default function Method() {
         <ul className="list-disc space-y-1.5 pl-5 text-muted-foreground">
           <li>No human baseline yet.</li>
           <li>Text only.</li>
-          <li>The wall follower solves most mazes within the budget, so completion alone does not prove planning.</li>
+          <li>
+            With no move limit, even the random walk reaches every exit eventually, so steps, tokens and cost show how
+            well a model planned.
+          </li>
           <li>Open-weight models can behave differently depending on which provider serves them.</li>
         </ul>
       </section>

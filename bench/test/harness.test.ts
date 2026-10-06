@@ -16,7 +16,7 @@ import type { CallOptions } from "../src/harness/types.ts";
 import { MockLanguageModelV4, text, toolCall } from "./mock.ts";
 
 const opts: CallOptions = { maxOutputTokens: 1000, timeoutMs: 10_000, retry: { retries: 1, sleep: async () => {} } };
-const ref = enumerateItems(CORE_SUITE).find((r) => r.itemId === "full/L1/0");
+const ref = enumerateItems(CORE_SUITE).find((r) => r.itemId === "fog/L1/0");
 const item = buildItem(ref as never) as MazeItem;
 const route = movesFromPath(shortestPath(item.tiles, item.start, item.goal) ?? []);
 
@@ -77,12 +77,25 @@ describe("agent harness", () => {
     expect(a.calls).toBe(2);
   });
 
-  test("stalls after repeated replies without a tool call", async () => {
-    const model = new MockLanguageModelV4({ doGenerate: async () => text("I am thinking.") });
-    const task = getTask("fog");
-    const a = await runAgent(model, task, item, opts);
-    expect(a.scored.outcome).toBe("stalled");
-    expect(a.calls).toBe(task.maxNudges + 1);
+  test("an agent that stops calling the tool has given up", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: async () => text("I cannot find a way out.") });
+    const a = await runAgent(model, getTask("fog"), item, opts);
+    expect(a.scored).toMatchObject({ score: 0, outcome: "gave_up" });
+    // No nudges: one reply without a tool call ends the episode.
+    expect(a.calls).toBe(1);
+  });
+
+  test("there is no step limit", async () => {
+    // Walk back and forth 150 times before taking the route: far past the SDK's default 20 steps.
+    let i = 0;
+    const open = openDirs(item.tiles, item.start)[0] as string;
+    const back = ({ U: "D", D: "U", L: "R", R: "L" } as Record<string, string>)[open] as string;
+    const model = new MockLanguageModelV4({
+      doGenerate: async () => (i++ < 150 ? toolCall(`w${i}`, open, back) : toolCall("go", ...route)),
+    });
+    const a = await runAgent(model, getTask("fog"), item, opts);
+    expect(a.scored.outcome).toBe("success");
+    expect(a.calls).toBe(151);
   });
 
   test("invalid tool input is counted and does not use a move", async () => {

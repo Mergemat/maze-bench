@@ -18,13 +18,15 @@ An agent must reach the exit of a maze. It has one tool:
 move({ moves: ["R", "R", "D"] })
 ```
 
-The moves run in order. The result reports, for each move that ran, `moved` or `blocked`, then `goal_reached` and `moves_left`. A batch stops early at the first blocked move or at the exit. The move budget is twice the number of open tiles. A blocked move uses up budget.
+The moves run in order. The result reports, for each move that ran, `moved` or `blocked`, then `goal_reached`. A batch stops early at the first blocked move or at the exit. A blocked move counts as a move.
 
-The loop is a standard AI SDK `ToolLoopAgent`, with the full conversation (reasoning included) in context. If the agent replies without calling the tool, the harness sends "Continue." up to three times, and then ends the episode as `stalled`. Model calls are capped at the move budget plus a small margin.
+The loop is a standard AI SDK `ToolLoopAgent`, with the full conversation (reasoning included) in context. There is no move or step limit. Success is reaching the exit. Failure is stopping before it: if the agent replies without calling the tool, the episode ends as `gave_up`, with no nudge to continue. The only other stop is the run's `--max-cost` spending cap.
+
+Earlier versions capped moves at twice the open tiles and nudged a silent agent with "Continue." up to three times. Both were removed in 3.0.0: the cap decided outcomes that had nothing to do with whether the model could find the exit, and the nudges kept going agents that had chosen to stop.
 
 ## Prompt
 
-The system prompt holds the goal, the symbols, what the condition shows, and the move budget. The tool description is the single place the move mechanics are explained. The prompt gives no strategy: how far ahead to plan, how many moves to send per call and how to keep track of the maze are left to the model. The user message is the map, or in fog the first 3×3 view, with no other text. The methodology page renders the exact prompts from the code.
+The system prompt holds the goal, the symbols and what the condition shows. The tool description is the single place the move mechanics are explained. The prompt gives no strategy: how far ahead to plan, how many moves to send per call and how to keep track of the maze are left to the model. The user message is the map, or in fog the first 3×3 view, with no other text. The methodology page renders the exact prompts from the code.
 
 ## Conditions
 
@@ -38,30 +40,32 @@ The system prompt holds the goal, the symbols, what the condition shows, and the
 
 ## Mazes
 
-- Grid of `(2n+1) x (2n+1)` tiles, carved by a seeded depth-first backtracker. Then each dead end is opened into a neighbour with probability 0.1, adding a few loops.
+- Grid of `(2n+1) x (2n+1)` tiles. Wilson's algorithm (loop-erased random walks) carves a uniform spanning tree over the `n x n` cells, so every perfect maze of that size is equally likely. About 24% of cells are forks and 29% dead ends, against roughly 10% each for the depth-first backtracker used up to 2.0.0, whose long corridors made mazes easy to read. The suites add no loops (`braid = 0`), so there is exactly one route between any two tiles.
 - Start is a random cell centre. The exit is a random cell centre at or beyond the 60th percentile of BFS distance from the start.
 - RNG: `mulberry32` seeded from a 32-bit FNV-1a hash of `"{namespace}/{condition}/L{level}/{index}"`, plus an optional private salt for a held-out split.
 
-## Suite `core@2.0.0`
+## Suite `core@3.0.0`
 
 | Condition | Sizes | Mazes per size | Mazes |
 |---|---|---|---|
-| Full map | 11×11, 17×17, 25×25 | 9 | 27 |
-| Map once | 11×11, 17×17, 25×25 | 9 | 27 |
-| Fog | 11×11, 17×17 | 9 | 18 |
+| Full map | 51×51 | 9 | 9 |
+| Map once | 51×51 | 9 | 9 |
+| Fog | 11×11, 25×25, 51×51 | 9 | 27 |
 
-72 mazes per (model, effort). Fog at 25×25 was planned but dropped from the first sweep: those episodes run for hundreds of steps, every step resends the conversation, and finishing them did not fit the budget. Sides are always odd because walls sit between cells. 7×7 was dropped after the first run: every model solved full-map 7×7 in a single step, so it carried no signal. An earlier draft had 200 mazes, but most of them were small mazes that every model solved.
+45 mazes per (model, effort). Sides are always odd because walls sit between cells, so the largest size is 51×51 (25×25 cells) rather than 50×50. Full map and map once run only at the largest size, because on the 2.0.0 sizes the strongest settings solved nearly every full-map maze. Fog keeps a ladder of sizes, since without a map even 11×11 is hard.
 
-`smoke@2.0.0` reuses the core seeds: one maze per condition and size, 10 in total. It checks the harness end to end, and its token counts feed the cost estimate.
+`core@2.0.0` (depth-first mazes, full map and map once at 11×11, 17×17 and 25×25, fog at 11×11 and 17×17, 72 mazes, move cap) holds the first sweep. Its results stay in the repo but do not compare with 3.0.0. An earlier draft had 200 mazes, but most of them were small mazes that every model solved.
+
+`smoke@3.0.0` reuses the core seeds: one maze per condition and size, 5 in total. It checks the harness end to end, and its token counts feed the cost estimate.
 
 ## Metrics
 
 Per maze:
 
-- **Completion**: 1 if the agent reached the exit within budget. This is the primary score.
+- **Completion**: 1 if the agent reached the exit. This is the primary score.
 - **Cost**, two ways: *billed* (what OpenRouter charged, after the provider's prompt-cache discount) and *list price* (the same token counts priced at the model's published rates for uncached input, cache reads, cache writes and output, as Artificial Analysis and DeepSWE do). The run header stores the prices used.
 - **Input tokens** with the cache-read and cache-write shares, **output tokens** (reasoning included, as both Artificial Analysis and DeepSWE count them), and **agent steps** (model calls).
-- Moves, SPL (`optimal / max(moves, optimal)` on success), invalid-move rate, revisit rate, tool errors, nudges, and moves per step.
+- Moves, SPL (`optimal / max(moves, optimal)` on success), invalid-move rate, revisit rate, tool errors, moves per step and peak context (the largest input of any call).
 
 Per (model, effort): completion per condition, and overall completion as mazes solved out of mazes scored, so the headline always matches the solved count. Every leaderboard entry is a (model, reasoning effort) pair, and the dashboard joins a model's efforts into one line.
 
@@ -76,13 +80,13 @@ Per (model, effort): completion per condition, and overall completion as mazes s
 
 These run on the same mazes through the same scorer:
 
-| Baseline | What it does | core@2.0.0 completion |
+| Baseline | What it does | Moves per maze (SPL) on core@3.0.0: full / once / fog |
 |---|---|---|
-| BFS | Knows the map and walks the shortest path | 100% |
-| Wall follower | Keeps its right hand on the wall; needs no map and no memory | 95.8% |
-| Random walk | Picks a random open direction each move | 10.8% |
+| BFS | Knows the map and walks the shortest path | optimal (1.0) |
+| Wall follower | Keeps its right hand on the wall; needs no map and no memory | 1,305 (0.12) / 1,201 (0.13) / 499 (0.23) |
+| Random walk | Picks a random open direction each move | 255k (~0) / 164k (~0) / 68k (0.02) |
 
-The wall follower is strong, because twice the open tiles is enough budget to follow walls through most mazes. Completion alone therefore does not show planning. Steps, tokens and SPL show how efficiently a model got there. A CI test enforces that BFS solves every maze.
+With no move limit every baseline reaches every exit, since none of them ever stops. Completion separates models that give up from models that keep going. How well a model planned shows in steps, tokens, cost and SPL. A CI test enforces that BFS solves every maze.
 
 ## Model settings
 
@@ -93,7 +97,7 @@ The wall follower is strong, because twice the open tiles is enough budget to fo
 
 ## Errors
 
-API errors (429, 5xx, timeouts, network) are retried, including failed connections at the fetch level. If they persist, the task is stored with `status: "error"`, is not scored, and is retried by `--resume`. Every other ending is scored, and any ending other than reaching the exit counts as not solved: `budget_exhausted` (move cap), `stalled`, `truncated`, or `spend_limit` (stopped by the `--max-cost` cap, a resource limit like the move cap). Every model gets the same tasks, and the score is how many it solved.
+API errors (429, 5xx, timeouts, network) are retried, including failed connections at the fetch level. If they persist, the task is stored with `status: "error"`, is not scored, and is retried by `--resume`. Every other ending is scored, and any ending other than reaching the exit counts as not solved: `gave_up` (the agent replied without calling the tool), `truncated` (the reply hit the output-token limit), or `spend_limit` (stopped by the `--max-cost` cap). Every model gets the same tasks, and the score is how many it solved.
 
 ## Results schema `2.0.0`
 
