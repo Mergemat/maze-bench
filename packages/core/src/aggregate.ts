@@ -1,13 +1,5 @@
 import type { ItemResult, RunFile, Subject } from "./schema.ts";
-import {
-  bootstrapMean,
-  bootstrapValues,
-  type Interval,
-  mean,
-  passAtK,
-  passHatK,
-  wilson,
-} from "./stats.ts";
+import { bootstrapMean, bootstrapValues, type Interval, mean, passAtK, passHatK, wilson } from "./stats.ts";
 import { enumerateItems, type Suite, suiteKey } from "./suites.ts";
 import type { TaskId } from "./tasks/types.ts";
 

@@ -39,15 +39,19 @@ Each model runs at several reasoning-effort settings, and the dashboard joins th
 
 ## Results
 
-The full sweep has not run yet. Baselines on `core@2.0.0` (`bun run bench report`):
+First sweep on `core@2.0.0` (72 tasks per model and effort), from `bun run bench report`:
 
-| Baseline | Completion % (95% CI) | Full map | Map once | Fog |
-|---|---|---|---|---|
-| BFS | 100.0 (100.0–100.0) | 100.0 | 100.0 | 100.0 |
-| Wall follower | 95.8 (92.9–98.3) | 95.0 | 95.0 | 97.5 |
-| Random walk | 10.8 (6.3–15.8) | 11.3 | 6.3 | 15.0 |
+| Model | Completion (95% CI) | Full map | Map once | Fog | $ / task | Output tokens / task | Steps / task |
+|---|---|---|---|---|---|---|---|
+| GLM-5.3 Flash (high) | 79.2 (69.4–87.5) | 100.0 | 100.0 | 16.7 | 0.027 | 19.6k | 25.7 |
+| GPT-6 Luna (high) | 75.0 (63.9–84.7) | 92.6 | 77.8 | 44.4 | 0.018 | 16.5k | 46.6 |
+| GLM-5.3 Flash (low) | 65.3 (54.2–76.4) | 96.3 | 70.4 | 11.1 | 0.025 | 16.0k | 34.7 |
+| GPT-6 Luna (medium) | 58.3 (47.2–69.4) | 70.4 | 63.0 | 33.3 | 0.017 | 13.8k | 60.3 |
+| GPT-6 Luna (low) | 26.4 (16.7–37.5) | 44.4 | 22.2 | 5.6 | 0.012 | 15.1k | 34.1 |
+| _Wall follower_ | 95.8 (91.7–100.0) | 96.3 | 92.6 | 100.0 | – | – | – |
+| _Random walk_ | 1.4 (0.0–4.2) | 3.7 | 0.0 | 0.0 | – | – | – |
 
-The wall follower solves most mazes within the move budget. Completion alone therefore does not prove planning, which is why steps and tokens sit next to it.
+Reasoning effort is the biggest lever: GPT-6 Luna goes from 26% at low effort to 75% at high. Fog separates the models: GLM-5.3 Flash solves every full-map task at high effort but only 17% in fog. No model beats the wall follower yet. Nine long tasks were stopped by the spending cap and count as not solved (outcome `spend_limit` in the results).
 
 Version 1 results (December 2025) used a different harness and are not comparable. They remain in git history at commit `c55850a`.
 
