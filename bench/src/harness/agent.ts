@@ -69,6 +69,7 @@ export async function runAgent(
     scored.metrics.toolErrors = toolErrors;
     scored.metrics.nudges = nudges;
     scored.metrics.movesPerCall = meter.calls === 0 ? 0 : Number(scored.metrics.moves ?? 0) / meter.calls;
+    scored.metrics.peakContext = meter.peakInputTokens;
     return {
       status: "scored",
       scored,

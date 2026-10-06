@@ -22,7 +22,7 @@ const VIEWS = [
   },
 ] as const;
 
-/** Completion (y) against cost, output tokens or agent steps per maze (x). One line per model across efforts. */
+/** Completion (y) against cost, output tokens or agent steps per task (x). One line per model across efforts. */
 export function Charts({ models }: { models: ChartModel[] }) {
   const [view, setView] = useState<(typeof VIEWS)[number]["id"]>("cost");
   const active = VIEWS.find((v) => v.id === view) ?? VIEWS[0];
@@ -30,7 +30,7 @@ export function Charts({ models }: { models: ChartModel[] }) {
     <section className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-muted-foreground text-sm">
-          Completion vs <span className="text-foreground">{active.tab.toLowerCase()}</span> per maze
+          Completion vs <span className="text-foreground">{active.tab.toLowerCase()}</span> per task
         </p>
         <div role="tablist" className="flex rounded-md border p-0.5">
           {VIEWS.map((v) => (
@@ -53,7 +53,15 @@ export function Charts({ models }: { models: ChartModel[] }) {
       <EffortChart
         key={active.id}
         metric={active.tab}
-        points={models.map((m) => ({ ...m, x: active.x(m) }))}
+        points={models.map((m) => ({
+          ...m,
+          x: active.x(m),
+          details: VIEWS.map((v) => ({
+            label: `${v.tab} / task`,
+            value: v.format(v.x(m)),
+            active: v.id === active.id,
+          })),
+        }))}
         format={active.format}
       />
     </section>

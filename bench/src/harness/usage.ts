@@ -13,12 +13,15 @@ export class UsageMeter {
   cost = 0;
   costMissing = false;
   calls = 0;
+  /** Largest single-call input: the biggest context the model was given. */
+  peakInputTokens = 0;
   readonly providers = new Set<string>();
 
   /** Add one model call and return its reported cost. OpenRouter reports cost and provider in metadata. */
   add(step: StepLike): number {
     this.calls++;
     this.inputTokens += step.usage.inputTokens ?? 0;
+    this.peakInputTokens = Math.max(this.peakInputTokens, step.usage.inputTokens ?? 0);
     this.outputTokens += step.usage.outputTokens ?? 0;
     this.reasoningTokens += step.usage.outputTokenDetails?.reasoningTokens ?? 0;
     const meta = step.providerMetadata?.openrouter as { provider?: string; usage?: { cost?: number } } | undefined;

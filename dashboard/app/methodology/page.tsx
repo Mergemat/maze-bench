@@ -67,13 +67,13 @@ export default function Method() {
             <strong>Completion</strong>: mazes where the agent reached the exit, out of mazes scored.
           </li>
           <li>
-            <strong>Cost</strong> per maze, as reported by OpenRouter, including prompt-cache discounts.
+            <strong>Cost</strong> per task, as reported by OpenRouter, including prompt-cache discounts.
           </li>
           <li>
-            <strong>Output tokens</strong> per maze, reasoning included.
+            <strong>Output tokens</strong> per task, reasoning included.
           </li>
           <li>
-            <strong>Agent steps</strong> per maze: model calls. Every step resends the conversation, so steps drive
+            <strong>Agent steps</strong> per task: model calls. Every step resends the conversation, so steps drive
             input cost.
           </li>
         </ul>
