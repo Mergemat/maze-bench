@@ -8,7 +8,7 @@ import { fillOf, type PixelColor, pixelBloomStyle, pixelPrefersReducedMotion } f
 export interface DitherSeries {
   key: string;
   color: PixelColor;
-  /** Points in plot coordinates (same units as width/height), sorted by x. */
+  /** Points in plot coordinates (same units as width/height), in the order the line visits them. */
   points: { x: number; y: number }[];
 }
 
@@ -61,9 +61,11 @@ export function DitherPlot({
         for (let i = 1; i < pts.length; i++) {
           const a = pts[i - 1] as { x: number; y: number };
           const b = pts[i] as { x: number; y: number };
-          for (let x = Math.round(a.x); x <= Math.round(b.x) && x <= limit; x++) {
-            const t = b.x === a.x ? 1 : (x - a.x) / (b.x - a.x);
-            paintColumn(ctx, x, a.y + (b.y - a.y) * t, rows, seed, {
+          // Segments can run right-to-left when a lower effort costs more; fill the span either way.
+          const [l, r] = a.x <= b.x ? [a, b] : [b, a];
+          for (let x = Math.round(l.x); x <= Math.round(r.x) && x <= limit; x++) {
+            const t = r.x === l.x ? 1 : (x - l.x) / (r.x - l.x);
+            paintColumn(ctx, x, l.y + (r.y - l.y) * t, rows, seed, {
               variant: "gradient",
               intensity: 0,
               dim: area,
