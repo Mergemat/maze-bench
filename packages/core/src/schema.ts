@@ -26,6 +26,10 @@ export const RunHeaderSchema = z.object({
     temperature: z.null(),
     concurrency: z.number().int().positive(),
   }),
+  /** List prices (USD per token) the run was priced at, for the fixed-price cost. */
+  pricing: z
+    .object({ input: z.number(), output: z.number(), cacheRead: z.number(), cacheWrite: z.number() })
+    .optional(),
   harness: z.object({
     gitSha: z.string(),
     promptVersion: z.string(),
@@ -37,9 +41,16 @@ export const RunHeaderSchema = z.object({
 
 export const UsageSchema = z.object({
   inputTokens: z.number(),
+  /** Input tokens served from the provider's prompt cache (a subset of inputTokens). */
+  cacheReadTokens: z.number().optional(),
+  /** Input tokens written to the prompt cache (a subset of inputTokens). */
+  cacheWriteTokens: z.number().optional(),
   outputTokens: z.number(),
   reasoningTokens: z.number(),
+  /** What the provider billed, after any cache discount it applied. */
   costUsd: z.number().nullable(),
+  /** Token counts priced at the run's list prices: comparable across providers. */
+  listCostUsd: z.number().optional(),
 });
 
 const MetricValue = z.union([z.number(), z.boolean(), z.null()]);

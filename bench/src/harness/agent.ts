@@ -74,7 +74,7 @@ export async function runAgent(
       status: "scored",
       scored,
       answer: { text: clip(lastText, 1000), parse: "ok", value: null },
-      usage: meter.toUsage(),
+      usage: meter.toUsage(opts.price),
       calls: meter.calls,
       providers: [...meter.providers],
       latencyMs: Math.round(performance.now() - started),
@@ -89,7 +89,7 @@ export async function runAgent(
     return {
       status: "scored",
       scored: { ...scored, score: 0, outcome: "spend_limit" },
-      usage: meter.toUsage(),
+      usage: meter.toUsage(opts.price),
       calls: meter.calls,
       providers: [...meter.providers],
       latencyMs: Math.round(performance.now() - started),
@@ -128,7 +128,7 @@ export async function runAgent(
     return {
       status: "error",
       scored: errorScored(),
-      usage: meter.toUsage(),
+      usage: meter.toUsage(opts.price),
       calls: meter.calls,
       providers: [...meter.providers],
       latencyMs: Math.round(performance.now() - started),
