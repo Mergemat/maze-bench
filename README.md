@@ -18,7 +18,7 @@ The only thing that changes between conditions is what the agent sees:
 | **Map once** | The map once at the start, then only whether each move worked | Planning and keeping track of position from memory |
 | **Fog** | A 3×3 view after every move, no coordinates | Exploring and remembering where it has been |
 
-Every condition uses the same sizes, 11×11, 17×17 and 25×25, with 9 mazes per condition and size: 81 per model and effort setting.
+Full map and map once run at 11×11, 17×17 and 25×25; fog runs at 11×11 and 17×17. That is 9 mazes per condition and size, 72 per model and effort setting. Fog at 25×25 was dropped from the first sweep because those episodes did not fit its budget.
 
 ## What is reported
 

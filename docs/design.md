@@ -48,9 +48,9 @@ The system prompt holds the goal, the symbols, what the condition shows, and the
 |---|---|---|---|
 | Full map | 11×11, 17×17, 25×25 | 9 | 27 |
 | Map once | 11×11, 17×17, 25×25 | 9 | 27 |
-| Fog | 11×11, 17×17, 25×25 | 9 | 27 |
+| Fog | 11×11, 17×17 | 9 | 18 |
 
-81 mazes per (model, effort), with the same sizes for every condition so they compare directly. Sides are always odd because walls sit between cells. 7×7 was dropped after the first run: every model solved full-map 7×7 in a single step, so it carried no signal. An earlier draft had 200 mazes, but most of them were small mazes that every model solved.
+72 mazes per (model, effort). Fog at 25×25 was planned but dropped from the first sweep: those episodes run for hundreds of steps, every step resends the conversation, and finishing them did not fit the budget. Sides are always odd because walls sit between cells. 7×7 was dropped after the first run: every model solved full-map 7×7 in a single step, so it carried no signal. An earlier draft had 200 mazes, but most of them were small mazes that every model solved.
 
 `smoke@2.0.0` reuses the core seeds: one maze per condition and size, 10 in total. It checks the harness end to end, and its token counts feed the cost estimate.
 

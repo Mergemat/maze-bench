@@ -15,9 +15,9 @@ import {
 describe("suites", () => {
   test("core has the documented size", () => {
     const refs = enumerateItems(CORE_SUITE);
-    expect(refs).toHaveLength(81);
-    expect(new Set(refs.map((r) => r.itemId)).size).toBe(81);
-    expect(new Set(refs.map((r) => r.seed)).size).toBe(81);
+    expect(refs).toHaveLength(72);
+    expect(new Set(refs.map((r) => r.itemId)).size).toBe(72);
+    expect(new Set(refs.map((r) => r.seed)).size).toBe(72);
   });
 
   test("held-out salt changes every seed", () => {
