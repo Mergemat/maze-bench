@@ -37,11 +37,11 @@ describe("generateMaze", () => {
     expect(generateMaze({ cells: 3, braid: 0 }, new Rng(1))).toMatchInlineSnapshot(`
       [
         "#######",
-        "#.....#",
-        "#.###.#",
+        "#...#.#",
+        "###.#.#",
+        "#...#.#",
         "#.#.#.#",
-        "#.#.###",
-        "#.....#",
+        "#.#...#",
         "#######",
       ]
     `);
@@ -82,6 +82,24 @@ describe("generateMaze", () => {
       expect(countOpen(tiles)).toBe(2 * 64 - 1);
       expect(edgeCount(tiles)).toBe(countOpen(tiles) - 1);
     }
+  });
+
+  test("Wilson mazes are bushy: many dead ends and forks", () => {
+    let dead = 0;
+    let forks = 0;
+    let cells = 0;
+    for (let seed = 0; seed < 20; seed++) {
+      const tiles = generateMaze({ cells: 12, braid: 0 }, new Rng(seed));
+      for (const c of cellCenters(12)) {
+        const exits = DIRS.filter((d) => isOpen(tiles, step(c, d))).length;
+        cells++;
+        dead += exits === 1 ? 1 : 0;
+        forks += exits >= 3 ? 1 : 0;
+      }
+    }
+    // A depth-first backtracker gives about 10% of each; a uniform spanning tree about 30% and 24%.
+    expect(dead / cells).toBeGreaterThan(0.25);
+    expect(forks / cells).toBeGreaterThan(0.2);
   });
 
   test("braiding adds loops", () => {

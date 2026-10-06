@@ -22,40 +22,39 @@ export interface Suite {
 /** Maze sizes in cells per side. The tile grid is (2n+1) x (2n+1), so sides are always odd. */
 const SIZES: ReadonlyArray<[level: number, cells: number]> = [
   [1, 5], // 11×11
-  [2, 8], // 17×17
-  [3, 12], // 25×25
+  [2, 12], // 25×25
+  [3, 25], // 51×51
 ];
 
-function ladder(items: number, levels: readonly number[] = [1, 2, 3], braid = 0.1): LevelSpec[] {
+/** Perfect Wilson mazes (no extra loops). */
+function ladder(items: number, levels: readonly number[], braid = 0): LevelSpec[] {
   return SIZES.filter(([level]) => levels.includes(level)).map(([level, cells]) => ({ level, cells, braid, items }));
 }
 
 export const CORE_SUITE: Suite = {
   id: "core",
-  version: "2.0.0",
+  version: "3.0.0",
   description:
-    "Main leaderboard: full map and map once at 11×11, 17×17 and 25×25; fog at 11×11 and 17×17. 9 mazes each (72 per run).",
+    "Main leaderboard: full map and map once at 51×51; fog at 11×11, 25×25 and 51×51. 9 mazes each (45 per run).",
   epochs: 1,
-  seedNamespace: "core@2.0.0",
+  seedNamespace: "core@3.0.0",
   tasks: [
-    { task: "full", levels: ladder(9) },
-    { task: "once", levels: ladder(9) },
-    // Fog at 25×25 is not run: long episodes resend the whole conversation every step, and
-    // finishing them did not fit the budget of the first sweep.
-    { task: "fog", levels: ladder(9, [1, 2]) },
+    { task: "full", levels: ladder(9, [3]) },
+    { task: "once", levels: ladder(9, [3]) },
+    { task: "fog", levels: ladder(9, [1, 2, 3]) },
   ],
 };
 
 export const SMOKE_SUITE: Suite = {
   id: "smoke",
-  version: "2.0.0",
+  version: "3.0.0",
   description: "One core maze per condition and size. Checks the harness and feeds cost estimates.",
   epochs: 1,
-  seedNamespace: "core@2.0.0",
+  seedNamespace: "core@3.0.0",
   tasks: [
-    { task: "full", levels: ladder(1) },
-    { task: "once", levels: ladder(1) },
-    { task: "fog", levels: ladder(1, [1, 2]) },
+    { task: "full", levels: ladder(1, [3]) },
+    { task: "once", levels: ladder(1, [3]) },
+    { task: "fog", levels: ladder(1, [1, 2, 3]) },
   ],
 };
 

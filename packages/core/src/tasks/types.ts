@@ -29,14 +29,17 @@ export interface MazeItem {
   tiles: Tiles;
   start: Pos;
   goal: Pos;
-  /** Hidden move cap: twice the number of open tiles. Not shown to the agent. */
-  budget: number;
   /** BFS distance from start to goal. */
   optimal: number;
 }
 
-export type Outcome = "success" | "budget_exhausted" | "stalled" | "truncated" | "spend_limit";
-export type EpisodeEnd = "goal" | "budget" | "stalled" | "truncated";
+/**
+ * success: reached the exit. gave_up: the agent stopped calling the tool without reaching it.
+ * truncated: a reply hit the per-call output limit. spend_limit: stopped by the --max-cost cap.
+ * There is no move limit.
+ */
+export type Outcome = "success" | "gave_up" | "truncated" | "spend_limit";
+export type EpisodeEnd = Outcome;
 
 export type Metrics = Record<string, number | boolean | null>;
 
@@ -62,7 +65,7 @@ export type MoveReport = { move: Dir; result: "moved" | "blocked"; view?: string
 export type BatchResult = {
   /** One entry per move that ran. In fog mode each entry carries the 3x3 view after the move. */
   steps: MoveReport[];
-  /** Moves not run because the batch stopped early (wall, goal or budget). */
+  /** Moves not run because the batch stopped early (wall or exit). */
   skipped: number;
   /** Full mode only: the map after the batch. */
   map?: string;

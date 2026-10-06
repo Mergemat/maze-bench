@@ -65,7 +65,7 @@ export function writeBaselines(suite: Suite, log: (s: string) => void): void {
         score: scored.score,
         outcome: scored.outcome,
         metrics: scored.metrics,
-        ...(scored.trace ? { trace: scored.trace } : {}),
+        // No move log: baselines are not replayed, and a random walk takes hundreds of thousands of moves.
         usage: { inputTokens: 0, outputTokens: 0, reasoningTokens: 0, costUsd: 0 },
         latencyMs: 0,
         calls: 0,

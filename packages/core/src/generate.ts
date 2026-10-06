@@ -24,7 +24,7 @@ function isCenter(size: number, p: Pos): boolean {
 }
 
 /**
- * Seeded recursive-backtracker maze with optional braiding.
+ * Seeded Wilson maze (uniform random spanning tree) with optional braiding.
  * Returns tiles where `#` is wall and `.` is open. Every open tile is reachable.
  */
 export function generateMaze(spec: MazeSpec, rng: Rng): string[] {
@@ -39,26 +39,40 @@ export function generateMaze(spec: MazeSpec, rng: Rng): string[] {
   };
   const get = (p: Pos) => grid[p.r]?.[p.c];
 
-  // Carve a perfect maze with an explicit stack (iterative DFS).
-  const start = rng.pick(cellCenters(cells));
-  set(start);
-  const stack: Pos[] = [start];
-  while (stack.length > 0) {
-    const cur = stack.at(-1) as Pos;
-    const options = DIRS.filter((d) => {
-      const next = { r: cur.r + 2 * DELTA[d].dr, c: cur.c + 2 * DELTA[d].dc };
-      return isCenter(size, next) && get(next) === WALL;
-    });
-    if (options.length === 0) {
-      stack.pop();
+  // Wilson's algorithm: a uniform random spanning tree over the cells, built from loop-erased
+  // random walks. Unlike a depth-first backtracker (long corridors, few forks) every perfect
+  // maze is equally likely, which gives about three times as many forks and dead ends.
+  const centers = cellCenters(cells);
+  const key = (p: Pos) => p.r * size + p.c;
+  const inTree = new Set<number>();
+  const first = rng.pick(centers);
+  inTree.add(key(first));
+  set(first);
+  for (const startCell of rng.shuffle(centers)) {
+    if (inTree.has(key(startCell))) {
       continue;
     }
-    const dir = rng.pick(options);
-    const wall = { r: cur.r + DELTA[dir].dr, c: cur.c + DELTA[dir].dc };
-    const next = { r: cur.r + 2 * DELTA[dir].dr, c: cur.c + 2 * DELTA[dir].dc };
-    set(wall);
-    set(next);
-    stack.push(next);
+    // Random walk until it hits the tree, remembering only the last exit from each cell,
+    // which erases loops implicitly.
+    const exit = new Map<number, Pos>();
+    let cur = startCell;
+    while (!inTree.has(key(cur))) {
+      const options = DIRS.map((d) => ({ r: cur.r + 2 * DELTA[d].dr, c: cur.c + 2 * DELTA[d].dc })).filter((n) =>
+        isCenter(size, n),
+      );
+      const next = rng.pick(options);
+      exit.set(key(cur), next);
+      cur = next;
+    }
+    // Carve the loop-erased path into the tree.
+    cur = startCell;
+    while (!inTree.has(key(cur))) {
+      const next = exit.get(key(cur)) as Pos;
+      set(cur);
+      set({ r: (cur.r + next.r) / 2, c: (cur.c + next.c) / 2 });
+      inTree.add(key(cur));
+      cur = next;
+    }
   }
 
   // Braid: open some dead ends into a walled neighbour cell.

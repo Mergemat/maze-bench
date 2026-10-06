@@ -35,10 +35,15 @@ describe("baselines", () => {
     }
   });
 
-  test("random walk rarely finishes the larger mazes", () => {
-    const big = refs.filter((r) => r.task === "full" && r.level.level >= 2);
-    const rate = big.filter((r) => runBaseline(r, "random").score === 1).length / big.length;
-    expect(rate).toBeLessThan(0.35);
+  test("with no move limit every baseline finishes, and the random walk takes far longer", () => {
+    const big = refs.filter((r) => r.task === "fog" && r.level.level === 2);
+    for (const r of big) {
+      expect(runBaseline(r, "random").score).toBe(1);
+    }
+    const spl = (k: "random" | "oracle") =>
+      big.reduce((a, r) => a + Number(runBaseline(r, k).metrics.spl), 0) / big.length;
+    expect(spl("oracle")).toBe(1);
+    expect(spl("random")).toBeLessThan(0.2);
   });
 });
 
@@ -52,7 +57,6 @@ describe("maze environment", () => {
     expect(r.steps[0]?.result).toBe("blocked");
     expect(r.skipped).toBe(2);
     expect(env.moves).toBe(1);
-    expect(env.movesLeft).toBe(item.budget - 1);
   });
 
   test("what each condition reports back", () => {
@@ -69,7 +73,7 @@ describe("maze environment", () => {
     expect(fog.steps[0]?.view?.split("\n")).toHaveLength(3);
   });
 
-  test("counts revisits and stops at the budget", () => {
+  test("counts revisits and never stops on its own", () => {
     const item = firstItem("fog");
     const env = getTask("fog").createEnv(item);
     const there = openDirs(item.tiles, item.start)[0] as "U";
@@ -77,12 +81,12 @@ describe("maze environment", () => {
     env.move(there);
     env.move(back);
     expect(env.revisits).toBe(1);
-    while (!env.done) {
+    for (let i = 0; i < 1000; i++) {
       env.move(wallDir(item));
     }
-    const scored = getTask("fog").scoreEpisode(item, env, "budget");
-    expect(scored).toMatchObject({ score: 0, outcome: "budget_exhausted" });
-    expect(env.moves).toBe(item.budget);
+    expect(env.done).toBe(false);
+    const scored = getTask("fog").scoreEpisode(item, env, "gave_up");
+    expect(scored).toMatchObject({ score: 0, outcome: "gave_up" });
   });
 
   test("the replay log reproduces the oracle path", () => {
@@ -102,7 +106,7 @@ describe("prompts", () => {
       const task = getTask(id);
       const p = task.prompt(item, task.createEnv(item));
       expect(p.system).toContain("Reach the exit");
-      expect(p.system).not.toContain(String(item.budget));
+      expect(p.system).not.toMatch(/\d+ moves/);
       if (id === "fog") {
         expect(p.user.split("\n")).toHaveLength(3);
       } else {
