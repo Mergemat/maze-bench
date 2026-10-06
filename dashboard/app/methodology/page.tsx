@@ -64,8 +64,7 @@ export default function Method() {
         <H2>What is measured</H2>
         <ul className="list-disc space-y-1.5 pl-5">
           <li>
-            <strong>Completion</strong>: share of mazes where the agent reached the exit. The headline number averages
-            the three conditions equally.
+            <strong>Completion</strong>: mazes where the agent reached the exit, out of mazes scored.
           </li>
           <li>
             <strong>Cost</strong> per maze, as reported by OpenRouter, including prompt-cache discounts.

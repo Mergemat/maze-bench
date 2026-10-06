@@ -66,8 +66,8 @@ export default async function ModelPage({ params }: { params: Params }) {
         </h1>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Big
-            value={`${all.solved}/${all.total}`}
-            label={`mazes solved · ${pct(row.composite?.mean, 0)}% completion`}
+            value={`${pct(row.composite?.mean, 0)}%`}
+            label={`${all.solved} of ${all.total} mazes solved${row.scored < row.expected ? ` · ${row.expected - row.scored} not finished` : ""}`}
             accent
           />
           <Big value={usd(row.perMaze.costUsd, row.usage.costComplete)} label="cost per maze" />
