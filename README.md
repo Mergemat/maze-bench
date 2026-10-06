@@ -1,87 +1,123 @@
-<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/e162b7c1-37aa-4576-bb2b-090c3104addd" />
-
 # MazeBench
 
-A benchmark for evaluating LLM spatial reasoning and navigation abilities through maze-solving tasks.
-<img width="547" height="276" alt="image" src="https://github.com/user-attachments/assets/04aaccec-ffd6-4b49-badb-adf8fd0f50cf" />
+LLM agents walking procedurally generated text mazes. Each run measures **completion**, **cost**, **output tokens** and **agent steps**, across reasoning effort.
 
-## What it measures
+Dashboard: https://maze-bench.vercel.app · Design: [docs/design.md](docs/design.md) · Research notes: [docs/research.md](docs/research.md)
 
-Honestly, I'm not sure.
-I think spatial reasoning and tool use.
+> **Name.** Since this repo started (December 2025), three other benchmarks have been published as "MazeBench". The best known is [mazebench.com](https://mazebench.com), a 3D agent world from July 2026. A rename to **TheseusBench** is proposed, after Claude Shannon's 1950 maze-learning mouse. See [docs/research.md](docs/research.md#1-related-benchmarks-and-the-name-collision). The display name is one constant in `packages/core/src/meta.ts`.
 
-## How it works
+## The task
 
-The model receives a maze representation and must use a tool call to output movement commands (`up`, `down`, `left`, `right`) to navigate from start to goal. Performance is measured by success rate, steps taken, time, and API cost.
+An agent gets a maze and one tool, `move`, which takes a list of moves (`["R", "R", "D"]`). There is no move limit: the agent succeeds by reaching the exit and fails by stopping before it. The agent can send a whole planned route in one step or feel its way one move at a time, so good planning shows up as fewer steps and fewer tokens.
 
-### Complexity levels
+The only thing that changes between conditions is what the agent sees:
 
-- **Simple**: Long corridors, few decision points
-- **Complex**: More branches and dead ends
+| Condition | What the agent sees | What it stresses |
+|---|---|---|
+| **Full map** | The whole map, redrawn after every batch | Reading the grid and planning a route |
+| **Map once** | The map once at the start, then only whether each move worked | Planning and keeping track of position from memory |
+| **Fog** | A 3×3 view after every move, no coordinates | Exploring and remembering where it has been |
 
-### Observation modes
+Suite `core@3.0.0`: full map and map once run at 51×51; fog runs at 11×11, 25×25 and 51×51. That is 9 mazes per condition and size, 45 per model and effort setting. Sides are odd because walls sit between cells.
 
-- **Continuous**: Model receives an updated view of the maze after every move, showing its new position. This tests the model's ability to iteratively navigate using feedback.
-- **Initial**: Model sees the maze only once at the start and must output all moves from memory. This tests the model's ability to plan a complete path upfront.
+## What is reported
 
-### Maze sizes
+- **Completion**: mazes solved out of mazes scored, with a 95% bootstrap interval over mazes.
+- **Cost per task**, two ways. *Billed* is what OpenRouter charged, including whatever prompt-cache discount the serving provider applied. *List price* prices the same token counts at the model's published rates (uncached input, cache reads, cache writes, output), so it compares models fairly regardless of how their host caches. Runs record cache reads and writes per task; the first sweep predates this and has billed cost only.
+- **Output tokens per maze**, reasoning included.
+- **Agent steps per maze** (model calls). Every step resends the conversation, so steps drive input cost.
 
-- 5x5 (trivial)
-- 11x11 (small)
-- 21x21 (medium)
-- 31x31 (challenging)
+Each model runs at several reasoning-effort settings, and the dashboard joins them into one line per model.
 
-## Project structure
+## Methodology
 
-```
-mazebench/
-├── bench/          # Benchmark runner (Bun + AI SDK)
-│   ├── src/bench/
-│   │   ├── ui/     # Interactive CLI interface (Ink + React)
-│   │   └── ...     # Core benchmark logic
-│   └── package.json
-└── dashboard/      # Results visualization (Next.js)
-```
+- **Mazes** come from Wilson's algorithm, which draws a uniformly random perfect maze from the seed: many short branches and dead ends (about a quarter of cells are forks), and one route between any two tiles. Start and exit come from the seed and are at least moderately far apart. Every maze is rebuilt from `(suite, condition, size, index)`, and a committed manifest of item hashes fails CI if mazes or prompts change without a suite version bump.
+- **Agent loop.** The agent is a standard AI SDK `ToolLoopAgent`, and the full conversation (reasoning included) stays in context. A batch stops at the first wall or at the exit. The episode ends when the agent reaches the exit or replies without calling the tool; there is no move or step limit. The only stop besides those is the optional `--max-cost` spending cap.
+- **Baselines** run on the same mazes: BFS, a random walk, and a right-hand wall follower that needs no map and no memory. With no move limit all three reach every exit, so they set the efficiency scale rather than the completion scale: on 51×51 full-map mazes the wall follower takes about 1,300 moves (SPL 0.12) and the random walk about 255,000.
+- **Statistics.** Bootstrap intervals over mazes, paired comparison to the leader on shared mazes, and pass@k and pass^k when there are several attempts per maze.
+- **Settings.** Models run through OpenRouter. Temperature is left at the provider default, and the serving provider is recorded for every call. API errors are retried and never counted as failures.
 
-## Quick start
+## Results
 
-### Run benchmarks
+`core@3.0.0` has no model runs yet. The first sweep ran on `core@2.0.0`: depth-first mazes up to 25×25, 72 tasks per model and effort, and a move cap of twice the open tiles. Its results stay in `results/core@2.0.0/` and are not comparable with 3.0.0:
+
+| Model | Completion (95% CI) | Full map | Map once | Fog | $ / task | Output tokens / task | Steps / task |
+|---|---|---|---|---|---|---|---|
+| GLM-5.3 Flash (high) | 79.2 (69.4–87.5) | 100.0 | 100.0 | 16.7 | 0.027 | 19.6k | 25.7 |
+| GPT-6 Luna (high) | 75.0 (63.9–84.7) | 92.6 | 77.8 | 44.4 | 0.018 | 16.5k | 46.6 |
+| GLM-5.3 Flash (low) | 65.3 (54.2–76.4) | 96.3 | 70.4 | 11.1 | 0.025 | 16.0k | 34.7 |
+| GPT-6 Luna (medium) | 58.3 (47.2–69.4) | 70.4 | 63.0 | 33.3 | 0.017 | 13.8k | 60.3 |
+| GPT-6 Luna (low) | 26.4 (16.7–37.5) | 44.4 | 22.2 | 5.6 | 0.012 | 15.1k | 34.1 |
+| _Wall follower_ | 95.8 (91.7–100.0) | 96.3 | 92.6 | 100.0 | – | – | – |
+| _Random walk_ | 1.4 (0.0–4.2) | 3.7 | 0.0 | 0.0 | – | – | – |
+
+Reasoning effort is the biggest lever: GPT-6 Luna goes from 26% at low effort to 75% at high. Fog separates the models: GLM-5.3 Flash solves every full-map task at high effort but only 17% in fog. No model beat the wall follower, which solved 96% within the cap. Those mazes turned out too easy, which led to 3.0.0: larger Wilson mazes, and no move cap.
+
+Version 1 results (December 2025) used a different harness and are not comparable. They remain in git history at commit `c55850a`.
+
+## Running it
+
+Requires [Bun](https://bun.com) 1.3+.
 
 ```bash
-cd bench
 bun install
-bun run run
+cp bench/.env.example bench/.env   # add OPENROUTER_API_KEY
+
+bun run bench models                                         # registry with live OpenRouter prices
+bun run bench run --model gpt-6-luna --suite smoke           # 5 mazes, one per condition and size
+bun run bench run --model claude-sonnet-5.5 --efforts low,medium,high,xhigh   # core, at the efforts the model supports
+bun run bench run --sweep --resume                           # every model in the lineup
+bun run bench estimate --sweep --efforts low,medium,high,xhigh   # cost estimate from smoke runs
+bun run bench report                                         # markdown table
+bun run bench validate                                       # schema and item-hash check
 ```
 
-This launches an interactive CLI interface where you can:
-- Select a benchmark suite
-- Enter a version tag for the run
-- View real-time progress and results
+Results are append-only JSONL files in `results/{suite}@{version}/{model}@{effort}/`. The format is versioned (`schemaVersion: "2.0.0"`).
 
-Results are saved to `bench/src/bench/results/`.
-
-### View results
+Checks (the same ones CI runs):
 
 ```bash
-cd dashboard
-bun install
-bun dev
+bun run typecheck && bun run lint && bun run test && bun run bench validate && bun run build
 ```
 
-Open http://localhost:3000 to see the dashboard.
+### Adding a model
 
-## Configuration
+1. Add an entry to `bench/src/models.ts` with the exact OpenRouter slug (prefer dated slugs). For open-weight models set `openWeights: true`. To pin a provider, add `routing: { order: ["provider"], allow_fallbacks: false }`.
+2. For a local model (LM Studio or any OpenAI-compatible server), set `LOCAL_BASE_URL` and `LOCAL_MODEL` and use `--model local`.
+3. Run `--suite smoke` first, then the core suite at each effort you want on the chart.
+4. Commit the results file; the dashboard picks it up on the next build.
 
-Edit `bench/src/bench/config.ts` to customize:
-- Maze configurations (size, complexity, vision)
-- Number of runs per config
-- Max steps allowed
+## Repository layout
 
-Edit `bench/src/bench/models.ts` to add/remove models to benchmark.
+```
+packages/core   maze generator, conditions, scoring, statistics, results schema
+bench           OpenRouter runner and CLI
+dashboard       Next.js site built with dither-kit
+results         committed run files
+docs            research notes and design
+```
 
-## Metrics
+## Limitations
 
-- **Success rate**: % of mazes solved
-- **Average steps**: Mean steps to reach goal (successful runs)
-- **Average time**: Mean duration per maze
-- **Cost**: Total API cost for the benchmark run
+- No human baseline yet.
+- Text only.
+- With no move limit, completion only shows whether a model gives up. Read it together with steps, tokens and cost.
+- A model that never stops can run until the spending cap; use `--max-cost` on every sweep.
+- Open-weight models can behave differently depending on which OpenRouter provider serves them.
+- The dashboard relaxes two TypeScript flags (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`), because the vendored dither-kit components do not compile under them.
+
+## Citation
+
+```bibtex
+@software{omarov2026mazebench,
+  author  = {Omarov, Bagautdin},
+  title   = {MazeBench: LLM agents in procedurally generated text mazes},
+  year    = {2026},
+  version = {3.0.0},
+  url     = {https://github.com/Mergemat/maze-bench}
+}
+```
+
+## License
+
+MIT. See [LICENSE](LICENSE). The components in `dashboard/components/dither-kit` come from https://tripwire.sh/dither-kit.
