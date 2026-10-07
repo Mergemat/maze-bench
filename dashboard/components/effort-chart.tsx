@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { rgb } from "@/components/dither-kit/palette";
-import { fillOf, type PixelColor } from "@/components/dither-kit/pixel";
 import { useChartDimensions } from "@/components/dither-kit/use-chart-dimensions";
 import { DitherPlot } from "@/components/dither-plot";
+import { LabLogo, LabMark } from "@/components/lab-logo";
 import { pct } from "@/lib/format";
+import { labColor, labOf } from "@/lib/labs";
 
 /** One leaderboard entry: a model at one reasoning effort. */
 export interface EffortPoint {
@@ -25,18 +25,6 @@ export interface EffortPoint {
   details?: { label: string; value: string; active?: boolean }[];
 }
 
-// One dither-kit colour per lab, fixed so a lab keeps its colour whatever else is shown.
-const LAB: Record<string, PixelColor> = {
-  openai: "blue",
-  anthropic: "orange",
-  google: "green",
-  "x-ai": "purple",
-  qwen: "pink",
-  deepseek: 200,
-  moonshotai: 48,
-  "z-ai": 172,
-};
-const colorOf = (creator: string): PixelColor => LAB[creator] ?? "grey";
 const EFFORTS = ["none", "minimal", "low", "default", "medium", "high", "xhigh"];
 
 export function EffortChart({
@@ -53,12 +41,13 @@ export function EffortChart({
   const router = useRouter();
   const [hover, setHover] = useState<EffortPoint | null>(null);
   const [labelGroup, setLabelGroup] = useState<string | null>(null);
+  const [labHover, setLabHover] = useState<string | null>(null);
   const active = hover?.group ?? labelGroup;
 
   const wide = size.width >= 640;
   const width = size.width;
-  const height = wide ? 420 : 300;
-  const m = { top: 12, right: wide ? 150 : 14, bottom: 26, left: 38 };
+  const height = wide ? 560 : 360;
+  const m = { top: 12, right: wide ? 180 : 14, bottom: 26, left: 38 };
   const plotW = Math.max(1, width - m.left - m.right);
   const plotH = height - m.top - m.bottom;
 
@@ -77,7 +66,15 @@ export function EffortChart({
   const lo = Math.log10(xs.length > 0 ? Math.min(...xs) / 1.6 : 0.001);
   const hi = Math.log10(xs.length > 0 ? Math.max(...xs) * 1.6 : 1);
   const x = (v: number) => ((Math.log10(v) - lo) / (hi - lo || 1)) * plotW;
-  const y = (s: number) => (1 - s) * plotH;
+  // The y axis starts just under the weakest model rather than at 0%, so the field spreads out.
+  const minScore = usable.length > 0 ? Math.min(...usable.map((p) => p.score)) : 0;
+  const yMin = Math.max(0, Math.floor((minScore - 0.05) * 10) / 10);
+  const y = (s: number) => ((1 - s) / (1 - yMin || 1)) * plotH;
+  const yStep = 1 - yMin > 0.5 ? 20 : 10;
+  const yTicks: number[] = [];
+  for (let v = 100; v >= Math.round(yMin * 100); v -= yStep) {
+    yTicks.push(v / 100);
+  }
 
   const xTicks: number[] = [];
   for (let e = Math.floor(lo); e <= Math.ceil(hi); e++) {
@@ -101,8 +98,9 @@ export function EffortChart({
       return {
         group: last.group,
         name: last.name,
+        creator: last.creator,
         href: last.href,
-        color: rgb(fillOf(colorOf(last.creator))),
+        color: labColor(last.creator),
         ax: x(last.x),
         ay: y(last.score),
         y: y(last.score),
@@ -121,7 +119,20 @@ export function EffortChart({
     }
   }
 
-  const fade = (group: string) => (active && active !== group ? 0.2 : 1);
+  const creatorOf = new Map(usable.map((p) => [p.group, p.creator]));
+  const labs = [...new Set(usable.map((p) => p.creator))];
+  const isActive = (group: string) => (active ? active === group : labHover ? creatorOf.get(group) === labHover : true);
+  const fade = (group: string) => (isActive(group) ? 1 : 0.2);
+  // The plot highlights one series; a hovered lab highlights all of its models.
+  const highlighted = useMemo(
+    () =>
+      active
+        ? [active]
+        : labHover
+          ? lines.filter((l) => l[0]?.creator === labHover).map((l) => l[0]?.group ?? "")
+          : null,
+    [active, labHover, lines],
+  );
 
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const box = e.currentTarget.getBoundingClientRect();
@@ -139,10 +150,24 @@ export function EffortChart({
     setHover(best);
   };
 
-  const hoverColor = hover ? rgb(fillOf(colorOf(hover.creator))) : undefined;
+  const hoverColor = hover ? labColor(hover.creator) : undefined;
 
   return (
     <div>
+      <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1.5">
+        {labs.map((c) => (
+          <span
+            key={c}
+            className="flex cursor-default items-center gap-1.5 text-[11px] text-muted-foreground transition-opacity hover:text-foreground"
+            style={{ opacity: labHover && labHover !== c ? 0.4 : 1 }}
+            onPointerEnter={() => setLabHover(c)}
+            onPointerLeave={() => setLabHover(null)}
+          >
+            <LabLogo creator={c} size={13} />
+            {labOf(c).name}
+          </span>
+        ))}
+      </div>
       <div ref={ref} className="relative w-full" style={{ height }}>
         {width > 0 ? (
           <>
@@ -150,10 +175,10 @@ export function EffortChart({
               <DitherPlot
                 width={plotW}
                 height={plotH}
-                hovered={active}
+                hovered={highlighted}
                 series={lines.map((list) => ({
                   key: list[0]?.group ?? "",
-                  color: colorOf(list[0]?.creator ?? ""),
+                  color: labOf(list[0]?.creator ?? "").color,
                   // In effort order (low → high), so the line reads as "more effort", even when a
                   // lower effort happens to cost more and the line turns back.
                   points: list.map((p) => ({ x: x(p.x), y: y(p.score) })),
@@ -178,7 +203,7 @@ export function EffortChart({
               style={{ cursor: hover ? "pointer" : "default" }}
             >
               <g transform={`translate(${m.left},${m.top})`}>
-                {[0, 0.25, 0.5, 0.75, 1].map((s) => (
+                {yTicks.map((s) => (
                   <g key={s}>
                     <line
                       x1={0}
@@ -190,7 +215,7 @@ export function EffortChart({
                       className="text-muted-foreground/30"
                     />
                     <text x={-8} y={y(s) + 3} textAnchor="end" className="fill-muted-foreground font-mono text-[10px]">
-                      {s * 100}%
+                      {Math.round(s * 100)}%
                     </text>
                   </g>
                 ))}
@@ -204,6 +229,11 @@ export function EffortChart({
                   >
                     {format(v)}
                   </text>
+                ))}
+                {labels.map((l) => (
+                  <g key={l.group} opacity={fade(l.group)} className="pointer-events-none transition-opacity">
+                    <LabMark creator={l.creator} x={l.ax + 6} y={l.ay - 6} />
+                  </g>
                 ))}
                 {wide
                   ? labels.map((l) => (
@@ -219,15 +249,19 @@ export function EffortChart({
                           router.push(l.href);
                         }}
                       >
-                        <path
-                          d={`M ${l.ax + 5} ${l.ay} L ${plotW + 6} ${l.y} L ${plotW + 12} ${l.y}`}
-                          fill="none"
-                          stroke={l.color}
-                          strokeWidth={1}
-                          opacity={active === l.group ? 0.9 : 0.35}
-                        />
+                        {/* The leader only shows for the hovered model; at rest the logo at the line's end ties it to its label. */}
+                        {active === l.group ? (
+                          <path
+                            d={`M ${l.ax + 22} ${l.ay} L ${plotW + 6} ${l.y} L ${plotW + 12} ${l.y}`}
+                            fill="none"
+                            stroke={l.color}
+                            strokeWidth={1}
+                            opacity={0.7}
+                          />
+                        ) : null}
                         <rect x={plotW + 14} y={l.y - 9} width={m.right - 16} height={18} fill="transparent" />
-                        <text x={plotW + 16} y={l.y + 4} className="text-[11px]" fill={l.color}>
+                        <LabMark creator={l.creator} x={plotW + 16} y={l.y - 6} />
+                        <text x={plotW + 33} y={l.y + 4} className="text-[11px]" fill={l.color}>
                           {l.name}
                         </text>
                       </g>
@@ -259,8 +293,9 @@ export function EffortChart({
                 }}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="truncate font-sans" style={{ color: hoverColor }}>
-                    {hover.name}
+                  <span className="flex min-w-0 items-center gap-1.5 font-sans" style={{ color: hoverColor }}>
+                    <LabLogo creator={hover.creator} size={12} />
+                    <span className="truncate">{hover.name}</span>
                   </span>
                   <span className="text-muted-foreground">{hover.effort}</span>
                 </div>
@@ -294,8 +329,8 @@ export function EffortChart({
               onPointerLeave={() => setLabelGroup(null)}
               onClick={() => setLabelGroup((g) => (g === l.group ? null : l.group))}
             >
-              <span className="size-2" style={{ background: l.color }} />
-              {l.name}
+              <LabLogo creator={l.creator} size={11} />
+              <span style={{ color: l.color }}>{l.name}</span>
             </button>
           ))}
         </div>

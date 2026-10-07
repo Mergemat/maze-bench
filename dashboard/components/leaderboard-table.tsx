@@ -35,6 +35,7 @@ export function LeaderboardTable({ rows }: { rows: Row[] }) {
                   <ModelBadge
                     name={row.subject.displayName}
                     avatarSeed={row.subject.key}
+                    creator={row.subject.creator}
                     href={baseline ? undefined : `/model/${slug(row.subject.key)}`}
                     effort={row.subject.reasoningEffort}
                     openWeights={row.subject.openWeights}
@@ -50,7 +51,7 @@ export function LeaderboardTable({ rows }: { rows: Row[] }) {
                   ) : null}
                 </td>
                 <td className="px-3 py-2.5">
-                  <CiBar interval={row.composite} tone={baseline ? "grey" : "blue"} />
+                  <CiBar interval={row.composite} creator={baseline ? undefined : row.subject.creator} />
                 </td>
                 {TASK_IDS.map((t) => {
                   const ts = row.tasks[t];

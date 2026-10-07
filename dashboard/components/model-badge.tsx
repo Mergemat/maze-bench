@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { DitherAvatar } from "@/components/dither-kit";
+import { LabLogo } from "@/components/lab-logo";
 
 export function ModelBadge({
   name,
   avatarSeed,
+  creator,
   href,
   effort,
   openWeights,
@@ -13,6 +15,7 @@ export function ModelBadge({
 }: {
   name: string;
   avatarSeed: string;
+  creator: string;
   href?: string;
   effort?: string;
   openWeights?: boolean;
@@ -20,7 +23,11 @@ export function ModelBadge({
 }) {
   const label = (
     <span className="flex items-center gap-2.5">
-      <DitherAvatar name={avatarSeed} size={20} animate={false} className={baseline ? "opacity-50" : undefined} />
+      {baseline ? (
+        <DitherAvatar name={avatarSeed} size={20} animate={false} className="opacity-50" />
+      ) : (
+        <LabLogo creator={creator} size={18} className="mx-px" />
+      )}
       {/* The effort is shown as its own badge, so drop the "(high)" suffix from the name. */}
       <span className={baseline ? "text-muted-foreground italic" : undefined}>
         {effort && effort !== "default" ? name.replace(/\s*\([^)]*\)$/, "") : name}

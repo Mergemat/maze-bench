@@ -2,12 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { CELL, paintColumn } from "@/components/dither-kit/dither-paint";
-import { rgb } from "@/components/dither-kit/palette";
-import { fillOf, type PixelColor, pixelBloomStyle, pixelPrefersReducedMotion } from "@/components/dither-kit/pixel";
+import { type Rgb, rgb } from "@/components/dither-kit/palette";
+import { pixelBloomStyle, pixelPrefersReducedMotion } from "@/components/dither-kit/pixel";
 
 export interface DitherSeries {
   key: string;
-  color: PixelColor;
+  color: Rgb;
   /** Points in plot coordinates (same units as width/height), in the order the line visits them. */
   points: { x: number; y: number }[];
 }
@@ -26,7 +26,8 @@ export function DitherPlot({
   series: DitherSeries[];
   width: number;
   height: number;
-  hovered: string | null;
+  /** Series to highlight; the rest fade. */
+  hovered: readonly string[] | null;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const bloomRef = useRef<HTMLCanvasElement>(null);
@@ -50,15 +51,15 @@ export function DitherPlot({
       ctx.clearRect(0, 0, cols, rows);
       const limit = reveal * cols;
       for (const s of series) {
-        const seed = { fill: fillOf(s.color), line: fillOf(s.color), star: fillOf(s.color) };
-        const isHover = hovered === s.key;
+        const seed = { fill: s.color, line: s.color, star: s.color };
+        const isHover = hovered?.includes(s.key) ?? false;
         const faded = hovered !== null && !isHover;
-        // Areas are a faint wash so overlapping models stay readable; lines carry the data.
-        const area = faded ? 0.03 : isHover ? 0.35 : 0.12;
         const line = faded ? 0.15 : 1;
         const pts = s.points.map((p) => ({ x: p.x / CELL, y: p.y / CELL }));
-        // Area: one dithered column per backing pixel between consecutive points.
-        for (let i = 1; i < pts.length; i++) {
+        // Area: only under highlighted series. With many models the washes stack into mud, so
+        // lines carry the data and the area marks what is hovered.
+        // One dithered column per backing pixel between consecutive points.
+        for (let i = 1; isHover && i < pts.length; i++) {
           const a = pts[i - 1] as { x: number; y: number };
           const b = pts[i] as { x: number; y: number };
           // Segments can run right-to-left when a lower effort costs more; fill the span either way.
@@ -68,9 +69,9 @@ export function DitherPlot({
             paintColumn(ctx, x, l.y + (r.y - l.y) * t, rows, seed, {
               variant: "gradient",
               intensity: 0,
-              dim: area,
+              dim: 0.35,
               stacked: false,
-              sparse: isHover ? 0.2 : 0.45,
+              sparse: 0.2,
             });
           }
         }
