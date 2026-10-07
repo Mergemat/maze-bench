@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:mock": "bun run mock && MAZEBENCH_RESULTS_DIR=.mock-results next dev",
+    "mock": "bun run scripts/mock-results.ts",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc -p ."
