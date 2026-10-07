@@ -1,5 +1,6 @@
 import type { Interval } from "@mazebench/core";
 import { pct } from "@/lib/format";
+import { labColor } from "@/lib/labs";
 
 /**
  * Score with its 95% interval on a 0–100 track. The filled part is an ordered-dither
@@ -8,19 +9,20 @@ import { pct } from "@/lib/format";
 export function CiBar({
   interval,
   width = 132,
-  tone = "blue",
+  creator,
 }: {
   interval: Interval | null;
   width?: number;
-  tone?: "blue" | "grey";
+  /** Lab whose colour fills the bar; grey when omitted (baselines). */
+  creator?: string;
 }) {
   if (!(interval && Number.isFinite(interval.mean))) {
     return <span className="text-muted-foreground text-xs">partial</span>;
   }
   const h = 14;
   const x = (v: number) => Math.max(0, Math.min(1, v)) * width;
-  const color = tone === "blue" ? "rgb(53 143 243)" : "rgb(140 140 150)";
-  const id = `dither-${tone}`;
+  const color = creator ? labColor(creator) : "rgb(140 140 150)";
+  const id = `dither-${creator ?? "grey"}`;
   return (
     <div className="flex items-center gap-3">
       <span className="w-11 text-right font-mono text-sm tabular-nums">{pct(interval.mean)}</span>
